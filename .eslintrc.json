@@ -10,9 +10,10 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     
+    
     // add new line above comment
     "lines-around-comment": [
-      "error",
+      "off",
       {
         "beforeLineComment": true,
         "beforeBlockComment": true,
