@@ -18,13 +18,13 @@
     
     // add new line below import
     "import/newline-after-import": [
-      "error",
+      "off",
       {
         "count": 1
       }
     ],
     "@typescript-eslint/ban-types": [
-      "error",
+      "off",
       {
         "extendDefaults": true,
         "types": {
