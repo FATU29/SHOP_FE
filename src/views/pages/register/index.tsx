@@ -73,7 +73,7 @@ const RegisterPage: NextPage<TProps> = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState<Boolean>(false);
     const theme = useTheme();
 
-    let referedStatus = watch("askRefer");
+    // let referedStatus = watch("askRefer");
 
     const onSubmit = (data: { email: string, password: string }) => {
         console.log(data);

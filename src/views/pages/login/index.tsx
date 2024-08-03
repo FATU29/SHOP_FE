@@ -72,7 +72,7 @@ const LoginPage: NextPage<TProps> = () => {
     const [isRemember, setIsRemember] = useState<boolean>(false);
     const theme = useTheme();
 
-    let referedStatus = watch("askRefer");
+    // let referedStatus = watch("askRefer");
 
     const onSubmit = (data: { email: string, password: string }) => {
         console.log(data);
