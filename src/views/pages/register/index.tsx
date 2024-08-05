@@ -132,7 +132,7 @@ const RegisterPage: NextPage<TProps> = () => {
                                 display: "flex",
                                 flexDirection: "column",
                                 alignItems: "center",
-                                gap:"7px"
+                                gap: "7px"
                             }
                         }>
                             <Avatar sx={{
@@ -237,8 +237,8 @@ const RegisterPage: NextPage<TProps> = () => {
                                     />
                                 </Box>
 
+                                <Button type="submit" fullWidth variant="contained" size="large">REGISTER</Button>
                             </form>
-                            <Button fullWidth variant="contained" size="large">REGISTER</Button>
                             <Grid container>
                                 <Grid item xs>
                                     <Typography>
@@ -247,8 +247,8 @@ const RegisterPage: NextPage<TProps> = () => {
                                 </Grid>
                                 <Grid item>
                                     <Link href="/login" style={{
-                                        textDecoration:"none",
-                                        color:theme.palette.mode === "light"?theme.palette.common.black : theme.palette.common.white
+                                        textDecoration: "none",
+                                        color: theme.palette.mode === "light" ? theme.palette.common.black : theme.palette.common.white
                                     }}>
                                         Sign In
                                     </Link>

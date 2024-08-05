@@ -33,7 +33,7 @@ import { EMAIL_REG, PASSWORD_REG } from "src/configs/regex";
 import IconifyIcon from "src/components/Icon";
 
 // import react
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 
 
@@ -43,6 +43,9 @@ import loginLight from "/public/images/login-light.png"
 import Google from "/public/svgs/google.svg"
 import Facebook from "/public/svgs/facebook.svg"
 import Link from "next/link";
+
+// ** hooks
+import { useAuth } from "src/hooks/useAuth";
 
 
 const schema = yup
@@ -68,13 +71,29 @@ const LoginPage: NextPage<TProps> = () => {
         mode: "onBlur",
         resolver: yupResolver(schema)
     })
+
+    // ** state
     const [showPassword, setShowPassword] = useState<Boolean>(false);
-    const [isRemember, setIsRemember] = useState<boolean>(false);
+    const [isRemember, setIsRemember] = useState<boolean>(true);
+
+    // ** theme
     const theme = useTheme();
+
+    // ** context
+    const { login } = useAuth();
+
+
+
 
     // let referedStatus = watch("askRefer");
 
     const onSubmit = (data: { email: string, password: string }) => {
+        if (!Object.keys(errors)?.length) {
+            login({
+                ...data,
+                rememberMe: isRemember
+            });
+        }
         console.log(data);
     }
 
@@ -208,8 +227,8 @@ const LoginPage: NextPage<TProps> = () => {
                                         }}
                                     ></Checkbox>}
                                     label="Remember me"></FormControlLabel>
+                                <Button type="submit" fullWidth variant="contained" size="large">SIGN IN</Button>
                             </form>
-                            <Button fullWidth variant="contained" size="large">SIGN IN</Button>
                             <Grid container>
                                 <Grid item xs>
                                     <Typography>
@@ -218,8 +237,8 @@ const LoginPage: NextPage<TProps> = () => {
                                 </Grid>
                                 <Grid item>
                                     <Link href="/register" style={{
-                                        textDecoration:"none",
-                                        color:theme.palette.mode === "light"?theme.palette.common.black : theme.palette.common.white
+                                        textDecoration: "none",
+                                        color: theme.palette.mode === "light" ? theme.palette.common.black : theme.palette.common.white
                                     }}>
                                         Sign Up
                                     </Link>
@@ -231,14 +250,14 @@ const LoginPage: NextPage<TProps> = () => {
                                 </Divider>
                             </Box>
                             <Box sx={{
-                                display:"flex",
-                                justifyContent:"center",
-                                alignItems:"center"
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center"
 
                             }}>
                                 <Box>
                                     <IconButton sx={{
-                                        color:"blue"
+                                        color: "blue"
                                     }}>
                                         <Image style={{
                                             height: "25px",
@@ -253,7 +272,6 @@ const LoginPage: NextPage<TProps> = () => {
                                             width: "25px",
                                         }} alt="facebook-svg" src={Facebook}></Image>
                                     </IconButton>
-
                                 </Box>
                             </Box>
 

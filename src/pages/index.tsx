@@ -3,11 +3,10 @@
 import { Box, useTheme } from '@mui/material'
 import Head from 'next/head'
 import CustomTextField from 'src/components/text-field';
+import LayoutNoApp from 'src/views/layouts/LayoutNoApp';
 
 export default function Home() {
 
-  const theme = useTheme();
-  console.log(theme);
 
   return (
     <>
@@ -20,3 +19,6 @@ export default function Home() {
     </>
   )
 }
+
+
+Home.getLayout = (page : React.ReactNode) => <LayoutNoApp>{page}</LayoutNoApp>

@@ -12,6 +12,7 @@ import authConfig from 'src/configs/auth'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+import { loginAuth } from 'src/services/auth'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -72,21 +73,24 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    axios
-      .post(authConfig.loginEndpoint, params)
-      .then(async response => {
-        params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
-          : null
-        const returnUrl = router.query.returnUrl
+    loginAuth({
+      email: params.email,
+      password: params.password
+    }).then(async response => {
+      params.rememberMe
+        ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.access_token)
+        : null
+      const returnUrl = router.query.returnUrl
 
-        setUser({ ...response.data.userData })
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
+      console.log(response)
 
-        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+      setUser({ ...response.data.user })
+      params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.user)) : null
 
-        router.replace(redirectURL as string)
-      })
+      const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
+      router.replace(redirectURL as string)
+    })
 
       .catch(err => {
         if (errorCallback) errorCallback(err)
@@ -108,7 +112,6 @@ const AuthProvider = ({ children }: Props) => {
     login: handleLogin,
     logout: handleLogout
   }
-
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>
 }
 
