@@ -12,16 +12,11 @@ type TProps = {
 
 
 const LayoutNoApp: NextPage<TProps> = ({children}) => {
-
-    const [open, setOpen] = React.useState(false);
-    const toggleDrawer = () => {
-        setOpen(!open);
-    };
     return (
         <>
             <Box>
                 <CssBaseline />
-                <HorizontalLayout open={false} toggleDrawer={toggleDrawer}></HorizontalLayout>
+                <HorizontalLayout open={false} toggleDrawer={() => {}} isHidden={true}></HorizontalLayout>
             </Box>
             {children}
         </>
