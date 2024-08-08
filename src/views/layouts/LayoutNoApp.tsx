@@ -11,7 +11,7 @@ type TProps = {
 }
 
 
-const LayoutNoApp: NextPage<TProps> = ({children}) => {
+const LayoutNoApp: NextPage<TProps> = ({children}) => { 
     return (
         <>
             <Box>

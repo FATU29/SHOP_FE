@@ -94,7 +94,6 @@ const LoginPage: NextPage<TProps> = () => {
                 rememberMe: isRemember
             });
         }
-        console.log(data);
     }
 
     return (

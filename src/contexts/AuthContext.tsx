@@ -12,7 +12,10 @@ import authConfig from 'src/configs/auth'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
-import { loginAuth } from 'src/services/auth'
+import { loginAuth, logoutAuth } from 'src/services/auth'
+import { CONFIG_API } from 'src/configs/api'
+import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
+import {instanceAxios} from 'src/helpers/intercepterAxios'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -40,23 +43,21 @@ const AuthProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
-      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)!
+      const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName);
       if (storedToken) {
         setLoading(true)
-        await axios
-          .get(authConfig.meEndpoint, {
+        await instanceAxios(CONFIG_API.AUTH.AUTH_ME, {
+            method:"GET",
             headers: {
-              Authorization: storedToken
-            }
+              Authorization: `Bearer ${storedToken}`
+            },
           })
-          .then(async response => {
+          .then((response) => {
             setLoading(false)
-            setUser({ ...response.data.userData })
+            setUser({ ...response.data.data })
           })
           .catch(() => {
-            localStorage.removeItem('userData')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('accessToken')
+            clearLocalUserData();
             setUser(null)
             setLoading(false)
             if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
@@ -67,8 +68,7 @@ const AuthProvider = ({ children }: Props) => {
         setLoading(false)
       }
     }
-
-    initAuth()
+    initAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -78,14 +78,10 @@ const AuthProvider = ({ children }: Props) => {
       password: params.password
     }).then(async response => {
       params.rememberMe
-        ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.access_token)
+        ? setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
         : null
       const returnUrl = router.query.returnUrl
-
-      console.log(response)
-
       setUser({ ...response.data.user })
-      params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.user)) : null
 
       const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
 
@@ -98,10 +94,11 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   const handleLogout = () => {
-    setUser(null)
-    window.localStorage.removeItem('userData')
-    window.localStorage.removeItem(authConfig.storageTokenKeyName)
-    router.push('/login')
+    logoutAuth().then((data) => {
+      setUser(null)
+      clearLocalUserData();
+      router.push('/login')
+    });
   }
 
   const values = {
