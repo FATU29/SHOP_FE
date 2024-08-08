@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import { NextPage } from 'next';
 import IconifyIcon from 'src/components/Icon';
+import UserDropDown from 'src/components/user-dropdown';
 
 
 
@@ -63,7 +64,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
                     }}
                 >
 
-                    {isHidden && (
+                    {!isHidden && (
                         <>
                             <IconifyIcon icon="ic:round-menu" style={{
                                 marginLeft: "5px"
@@ -86,6 +87,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
                         <IconifyIcon icon="mingcute:notification-line"></IconifyIcon>
                     </Badge>
                 </IconButton>
+                <UserDropDown></UserDropDown>
             </Toolbar>
         </AppBar>
     );
