@@ -7,8 +7,8 @@ export const registerAuthAction = createAsyncThunk(
   async (data: any, { rejectWithValue }) => {
     try {
       const response = await registerAuth(data);
-      if (response?.data?.data) {
-        return response.data.data;
+      if (response?.data) {
+        return response;
       } else {
         return {
           data: null,
