@@ -2,10 +2,12 @@
 import { CONFIG_API } from "src/configs/api";
 
 // ** type
-import { TLoginAuth } from "src/styles/auth";
+import { TLoginAuth, TRegisterAuth } from "src/styles/auth";
 
 // ** fetch
 import { instanceAxios } from "src/helpers/intercepterAxios";
+import { ROUTE_CONFIG } from "src/configs/route";
+import axios from "axios";
 
 // ** common headers
 const headers = {
@@ -24,7 +26,6 @@ export const loginAuth = async (data: TLoginAuth) => {
     return response.data;
   } catch (error) {
     console.error("Error in loginAuth /src/services/auth:", error);
-    throw error; // Rethrow to allow caller to handle it
   }
 };
 
@@ -39,6 +40,19 @@ export const logoutAuth = async () => {
     return response.data;
   } catch (error) {
     console.error("Error in logoutAuth /src/services/auth:", error);
-    throw error; // Rethrow to allow caller to handle it
   }
+};
+
+
+
+export const registerAuth = async (data: TRegisterAuth) => {
+
+  const registerAPI = CONFIG_API.AUTH.REGISTER
+  const res = await axios(registerAPI, {
+    method: "POST",
+    headers,
+    data: JSON.stringify(data)
+  })
+  return res.data;
+
 };
