@@ -2,9 +2,12 @@ import { Logout, PersonAdd, Settings } from "@mui/icons-material";
 import { Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
 import { NextPage } from "next";
 import React, { useContext, useEffect } from "react";
-import IconifyIcon from "../Icon";
+import IconifyIcon from "../../../../components/Icon";
 import { useAuth } from "src/hooks/useAuth";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
+import { useRouter } from "next/router";
+import { ROUTE_CONFIG } from "src/configs/route";
 
 
 type TProps = {}
@@ -14,6 +17,8 @@ type TProps = {}
 const UserDropDown: NextPage<TProps> = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const { user,logout } = useAuth();
+    const router = useRouter();
+    const {t} = useTranslation();
 
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -23,16 +28,17 @@ const UserDropDown: NextPage<TProps> = () => {
         setAnchorEl(null);
     };
 
+    const handleNavigateMyProfile = () => {
+        router.push(`/${ROUTE_CONFIG.MY_PROFILE}`);
+        handleClose();
+    }
 
-    useEffect(() => {
-
-    },[user])
 
     return (
         <>
             <React.Fragment>
                 <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                    <Tooltip title="Account settings">
+                    <Tooltip title={t('Account')}>
                         <IconButton
                             onClick={handleClick}
                             size="small"
@@ -93,8 +99,9 @@ const UserDropDown: NextPage<TProps> = () => {
                     <MenuItem onClick={handleClose}>
                         {user?.email || ""}
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>
-                        Profile
+                    <MenuItem onClick={handleNavigateMyProfile}>
+                        <Avatar></Avatar>
+                        <Typography sx={{marginLeft:2}}>{t("My Profile")}</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleClose}>
                         My account

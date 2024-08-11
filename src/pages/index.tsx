@@ -22,3 +22,5 @@ export default function Home() {
 
 
 Home.getLayout = (page : React.ReactNode) => <LayoutNoApp>{page}</LayoutNoApp>
+Home.guestGuard = false;
+Home.authGuard = false;

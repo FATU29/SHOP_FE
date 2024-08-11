@@ -19,16 +19,15 @@ const AuthGuard = (props: AuthGuardProps) => {
   const router = useRouter();
 
   useEffect(() => {
-
     //Kiem tra xem first router xong chua, neu chua xong return vi co the luc nay authContext van chua chay xong
     if (!router.isReady) {
       return;
     }
 
-
     if (authContext.user === null &&
       !window.localStorage.getItem(ACCESS_TOKEN) &&
       !window.localStorage.getItem(USER_DATA)) {
+      
 
       if (router.asPath !== "/") {
         // query la luu lai duong dan router.asPath neu dang nhap thanh cong se quay lai path query

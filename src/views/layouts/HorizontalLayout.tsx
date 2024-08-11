@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { styled, createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -7,7 +7,13 @@ import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
 import { NextPage } from 'next';
 import IconifyIcon from 'src/components/Icon';
-import UserDropDown from 'src/components/user-dropdown';
+import UserDropDown from 'src/views/layouts/components/user-dropdown';
+import ModeToggle from './components/mode-toggle';
+import LanguageDropDown from './components/language-dropdown';
+import { useAuth } from 'src/hooks/useAuth';
+import { Button } from '@mui/material';
+import { useRouter } from 'next/router';
+import { ROUTE_CONFIG } from 'src/configs/route';
 
 
 
@@ -24,6 +30,7 @@ const AppBar = styled(MuiAppBar, {
     zIndex: theme.zIndex.drawer + 1,
     backgroundColor: theme.palette.mode === "light" ? theme.palette.customColors.lightPaperBg : theme.palette.customColors.darkPaperBg,
     color: theme.palette.primary.main,
+    position: "fixed",
     transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -46,6 +53,11 @@ type TProps = {
 }
 
 const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) => {
+
+    const { user } = useAuth();
+    const theme = useTheme();
+    const router = useRouter();
+
     return (
         <AppBar position="absolute" open={open}>
             <Toolbar
@@ -82,12 +94,18 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
                 >
                     Dashboard
                 </Typography>
-                <IconButton color="inherit">
-                    <Badge badgeContent={4} color="secondary">
-                        <IconifyIcon icon="mingcute:notification-line"></IconifyIcon>
-                    </Badge>
-                </IconButton>
-                <UserDropDown></UserDropDown>
+
+
+                {user ? (<>
+                    <IconButton color="inherit">
+                        <Badge badgeContent={4} color="secondary">
+                            <IconifyIcon icon="mingcute:notification-line"></IconifyIcon>
+                        </Badge>
+                    </IconButton>
+                    <ModeToggle></ModeToggle>
+                    <LanguageDropDown></LanguageDropDown>
+                    <UserDropDown></UserDropDown> </>) :
+                    (<Button variant='contained' onClick={() => { router.push(`/${ROUTE_CONFIG.LOGIN}`) }}>Log In</Button>)}
             </Toolbar>
         </AppBar>
     );

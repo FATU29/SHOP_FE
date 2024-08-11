@@ -16,6 +16,7 @@ import { loginAuth, logoutAuth } from 'src/services/auth'
 import { CONFIG_API } from 'src/configs/api'
 import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
 import {instanceAxios} from 'src/helpers/intercepterAxios'
+import { ROUTE_CONFIG } from 'src/configs/route'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -72,11 +73,13 @@ const AuthProvider = ({ children }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    loginAuth({
+  const handleLogin = async (params: LoginParams, errorCallback?: ErrCallbackType) => {
+    setLoading(true);
+    await loginAuth({
       email: params.email,
       password: params.password
     }).then(async response => {
+      
       params.rememberMe
         ? setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
         : null
@@ -84,11 +87,12 @@ const AuthProvider = ({ children }: Props) => {
       setUser({ ...response.data.user })
 
       const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-
+      setLoading(false);
       router.replace(redirectURL as string)
     })
-
       .catch(err => {
+        setLoading(false);
+        router.replace(`/${ROUTE_CONFIG.LOGIN}`)
         if (errorCallback) errorCallback(err)
       })
   }

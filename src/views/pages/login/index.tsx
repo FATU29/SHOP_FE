@@ -162,7 +162,6 @@ const LoginPage: NextPage<TProps> = () => {
                                 marginBottom: 5,
                             }}>SHOP FAT</Typography>
                             <form onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
-
                                 <Box>
                                     <Controller
                                         control={control}
