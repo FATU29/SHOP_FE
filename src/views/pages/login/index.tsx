@@ -46,6 +46,7 @@ import Link from "next/link";
 
 // ** hooks
 import { useAuth } from "src/hooks/useAuth";
+import toast from "react-hot-toast";
 
 
 const schema = yup
@@ -92,6 +93,8 @@ const LoginPage: NextPage<TProps> = () => {
             login({
                 ...data,
                 rememberMe: isRemember
+            },(error:any) => {
+                toast.error(error?.response?.data?.message)
             });
         }
     }

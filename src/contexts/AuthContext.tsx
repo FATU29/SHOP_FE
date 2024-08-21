@@ -13,9 +13,9 @@ import authConfig from 'src/configs/auth'
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
 import { loginAuth, logoutAuth } from 'src/services/auth'
-import { CONFIG_API } from 'src/configs/api'
-import { clearLocalUserData, setLocalUserData } from 'src/helpers/storage'
-import {instanceAxios} from 'src/helpers/intercepterAxios'
+import { API_ENDPOINT } from 'src/configs/api'
+import { clearLocalUserData, setLocalUserData, setTemporaryToken } from 'src/helpers/storage'
+import { instanceAxios } from 'src/helpers/intercepterAxios'
 import { ROUTE_CONFIG } from 'src/configs/route'
 
 // ** Defaults
@@ -47,12 +47,12 @@ const AuthProvider = ({ children }: Props) => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName);
       if (storedToken) {
         setLoading(true)
-        await instanceAxios(CONFIG_API.AUTH.AUTH_ME, {
-            method:"GET",
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-          })
+        await instanceAxios(API_ENDPOINT.AUTH.AUTH_ME, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          },
+        })
           .then((response) => {
             setLoading(false)
             setUser({ ...response.data.data })
@@ -74,24 +74,25 @@ const AuthProvider = ({ children }: Props) => {
   }, [])
 
   const handleLogin = async (params: LoginParams, errorCallback?: ErrCallbackType) => {
-    setLoading(true);
     await loginAuth({
       email: params.email,
       password: params.password
     }).then(async response => {
-      
-      params.rememberMe
-        ? setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
-        : null
+      if (params.rememberMe) {
+        params.rememberMe ? setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+          : null
+      } else {
+        setTemporaryToken(response.data.access_token)
+      }
+
+
       const returnUrl = router.query.returnUrl
       setUser({ ...response.data.user })
 
       const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-      setLoading(false);
       router.replace(redirectURL as string)
     })
       .catch(err => {
-        setLoading(false);
         router.replace(`/${ROUTE_CONFIG.LOGIN}`)
         if (errorCallback) errorCallback(err)
       })

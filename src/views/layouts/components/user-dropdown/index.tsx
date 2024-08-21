@@ -8,17 +8,20 @@ import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import { ROUTE_CONFIG } from "src/configs/route";
+import { toFullName } from "src/utils";
 
 
 type TProps = {}
 
 
 
+
+
 const UserDropDown: NextPage<TProps> = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const { user,logout } = useAuth();
+    const { user, logout } = useAuth();
     const router = useRouter();
-    const {t} = useTranslation();
+    const { t, i18n } = useTranslation();
 
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -29,7 +32,17 @@ const UserDropDown: NextPage<TProps> = () => {
     };
 
     const handleNavigateMyProfile = () => {
-        router.push(`/${ROUTE_CONFIG.MY_PROFILE}`);
+        router.push(ROUTE_CONFIG.MY_PROFILE);
+        handleClose();
+    }
+
+    const handleNavigateChangePassword = () => {
+        router.push(ROUTE_CONFIG.CHANGE_PASSWORD);
+        handleClose();
+    }
+
+    const handleNavigateManageSystem = () => {
+        router.push(ROUTE_CONFIG.DASHBOARD);
         handleClose();
     }
 
@@ -47,17 +60,20 @@ const UserDropDown: NextPage<TProps> = () => {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                         >
-                            <Avatar sx={{ width: 32, height: 32 }}>
-                                {user?.avatar ? <Image
-                                    alt="avatar"
-                                    src={user?.avatar || ""}
-                                    style={{
-                                        height: "auto",
-                                        width: "auto"
-                                    }}
-                                ></Image> : <IconifyIcon icon={"solar:user-outline"}></IconifyIcon>}
+                            {user?.avatar ?
+                                (<>
+                                    <Avatar sx={{
+                                        width: "40px",
+                                        height: "40px"
+                                    }} src={user?.avatar || "/broken-image.jpg"}></Avatar>
 
-                            </Avatar>
+                                </>) :
+                                (<>
+                                    <Avatar sx={{
+                                        width: "40px",
+                                        height: "40px"
+                                    }} src="/broken-image.jpg"></Avatar>
+                                </>)}
                         </IconButton>
                     </Tooltip>
                 </Box>
@@ -73,6 +89,7 @@ const UserDropDown: NextPage<TProps> = () => {
                             overflow: 'visible',
                             filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                             mt: 1.5,
+                            p: 3,
                             '& .MuiAvatar-root': {
                                 width: 32,
                                 height: 32,
@@ -96,34 +113,68 @@ const UserDropDown: NextPage<TProps> = () => {
                     transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                     anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
-                    <MenuItem onClick={handleClose}>
-                        {user?.email || ""}
+                    <Box>
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: 3
+                        }}>
+                            <Box>
+                                {user?.avatar ?
+                                    (<>
+                                        <Avatar sx={{
+                                            width: "40px",
+                                            height: "40px"
+                                        }} src={user?.avatar || "/broken-image.jpg"}></Avatar>
+
+                                    </>) :
+                                    (<>
+                                        <Avatar sx={{
+                                            width: "40px",
+                                            height: "40px"
+                                        }} src="/broken-image.jpg"></Avatar>
+                                    </>)}
+                            </Box>
+                            <Box sx={{
+                                textAlign: "center"
+                            }}>
+                                <Typography>{user?.email || ""}</Typography>
+                                <Typography>{toFullName(user?.lastName || "", user?.middleName || "", user?.firstName || "", i18n.language)}</Typography>
+                            </Box>
+
+                        </Box>
+                    </Box>
+                    <Divider sx={
+                        {
+                            mt: 3,
+                            mb: 3
+                        }
+                    }></Divider>
+                      <MenuItem onClick={handleNavigateManageSystem}>
+                        <ListItemIcon>
+                            <IconifyIcon icon="grommet-icons:system"></IconifyIcon>
+                        </ListItemIcon>
+                        <Typography>{t("Manage System")}</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleNavigateMyProfile}>
-                        <Avatar></Avatar>
-                        <Typography sx={{marginLeft:2}}>{t("My Profile")}</Typography>
-                    </MenuItem>
-                    <MenuItem onClick={handleClose}>
-                        My account
-                    </MenuItem>
-                    <Divider />
-                    <MenuItem onClick={handleClose}>
                         <ListItemIcon>
-                            <PersonAdd fontSize="small" />
+                            <IconifyIcon icon="iconamoon:profile"></IconifyIcon>
                         </ListItemIcon>
-                        Add another account
+                        <Typography>{t("My Profile")}</Typography>
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={handleNavigateChangePassword}>
                         <ListItemIcon>
-                            <Settings fontSize="small" />
+                            <IconifyIcon icon="mdi:password-outline"></IconifyIcon>
                         </ListItemIcon>
-                        Settings
+                        {t("Change password")}
                     </MenuItem>
                     <MenuItem onClick={logout}>
                         <ListItemIcon>
                             <Logout fontSize="small" />
                         </ListItemIcon>
-                        Logout
+                        {t("Logout")}
                     </MenuItem>
                 </Menu>
             </React.Fragment>

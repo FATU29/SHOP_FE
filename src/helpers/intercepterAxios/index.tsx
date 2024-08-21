@@ -1,36 +1,43 @@
 import { useRouter } from "next/router";
-import { clearLocalUserData, getLocalUserData } from "../storage";
+import { clearLocalUserData, clearTemporaryToken, getLocalUserData, getTemporaryToken, setLocalUserData, setTemporaryToken } from "../storage";
 import { jwtDecode } from "jwt-decode";
 import { NextPage } from "next";
 import { useEffect } from "react";
 import { useAuth } from "src/hooks/useAuth";
-import { BASE_URL, CONFIG_API } from "src/configs/api";
+import { BASE_URL, API_ENDPOINT } from "src/configs/api";
 import axios from "axios";
 
 type TProps = {
   children: React.ReactNode
 }
 
-const instanceAxios = axios.create({baseURL: BASE_URL});
+const instanceAxios = axios.create({ baseURL: BASE_URL });
 
 const IntercepterAxios: NextPage<TProps> = ({ children }) => {
   const router = useRouter();
-  const { setUser } = useAuth();
+  const { setUser,user } = useAuth();
 
 
   instanceAxios.interceptors.request.use(async (config) => {
     // Làm gì đó trước khi yêu cầu được gửi đi
     const { accessToken, refreshToken } = getLocalUserData();
-    if (accessToken) {
-      const decodeAccessToken: any = jwtDecode(accessToken);
+    const { temporaryToken } = getTemporaryToken();
+    if (accessToken || temporaryToken) {
+      let decodeAccessToken: any = {};
+      if (accessToken) {
+        decodeAccessToken = jwtDecode(accessToken);
+      } else if (temporaryToken) {
+        decodeAccessToken = jwtDecode(temporaryToken);
+      }
+
       if (decodeAccessToken?.exp > Date.now() / 1000) {
-        config.headers['Authorization'] = `Bearer ${accessToken}`;
+        config.headers['Authorization'] = `Bearer ${accessToken ? accessToken : temporaryToken}`;
       } else {
         if (refreshToken) {
           const decodeRefreshToken: any = jwtDecode(refreshToken);
           if (decodeRefreshToken.exp > Date.now() / 1000) {
             // Gọi API để lấy accessToken mới
-            const resetToken = await axios(CONFIG_API.AUTH.REFRESH_TOKEN, {
+            const resetToken = await axios(API_ENDPOINT.AUTH.REFRESH_TOKEN, {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${refreshToken}`,
@@ -40,7 +47,15 @@ const IntercepterAxios: NextPage<TProps> = ({ children }) => {
               data: {}
             }).then((res) => {
               const newToken = res.data.data.access_token;
-              config.headers['Authorization'] = `Bearer ${newToken}`;
+              if(newToken){
+                config.headers['Authorization'] = `Bearer ${newToken}`;
+                if(accessToken){
+                  setLocalUserData(JSON.stringify(user), accessToken, refreshToken)
+                } else {
+                  setLocalUserData(JSON.stringify(user), "", refreshToken)
+                  setTemporaryToken(newToken);
+                }
+              }
 
             }).catch((error) => {
               setUser(null);
@@ -61,6 +76,7 @@ const IntercepterAxios: NextPage<TProps> = ({ children }) => {
     } else {
       setUser(null);
       clearLocalUserData();
+      clearTemporaryToken();
       router.replace("/login");
     }
     return config;

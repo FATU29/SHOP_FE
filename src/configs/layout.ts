@@ -1,47 +1,72 @@
+import { ROUTE_CONFIG } from "./route";
 
 export const VerticalItem = [
     {
-        title: "Email 1",
-        icon:"ic:outline-more",
-        path:"/",
+        title: "Hệ Thống",
+        icon: "icon-park-outline:system",
+        // path:"/",
         childrens: [
             {
-                title:"Email 1 1",
-                icon:"ic:outline-more",
-                path:"/",
-                childrens: [
-                    {
-                        title:"Email 1 2",
-                        icon:"ic:outline-more",
-                        path:"/",
-                        childrens: [
-                            {
-                                title:"Email 1 3",
-                                icon:"ic:outline-more",
-                                path:"/",
-                            }
-                        ],
-                    }
-                ],
+                title: "Người dùng",
+                icon: "ri:group-line",
+                path: ROUTE_CONFIG.SYSTEM.USER,
+            },
+            {
+                title: "Nhóm vai trò",
+                icon: "icon-park-outline:permissions",
+                path: ROUTE_CONFIG.SYSTEM.ROLE,
             }
         ],
-        
+
     },
     {
-        title: "Email 2",
-        icon:"ic:outline-more",
-        path:"/",
+        title: "Quản trị sản phẩm",
+        icon: "fluent-mdl2:product",
+        // path:"/",
         childrens: [
             {
-                title:"Email 2 1",
-                icon:"ic:outline-more",
-                path:"/",
-            }
+                title: "Danh sách sản phẩm",
+                icon: "fluent-mdl2:product-list",
+                path: ROUTE_CONFIG.PRODUCT.MANAGE_PRODUCT,
+            },
+            {
+                title: "Danh mục sản phẩm",
+                icon: "icon-park-outline:category-management",
+                path: ROUTE_CONFIG.PRODUCT.MANAGE_TYPE_PRODUCT,
+            },
+            {
+                title: "Danh sách đơn hàng",
+                icon: "lets-icons:order",
+                path: ROUTE_CONFIG.PRODUCT.MANAGE_ORDER,
+            },
+            {
+                title: "Danh sách đánh giá",
+                icon: "material-symbols-light:star-rate-outline",
+                path: ROUTE_CONFIG.PRODUCT.MANAGE_REVIEW,
+            }, 
         ],
     },
     {
-        title: "Email 3",
-        icon:"ic:outline-more",
-        path:"/"
+        title: "Cài đặt",
+        icon: "uil:setting",
+        // path: "/",
+        childrens: [
+            {
+                title: "Cài đặt thành phố",
+                icon: "ph:city",
+                path: ROUTE_CONFIG.SETTING.SETTING_CITY,
+            },
+            {
+                title: "Cài đặt giao hàng",
+                icon: "carbon:delivery",
+                path: ROUTE_CONFIG.SETTING.SETTING_DELIVERY,
+            },
+            {
+                title: "Cài đặt thanh toán",
+                icon: "ic:baseline-payment",
+                path: ROUTE_CONFIG.SETTING.SETTING_PAY,
+            },
+            
+        ]
     }
 ]

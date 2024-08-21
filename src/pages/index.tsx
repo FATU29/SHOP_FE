@@ -2,6 +2,7 @@
 
 import { Box, useTheme } from '@mui/material'
 import Head from 'next/head'
+import CustomDataGrid from 'src/components/custom-dataGrid';
 import CustomTextField from 'src/components/text-field';
 import LayoutNoApp from 'src/views/layouts/LayoutNoApp';
 

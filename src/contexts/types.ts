@@ -13,7 +13,9 @@ export type UserDataType = {
     permissions: string[]
   }
   email: string
-  fullName: string
+  firstName: string
+  middleName:string
+  lastName:string
   username: string
   password: string
   avatar?: string | null
