@@ -1,9 +1,11 @@
 import { StarBorder } from "@mui/icons-material";
-import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material";
+import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListItemTextProps, ListSubheader, styled, useTheme } from "@mui/material";
 import IconifyIcon from "src/components/Icon";
 import { NextPage } from "next";
 import { VerticalItem } from "src/configs/layout";
 import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { env } from "process";
 
 type TProps = {
     open: boolean
@@ -14,28 +16,64 @@ type TRecursionListItem = {
     level: number,
     openItem: any,
     toggleDrawer: any,
-    checkDisable: boolean
-
+    checkDisable: boolean,
+    activePath: string | null,
+    setActivePath: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const RecursionListItem = ({ data, level, openItem, toggleDrawer, checkDisable }: TRecursionListItem) => {
+interface TListItemText extends ListItemTextProps {
+    active: boolean
+}
+
+
+const StyledListItemText = styled(ListItemText)<TListItemText>(({ theme, active }) => {
+    return (
+        {
+            "& .MuiListItemText-primary": {
+                color: active ? theme.palette.common.white : theme.palette.common.black,
+            }
+        }
+    )
+}
+)
+
+const RecursionListItem = ({ data, level, openItem, toggleDrawer, checkDisable, activePath, setActivePath }: TRecursionListItem) => {
+
+    const handleSelectItem = (path: string) => {
+        setActivePath(path);
+        if (path) {
+            router.push(path);
+        }
+    }
+
+    const theme = useTheme();
+    const router = useRouter();
+
     return (
         <>
             {Array.isArray(data) && data.map((item) => (
                 <React.Fragment key={item?.title}>
                     <ListItemButton sx={{
-                        paddingLeft: `${level * 10 + 10}px`
+                        paddingLeft: `${level * 10 + 10}px`,
+                        backgroundColor: (activePath && item.path === activePath) || openItem[item.title] === true ? theme.palette.primary.main : theme.palette.background.paper,
                     }} onClick={() => {
-                        if (checkDisable === false) {
-                            return;
-                        } else {
-                            toggleDrawer(item?.title)
+                        if (item.childrens) {
+                            if (checkDisable === false) {
+                                return;
+                            } else {
+                                toggleDrawer(item?.title)
+                            }
                         }
                     }}>
                         <ListItemIcon>
-                            <IconifyIcon icon={item?.icon}></IconifyIcon>
+                            <IconifyIcon color={(activePath && item.path === activePath) ? theme.palette.common.white : theme.palette.common.black} icon={item?.icon} ></IconifyIcon>
                         </ListItemIcon>
-                        <ListItemText primary={item?.title} />
+                        <StyledListItemText sx={{
+                            color: (activePath && item.path === activePath) || openItem[item.title] === true ? theme.palette.common.white : theme.palette.common.black,
+                        }}
+                            onClick={() => { handleSelectItem(item.path) }}
+                            primary={item?.title}
+                            active={(activePath && item.path === activePath) || openItem[item.title] === true} />
                         {checkDisable === true && item.childrens && item.childrens.length > 0 && (
                             openItem[item?.title] ? (
                                 <IconifyIcon icon="ic:sharp-expand-less"></IconifyIcon>
@@ -53,6 +91,8 @@ const RecursionListItem = ({ data, level, openItem, toggleDrawer, checkDisable }
                                 openItem={openItem}
                                 toggleDrawer={toggleDrawer}
                                 checkDisable={checkDisable}
+                                activePath={activePath}
+                                setActivePath={setActivePath}
                             />
                         </Collapse>
                     )}
@@ -63,10 +103,11 @@ const RecursionListItem = ({ data, level, openItem, toggleDrawer, checkDisable }
 };
 
 const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
+    const [activePath, setActivePath] = useState<string | null>("");
     const [openItem, setOpenItem] = useState<{ [key: string]: boolean }>({});
     const toggleDrawer = (key: string): void => {
         setOpenItem((prevOpen) => ({
-            ...prevOpen,
+            // ...prevOpen,
             [key]: !prevOpen[key],
         }));
     };
@@ -89,7 +130,8 @@ const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
                     openItem={openItem}
                     toggleDrawer={toggleDrawer}
                     checkDisable={open}
-
+                    activePath={activePath}
+                    setActivePath={setActivePath}
                 />
             </List>
         </>

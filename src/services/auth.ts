@@ -1,8 +1,8 @@
 // ** configs
-import { CONFIG_API } from "src/configs/api";
+import { API_ENDPOINT } from "src/configs/api";
 
 // ** type
-import { TLoginAuth, TRegisterAuth } from "src/styles/auth";
+import { TChangePassword, TLoginAuth, TRegisterAuth } from "src/styles/auth";
 
 // ** fetch
 import { instanceAxios } from "src/helpers/intercepterAxios";
@@ -16,22 +16,18 @@ const headers = {
 };
 
 export const loginAuth = async (data: TLoginAuth) => {
-  try {
-    const loginAPI: string = CONFIG_API.AUTH.INDEX;
-    const response = await instanceAxios(loginAPI, {
-      method: "POST",
-      headers,
-      data: JSON.stringify(data), // Use data instead of body
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Error in loginAuth /src/services/auth:", error);
-  }
+  const loginAPI: string = API_ENDPOINT.AUTH.INDEX;
+  const response = await axios(loginAPI, {
+    method: "POST",
+    headers,
+    data: JSON.stringify(data), // Use data instead of body
+  });
+  return response.data;
 };
 
 export const logoutAuth = async () => {
   try {
-    const logoutAPI = CONFIG_API.AUTH.LOGOUT;
+    const logoutAPI = API_ENDPOINT.AUTH.LOGOUT;
     const response = await instanceAxios(logoutAPI, {
       method: "POST",
       headers,
@@ -40,6 +36,7 @@ export const logoutAuth = async () => {
     return response.data;
   } catch (error) {
     console.error("Error in logoutAuth /src/services/auth:", error);
+    return error
   }
 };
 
@@ -47,7 +44,7 @@ export const logoutAuth = async () => {
 
 export const registerAuth = async (data: TRegisterAuth) => {
 
-  const registerAPI = CONFIG_API.AUTH.REGISTER
+  const registerAPI = API_ENDPOINT.AUTH.REGISTER
   const res = await axios(registerAPI, {
     method: "POST",
     headers,
@@ -56,3 +53,47 @@ export const registerAuth = async (data: TRegisterAuth) => {
   return res.data;
 
 };
+
+
+export const updateAuthMe = async (data: any) => {
+  try {
+    const updateAuthMeAPI = API_ENDPOINT.AUTH.AUTH_ME;
+    const res = await instanceAxios(updateAuthMeAPI, {
+      method: "PUT",
+      headers,
+      data: data
+    });
+
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+}
+
+
+export const getAuthMe = async () => {
+  try {
+    const getAuthMeAPI = API_ENDPOINT.AUTH.AUTH_ME;
+    const res = await instanceAxios(getAuthMeAPI, {
+      method: "GET",
+      headers
+    })
+    return res.data
+  } catch (error) {
+    return error
+  }
+} 
+
+export const changePasswordMe = async (data:TChangePassword) => {
+  try {
+    const getAuthMeAPI = API_ENDPOINT.AUTH.CHANGE_PASSWORD;
+    const res = await instanceAxios(getAuthMeAPI, {
+      method: "PATCH",
+      headers,
+      data:JSON.stringify(data)
+    })
+    return res.data
+  } catch (error) {
+    return error
+  }
+} 

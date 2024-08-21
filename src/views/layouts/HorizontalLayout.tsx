@@ -14,6 +14,8 @@ import { useAuth } from 'src/hooks/useAuth';
 import { Button } from '@mui/material';
 import { useRouter } from 'next/router';
 import { ROUTE_CONFIG } from 'src/configs/route';
+import { getAuthMe } from 'src/services/auth';
+import FallbackSpinner from 'src/components/fall-back';
 
 
 
@@ -54,11 +56,28 @@ type TProps = {
 
 const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) => {
 
-    const { user } = useAuth();
+    const { user, setUser } = useAuth();
     const theme = useTheme();
     const router = useRouter();
 
+    const [isLoading, setIsLoading] = React.useState<boolean>(true);
+
+    const getAuthMeAPI = async () => {
+        setIsLoading(true);
+        await getAuthMe().then((res) => {
+            setUser(res?.data);
+            setIsLoading(false);
+        })
+    }
+
+    React.useEffect(() => {
+        getAuthMeAPI();
+    }, [user?.avatar])
+
+
     return (
+        <>
+        {!isLoading || <><FallbackSpinner></FallbackSpinner></> }
         <AppBar position="absolute" open={open}>
             <Toolbar
                 sx={{
@@ -108,6 +127,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
                     (<Button variant='contained' onClick={() => { router.push(`/${ROUTE_CONFIG.LOGIN}`) }}>Log In</Button>)}
             </Toolbar>
         </AppBar>
+        </>
     );
 }
 

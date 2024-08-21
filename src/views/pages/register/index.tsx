@@ -44,11 +44,11 @@ import Google from "/public/svgs/google.svg"
 import Facebook from "/public/svgs/facebook.svg"
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { registerAuthAction } from "src/stores/apps/auth/action";
+import { registerAuthAction } from "src/stores/auth/action";
 import { AppDispatch, RootState } from "src/stores";
 import toast from "react-hot-toast";
 import FallbackSpinner from "src/components/fall-back";
-import { resetIntitalState } from "src/stores/apps/auth";
+import { resetIntitalState } from "src/stores/auth";
 import { useRouter } from "next/router";
 import { ROUTE_CONFIG } from "src/configs/route";
 
@@ -87,11 +87,12 @@ const RegisterPage: NextPage<TProps> = () => {
     // let referedStatus = watch("askRefer");
 
     const onSubmit = (data: { email: string, password: string }) => {
-        dispatch(registerAuthAction({ email: data.email, password: data.password }));
+        if(!Object.keys(errors).length){
+            dispatch(registerAuthAction({ email: data.email, password: data.password }));
+        }
     }
 
     useEffect(() => {
-
         if (message) {
             if (isSuccess) {
                 toast.success(message)
@@ -186,7 +187,7 @@ const RegisterPage: NextPage<TProps> = () => {
                                                     onChange={onChange}
                                                     placeholder="Enter email"
                                                     value={value}
-                                                    label="Confirm Email"
+                                                    label="Email"
                                                     fullWidth
                                                     required
                                                     margin="normal"
