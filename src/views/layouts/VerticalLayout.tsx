@@ -1,14 +1,10 @@
 "use client"
 
-import { Box, Collapse, Container, CSSObject, Divider, IconButton, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, styled, Theme, Toolbar } from "@mui/material"
+import { Box, CSSObject, Divider, IconButton, styled, Theme, Toolbar } from "@mui/material"
 import { NextPage } from "next"
-import { mainListItems, secondaryListItems } from "./listItems"
 import MuiDrawer from '@mui/material/Drawer';
-import { ExpandLess, StarBorder } from "@mui/icons-material";
 import IconifyIcon from "src/components/Icon";
 import ListVerticalLayout from "./ListVerticalLayout";
-import { useEffect, useState } from "react";
-
 
 type TProps = {
     open: boolean,
@@ -17,48 +13,46 @@ type TProps = {
 
 const drawerWidth: number = 240;
 
-
-
 const openedMixin = (theme: Theme): CSSObject => ({
     width: drawerWidth,
     transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
     }),
     overflowX: 'hidden',
-  });
-  
-  const closedMixin = (theme: Theme): CSSObject => ({
+});
+
+const closedMixin = (theme: Theme): CSSObject => ({
     transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    width: `calc(${theme.spacing(12)} + 1px)`,
+    width: 0, // Đặt width về 0 khi đóng Drawer
     [theme.breakpoints.up('sm')]: {
-      width: `calc(${theme.spacing(10)} + 1px)`,
+        width: `calc(${theme.spacing(10)} + 1px)`, // Giữ nguyên width cho màn hình lớn
     },
-  });
+});
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
-      width: drawerWidth,
-      flexShrink: 0,
-      whiteSpace: 'nowrap',
-      boxSizing: 'border-box',
-      ...(open && {
-        ...openedMixin(theme),
-        '& .MuiDrawer-paper': openedMixin(theme),
-      }),
-      ...(!open && {
-        ...closedMixin(theme),
-        '& .MuiDrawer-paper': closedMixin(theme),
-      }),
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        boxSizing: 'border-box',
+        ...(open && {
+            ...openedMixin(theme),
+            '& .MuiDrawer-paper': openedMixin(theme),
+        }),
+        ...(!open && {
+            ...closedMixin(theme),
+            '& .MuiDrawer-paper': closedMixin(theme),
+        }),
     }),
-  );
+);
 
 const VerticalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
-    return (   
+    return (
         <>
             <Drawer variant="permanent" open={open}>
                 <Toolbar
@@ -74,7 +68,7 @@ const VerticalLayout: NextPage<TProps> = ({ open, toggleDrawer }) => {
                     </IconButton>
                 </Toolbar>
                 <Divider />
-                <ListVerticalLayout open={open}></ListVerticalLayout>
+                <ListVerticalLayout open={open} />
             </Drawer>
             <Box
                 component="main"

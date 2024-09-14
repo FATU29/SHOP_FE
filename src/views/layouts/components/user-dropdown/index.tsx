@@ -9,6 +9,8 @@ import { useTranslation } from "react-i18next";
 import { useRouter } from "next/router";
 import { ROUTE_CONFIG } from "src/configs/route";
 import { toFullName } from "src/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "src/stores";
 
 
 type TProps = {}
@@ -19,9 +21,10 @@ type TProps = {}
 
 const UserDropDown: NextPage<TProps> = () => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const { user, logout } = useAuth();
+    const { user, logout,setUser } = useAuth();
     const router = useRouter();
     const { t, i18n } = useTranslation();
+    const {userData} = useSelector((state:RootState) => state.auth )
 
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -36,7 +39,7 @@ const UserDropDown: NextPage<TProps> = () => {
         handleClose();
     }
 
-    const handleNavigateChangePassword = () => {
+    const handleNavigateChangePassword : any = () => {
         router.push(ROUTE_CONFIG.CHANGE_PASSWORD);
         handleClose();
     }
@@ -45,6 +48,12 @@ const UserDropDown: NextPage<TProps> = () => {
         router.push(ROUTE_CONFIG.DASHBOARD);
         handleClose();
     }
+
+    useEffect(() => {
+        if(userData){
+            setUser({...userData})
+        }
+    },[userData])
 
 
     return (

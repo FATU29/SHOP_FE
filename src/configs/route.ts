@@ -2,7 +2,7 @@ export const ROUTE_CONFIG = {
     MY_PROFILE: "/my-profile",
     LOGIN: "/login",
     CHANGE_PASSWORD: "/change-password",
-    DASHBOARD:"/dashboard",
+    DASHBOARD: "/dashboard",
     SYSTEM: {
         ROLE: "/system/role",
         USER: "/system/user",
@@ -10,9 +10,11 @@ export const ROUTE_CONFIG = {
     },
     PRODUCT: {
         MANAGE_PRODUCT: "/manage-product/product",
+        MANAGE_TYPE_PRODUCT: "/manage-product/manage-type-product",
+    },
+    MANAGE_ORDER: {
         MANAGE_ORDER: "/manage-product/manage-order",
         MANAGE_REVIEW: "/manage-product/manage-review",
-        MANAGE_TYPE_PRODUCT: "/manage-product/manage-type-product",
     },
     SETTING: {
         SETTING_CITY: "/setting/city",

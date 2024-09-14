@@ -32,5 +32,9 @@
     "Enter name role": "Nhập tên vai trò",
     "Name role": "Tên vai trò",
     "Create": "Tạo",
-    "Edit roles": "Chỉnh sửa nhóm vai trò"
+    "Edit roles": "Chỉnh sửa nhóm vai trò",
+    "Agree": "Đồng ý",
+    "Disagree": "Không đồng ý",
+    "If you delete role, it can't recover": "Nếu bạn xóa, nó sẽ không thể khôi phục",
+    "Cofirm form": "Biểu mẫu xác nhận"
 }

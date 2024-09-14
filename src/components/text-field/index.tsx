@@ -7,7 +7,6 @@ import { TextFieldProps, TextField, styled } from "@mui/material";
 //Theme Chính là useTheme() để lấy giá trị thay vì dùng hooks ta dùng theme
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
     return {
-
         width: "100%", //.MuiFormControl-root .MuiTextField-root
 
         ".MuiInputLabel-root": {
@@ -45,7 +44,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
 })
 
 const CustomTextField = (props: TextFieldProps) => {
-    const { size = "small", variant = "filled", InputLabelProps, ...rests } = props;
+    const { size = "small", variant = "filled" ,InputLabelProps, ...rests } = props;
     return (
         <TextFieldStyled size={size} variant={variant} InputLabelProps={{ ...InputLabelProps, shrink: true }}{...rests}></TextFieldStyled>
     )

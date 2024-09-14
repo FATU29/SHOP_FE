@@ -18,13 +18,14 @@ import FallbackSpinner from 'src/components/fall-back';
 interface TCreateEditRole {
     open: boolean,
     onClose: () => void,
-    idRole?: string
+    idRole?: string,
+    permissionSelected: string[]
 }
 
 
 
 
-const CreateEditModal = (props: TCreateEditRole) => {
+const CreateEditRole = (props: TCreateEditRole) => {
 
     const [isLoading, setLoading] = React.useState<boolean>(false);
 
@@ -33,7 +34,7 @@ const CreateEditModal = (props: TCreateEditRole) => {
     const dispatch: AppDispatch = useDispatch();
 
 
-    const { open, onClose, idRole } = props;
+    const { open, onClose, idRole, permissionSelected } = props;
 
 
 
@@ -43,7 +44,7 @@ const CreateEditModal = (props: TCreateEditRole) => {
         })
         .required()
 
-    const { handleSubmit, control , reset, formState: { errors } } = useForm({
+    const { handleSubmit, control, reset, formState: { errors } } = useForm({
         defaultValues: {
             name: ""
         },
@@ -57,7 +58,7 @@ const CreateEditModal = (props: TCreateEditRole) => {
         if (!Object.keys(errors).length) {
             if (idRole) {
                 console.log(idRole)
-                dispatch(updateRoleAction({ name: data?.name, id:idRole }))
+                dispatch(updateRoleAction({ name: data?.name, id: idRole, permissions: permissionSelected }))
             } else {
                 dispatch(createRoleAction({ name: data?.name }))
             }
@@ -65,27 +66,27 @@ const CreateEditModal = (props: TCreateEditRole) => {
     }
 
 
-    const fetchDetailsRole = async (id:string) => {
+    const fetchDetailsRole = async (id: string) => {
         setLoading(true);
         const res = await getDetailRole(id);
         const data = res.data;
-        if(data){
+        if (data) {
             reset({
-                name:data.name
+                name: data.name
             })
         }
         setLoading(false);
     }
 
     React.useEffect(() => {
-        if(!open){
+        if (!open) {
             reset({
-                name:""
+                name: ""
             })
-        } else if(open && idRole){
+        } else if (open && idRole) {
             fetchDetailsRole(idRole)
         }
-    },[open,idRole])
+    }, [open, idRole])
 
 
     return (
@@ -127,40 +128,48 @@ const CreateEditModal = (props: TCreateEditRole) => {
                             }}>{t("Edit roles")}</Typography>
                         </Box>
                         <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
-                            <Controller
-                                control={control}
-                                rules={{
-                                    required: true,
-                                }}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <CustomTextField
-                                        onBlur={onBlur}
-                                        error={Boolean(errors?.name)}
-                                        onChange={onChange}
-                                        placeholder={t("Enter name role")}
-                                        type={"text"}
-                                        value={value}
-                                        label={t("Name role")}
-                                        fullWidth
-                                        required
-                                        margin="normal"
-                                        helperText={errors?.name?.message}
-                                    ></CustomTextField>
-
-                                )}
-                                name="name"
-                            />
-
 
                             <Box sx={{
-                                display: "flex",
-                                justifyContent: "flex-end",
-                                alignItems: "center"
+                                overflow: "scroll",
+                                width: { md: "auto", xs: "calc(100vw - 110px)" },
+                                height: { md: "auto", xs: "auto" }
                             }}>
-                                <Button type="submit" variant="contained" size="large">
-                                    {idRole === "" ? t("Create") : t("Change")}
-                                </Button>
+                                <Controller
+                                    control={control}
+                                    rules={{
+                                        required: true,
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <CustomTextField
+                                            onBlur={onBlur}
+                                            error={Boolean(errors?.name)}
+                                            onChange={onChange}
+                                            placeholder={t("Enter name role")}
+                                            type={"text"}
+                                            value={value}
+                                            label={t("Name role")}
+                                            fullWidth
+                                            required
+                                            margin="normal"
+                                            helperText={errors?.name?.message}
+                                        ></CustomTextField>
+
+                                    )}
+                                    name="name"
+                                />
+
+
+                                <Box sx={{
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    alignItems: "center"
+                                }}>
+                                    <Button type="submit" variant="contained" size="large">
+                                        {idRole === "" ? t("Create") : t("Change")}
+                                    </Button>
+                                </Box>
                             </Box>
+
                         </form>
 
                     </Box>
@@ -171,4 +180,4 @@ const CreateEditModal = (props: TCreateEditRole) => {
 }
 
 
-export default CreateEditModal;
+export default CreateEditRole;

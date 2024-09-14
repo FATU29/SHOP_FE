@@ -2,10 +2,12 @@ import { StarBorder } from "@mui/icons-material";
 import { Collapse, List, ListItemButton, ListItemIcon, ListItemText, ListItemTextProps, ListSubheader, styled, useTheme } from "@mui/material";
 import IconifyIcon from "src/components/Icon";
 import { NextPage } from "next";
-import { VerticalItem } from "src/configs/layout";
-import React, { useState } from "react";
+import { TVertical, VerticalItem } from "src/configs/layout";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { env } from "process";
+import { CONFIG_PERMISSIONS } from "src/configs/permission";
+import { useAuth } from "src/hooks/useAuth";
 
 type TProps = {
     open: boolean
@@ -39,41 +41,58 @@ const StyledListItemText = styled(ListItemText)<TListItemText>(({ theme, active 
 
 const RecursionListItem = ({ data, level, openItem, toggleDrawer, checkDisable, activePath, setActivePath }: TRecursionListItem) => {
 
+
+    const theme = useTheme();
+    const router = useRouter();
+
     const handleSelectItem = (path: string) => {
         setActivePath(path);
         if (path) {
             router.push(path);
         }
     }
+    const isParentHaveChildActive = (item: TVertical): boolean => {
+        if (!item.childrens) {
+            return item.path === activePath;
+        }
 
-    const theme = useTheme();
-    const router = useRouter();
+        return item.childrens.some((child: any) => isParentHaveChildActive(child));
+    };
+
+
+
 
     return (
         <>
-            {Array.isArray(data) && data.map((item) => (
-                <React.Fragment key={item?.title}>
+            {Array.isArray(data) && data.map((item) => {
+
+                const isParentActive = isParentHaveChildActive(item);
+
+                return <React.Fragment key={item?.title}>
                     <ListItemButton sx={{
                         paddingLeft: `${level * 10 + 10}px`,
-                        backgroundColor: (activePath && item.path === activePath) || openItem[item.title] === true ? theme.palette.primary.main : theme.palette.background.paper,
+                        backgroundColor: (activePath && item.path === activePath) || !!openItem[item.title] || isParentActive ? theme.palette.primary.main : theme.palette.background.paper,
                     }} onClick={() => {
                         if (item.childrens) {
                             if (checkDisable === false) {
                                 return;
-                            } else {
-                                toggleDrawer(item?.title)
                             }
+                            toggleDrawer(item?.title)
                         }
                     }}>
                         <ListItemIcon>
-                            <IconifyIcon color={(activePath && item.path === activePath) ? theme.palette.common.white : theme.palette.common.black} icon={item?.icon} ></IconifyIcon>
+                            <IconifyIcon color={(activePath && item.path === activePath) || !!openItem[item.title] || isParentActive ? theme.palette.common.white : theme.palette.common.black} icon={item?.icon} ></IconifyIcon>
                         </ListItemIcon>
                         <StyledListItemText sx={{
-                            color: (activePath && item.path === activePath) || openItem[item.title] === true ? theme.palette.common.white : theme.palette.common.black,
+                            color: (activePath && item.path === activePath) || !!openItem[item.title] || isParentActive ? theme.palette.common.white : theme.palette.common.black,
                         }}
-                            onClick={() => { handleSelectItem(item.path) }}
+                            onClick={() => {
+                                if (item.path) {
+                                    handleSelectItem(item.path)
+                                }
+                            }}
                             primary={item?.title}
-                            active={(activePath && item.path === activePath) || openItem[item.title] === true} />
+                            active={(activePath && item.path === activePath) || !!openItem[item.title] || isParentActive} />
                         {checkDisable === true && item.childrens && item.childrens.length > 0 && (
                             openItem[item?.title] ? (
                                 <IconifyIcon icon="ic:sharp-expand-less"></IconifyIcon>
@@ -97,7 +116,7 @@ const RecursionListItem = ({ data, level, openItem, toggleDrawer, checkDisable, 
                         </Collapse>
                     )}
                 </React.Fragment>
-            ))}
+            })}
         </>
     );
 };
@@ -105,12 +124,80 @@ const RecursionListItem = ({ data, level, openItem, toggleDrawer, checkDisable, 
 const ListVerticalLayout: NextPage<TProps> = ({ open }) => {
     const [activePath, setActivePath] = useState<string | null>("");
     const [openItem, setOpenItem] = useState<{ [key: string]: boolean }>({});
+
+
+    const router = useRouter();
+    const auth = useAuth();
+
+    const permissionUser: string[] = auth?.user?.role?.permissions ? (auth?.user?.role?.permissions.includes(CONFIG_PERMISSIONS.BASIC) ?
+    [CONFIG_PERMISSIONS.DASHBOARD] : auth?.user?.role?.permissions) : [];
+
+
+
     const toggleDrawer = (key: string): void => {
         setOpenItem((prevOpen) => ({
             // ...prevOpen,
             [key]: !prevOpen[key],
         }));
     };
+
+    const findParentActivePath = (items: TVertical[], activePath: string): string => {
+        for (let item of items) {
+            if (item.path === activePath) {
+                return item.title;
+            }
+            if (item?.childrens && item.childrens.length > 0) {
+                const child: any = findParentActivePath(item?.childrens, activePath);
+                if (child) {
+                    return item.title
+                }
+            }
+        }
+        return "";
+    }
+
+    const hasPermission = (item: any, permissionUser: string[]) => {
+        return permissionUser.includes(item.permission) || !item.permission;
+    }
+
+    const formatMenuByPermission = (menu: any[], permissionUser: string[]) => {
+        if (menu) {
+            return menu.filter((item) => {
+                if (hasPermission(item, permissionUser)) {
+                    if (item.childrens && item.childrens.length > 0) {
+                        item.childrens = formatMenuByPermission(item.childrens, permissionUser);
+                    }
+
+                    if(!item?.childrens?.length){
+                        return false;
+                    }
+                    return true;
+                }
+                return false;
+            })
+        }
+
+
+        return [];
+    }
+
+    const memoFormatMenu = useMemo(() => {
+        if (permissionUser.includes(CONFIG_PERMISSIONS.ADMIN)) {
+            return VerticalItem
+        }
+        return formatMenuByPermission(VerticalItem, permissionUser)
+    }, [VerticalItem, permissionUser])
+
+    useEffect(() => {
+        if (router.asPath) {
+            const parentTitle = findParentActivePath(VerticalItem, router.asPath)
+            setOpenItem({
+                [parentTitle]: true
+            })
+            setActivePath(router.asPath)
+        }
+
+    }, [router.asPath])
 
     return (
         <>

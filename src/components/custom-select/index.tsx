@@ -2,6 +2,7 @@ import { BorderColor } from "@mui/icons-material";
 import { Box, FormControl, InputLabelProps } from "@mui/material";
 import { InputLabel, MenuItem, Select, SelectProps, styled } from "@mui/material";
 import { NextPage } from "next";
+import { useEffect } from "react";
 
 // Use type instead of interface
 type TCustomSelect = SelectProps & {
@@ -11,9 +12,10 @@ type TCustomSelect = SelectProps & {
 
 
 const StyledSelect = styled(Select)<SelectProps>(({ theme }) => ({
+    lineHeight:"15px",
     width: "100%",
     "&.MuiInputBase-root.MuiOutlinedInput-root": {
-        padding: "12px 10px 10px 12px",
+        padding: "12px 10px 10px 0px",
         height: "40px",
         boxSizing: "border-box",
         position: "relative",
@@ -36,9 +38,9 @@ const StyledMenuItem = styled(MenuItem)(({ theme }) => ({
 const StyledInputLabel = styled(InputLabel)<InputLabelProps>(({ theme }) => {
     return {
         "&.MuiFormLabel-root.MuiInputLabel-root": {
-            display:"block",
-            marginBottom:"6px",
-            fontSize:"14px"
+            display: "block",
+            marginBottom: "6px",
+            fontSize: "14px"
         },
 
     }
@@ -46,33 +48,30 @@ const StyledInputLabel = styled(InputLabel)<InputLabelProps>(({ theme }) => {
 
 
 const CustomSelect: NextPage<TCustomSelect> = ({ value, label, onChange, options, fullWidth, content, ...rest }) => {
+      
+
     return (
-        <>
             <Box>
                 <StyledInputLabel>{content}</StyledInputLabel>
                 <StyledSelect
+                    value={value}
+                    onChange={onChange}
                     fullWidth={fullWidth}
                     labelId="demo-simple-select-autowidth-label"
                     id="demo-simple-select-autowidth"
-                    value={value}
-                    onChange={onChange}
                     label={label}
                     {...rest}
                 >
-
-                    { options.length > 0 ??
+                    {   
+                        options.length > 0 &&
                         options?.map((opt) => {
                             return (
-                                <>
-                                    <StyledMenuItem key={opt.value} value={opt.value}>{opt.label}</StyledMenuItem>
-                                </>
+                                <StyledMenuItem key={opt.value} value={opt.value}>{opt.label}</StyledMenuItem>
                             )
                         })
                     }
                 </StyledSelect>
-
             </Box>
-        </>
     );
 };
 

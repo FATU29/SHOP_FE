@@ -1,14 +1,14 @@
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreateRole, TParamsDeleteRole, TParamsEditRole, TParamsGetRoles } from "src/styles/role";
+import { TParamsCreateUsers, TParamsDeleteUsers, TParamsEditUsers, TParamsGetUsers } from "src/styles/user";
 
 const headers = {
   'Content-Type': 'application/json',
 };
 
-export const getAllRoles = async (data : {params: TParamsGetRoles}) => {
+export const getAllUsers = async (data : {params: TParamsGetUsers}) => {
   try {
-    const getAll = API_ENDPOINT.ROLE.INDEX;
+    const getAll = API_ENDPOINT.USER.INDEX;
     const res = await instanceAxios(getAll, {
       method: "GET",
       headers,
@@ -16,14 +16,14 @@ export const getAllRoles = async (data : {params: TParamsGetRoles}) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Error getting roles:", error);
+    console.error("Error getting Users:", error);
     throw error; // Re-throw the error if you want it to be handled by the caller
   }
 };
 
-export const createRole = async (data: TParamsCreateRole) => {
+export const createUsers = async (data: TParamsCreateUsers) => {
   try {
-    const index = API_ENDPOINT.ROLE.INDEX;
+    const index = API_ENDPOINT.USER.INDEX;
     const res = await instanceAxios(`${index}`, {
       method: "POST",
       headers,
@@ -31,14 +31,14 @@ export const createRole = async (data: TParamsCreateRole) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Error creating role:", error);
+    console.error("Error creating Users:", error);
     throw error;
   }
 };
 
-export const updateRole = async (data: TParamsEditRole) => {
+export const updateUsers = async (data: TParamsEditUsers) => {
   try {
-    const index = API_ENDPOINT.ROLE.INDEX;
+    const index = API_ENDPOINT.USER.INDEX;
     const { id, ...rest } = data;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "PUT",
@@ -47,36 +47,36 @@ export const updateRole = async (data: TParamsEditRole) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Error updating role:", error);
+    console.error("Error updating Users:", error);
     throw error;
   }
 };
 
-export const deleteRole = async (data: TParamsDeleteRole) => {
+export const deleteUsers = async (data: TParamsDeleteUsers) => {
   try {
-    const index = API_ENDPOINT.ROLE.INDEX;
+    const index = API_ENDPOINT.USER.INDEX;
     const res = await instanceAxios(`${index}/${data.id}`, {
       method: "DELETE",
       headers
     });
     return res.data;
   } catch (error) {
-    console.error("Error deleting role:", error);
+    console.error("Error deleting Users:", error);
     throw error;
   }
 };
 
 
-export const getDetailRole = async (id: string) => {
+export const getDetailUsers = async (id: string) => {
   try {
-    const index = API_ENDPOINT.ROLE.INDEX;
+    const index = API_ENDPOINT.USER.INDEX;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "GET",
       headers
     });
     return res.data;
   } catch (error) {
-    console.error("Error get detail role:", error);
+    console.error("Error get detail Users:", error);
     throw error;
   }
 };

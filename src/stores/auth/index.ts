@@ -5,6 +5,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
 import { changePasswordMeAction, registerAuthAction, updateAuthMeAction } from './action'
+import { UserDataType } from 'src/contexts/types'
 
 
 interface DataParams {
@@ -19,18 +20,36 @@ interface Redux {
   dispatch: Dispatch<any>
 }
 
-const initialState = {
+
+type TInitialState = {
+  isLoading: boolean,
+  isSuccess: boolean,
+  isError: boolean,
+  message: string,
+  typeError: string,
+  isSuccessUpdateMe: boolean,
+  isErrorUpdateMe: boolean,
+  messageUpdateMe: string,
+  isSuccessChangePasswordMe: boolean,
+  isErrorChangePasswordMe: boolean,
+  messageChangePasswordMe: string,
+  userData: UserDataType | null
+
+}
+
+const initialState: TInitialState = {
   isLoading: false,
   isSuccess: true,
   isError: false,
-  message:"",
-  typeError:"",
-  isSuccessUpdateMe:true,
-  isErrorUpdateMe:false,
-  messageUpdateMe:"",
-  isSuccessChangePasswordMe:true,
-  isErrorChangePasswordMe:false,
-  messageChangePasswordMe:""
+  message: "",
+  typeError: "",
+  isSuccessUpdateMe: true,
+  isErrorUpdateMe: false,
+  messageUpdateMe: "",
+  isSuccessChangePasswordMe: true,
+  isErrorChangePasswordMe: false,
+  messageChangePasswordMe: "",
+  userData: null
 }
 
 
@@ -50,6 +69,7 @@ export const authSlice = createSlice({
       state.isSuccessChangePasswordMe = true
       state.isErrorChangePasswordMe = false
       state.messageChangePasswordMe = ""
+
     },
   },
 
@@ -59,7 +79,7 @@ export const authSlice = createSlice({
       state.isLoading = true
     })
 
-    builder.addCase(registerAuthAction.fulfilled, (state, action:any) => {
+    builder.addCase(registerAuthAction.fulfilled, (state, action: any) => {
       state.isLoading = false
       state.isSuccess = Boolean(action.payload?.data?.email)
       state.isError = !Boolean(action.payload?.data?.email)
@@ -67,7 +87,7 @@ export const authSlice = createSlice({
       state.typeError = action.payload?.typeError
     })
 
-    builder.addCase(registerAuthAction.rejected, (state, action:any) => {
+    builder.addCase(registerAuthAction.rejected, (state, action: any) => {
       state.isLoading = false
       state.isSuccess = false
       state.isError = true
@@ -80,20 +100,22 @@ export const authSlice = createSlice({
       state.isLoading = true
     })
 
-    builder.addCase(updateAuthMeAction.fulfilled, (state, action:any) => {
+    builder.addCase(updateAuthMeAction.fulfilled, (state, action: any) => {
       state.isLoading = false
       state.isSuccessUpdateMe = Boolean(action.payload?.data?.email)
       state.isErrorUpdateMe = !Boolean(action.payload?.data?.email)
       state.messageUpdateMe = action.payload?.message
       state.typeError = action.payload?.typeError
+      state.userData = action.payload?.data
     })
 
-    builder.addCase(updateAuthMeAction.rejected, (state, action:any) => {
+    builder.addCase(updateAuthMeAction.rejected, (state, action: any) => {
       state.isLoading = false
       state.isSuccessUpdateMe = false
       state.isErrorUpdateMe = true
       state.messageUpdateMe = action.payload?.message
       state.typeError = action.payload?.typeError
+      state.userData = null
     })
 
 
@@ -103,8 +125,7 @@ export const authSlice = createSlice({
       state.isLoading = true
     })
 
-    builder.addCase(changePasswordMeAction.fulfilled, (state, action:any) => {
-      console.log(action);
+    builder.addCase(changePasswordMeAction.fulfilled, (state, action: any) => {
       state.isLoading = false
       state.isSuccessChangePasswordMe = Boolean(action.payload?.data)
       state.isErrorChangePasswordMe = !Boolean(action.payload?.data)
@@ -112,7 +133,7 @@ export const authSlice = createSlice({
       state.typeError = action.payload?.typeError
     })
 
-    builder.addCase(changePasswordMeAction.rejected, (state, action:any) => {
+    builder.addCase(changePasswordMeAction.rejected, (state, action: any) => {
       state.isLoading = false
       state.isSuccessChangePasswordMe = false
       state.isErrorChangePasswordMe = true
@@ -121,9 +142,11 @@ export const authSlice = createSlice({
     })
   },
 
-  
 
-  
+
+
+
+
 })
 
 
