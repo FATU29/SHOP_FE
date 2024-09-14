@@ -47,6 +47,7 @@ import Link from "next/link";
 // ** hooks
 import { useAuth } from "src/hooks/useAuth";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 
 
 const schema = yup
@@ -82,6 +83,9 @@ const LoginPage: NextPage<TProps> = () => {
 
     // ** context
     const { login } = useAuth();
+
+
+    const router = useRouter();
 
 
 

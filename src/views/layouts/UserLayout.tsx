@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { styled, createTheme, ThemeProvider, useTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
@@ -35,9 +35,11 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
         setOpen(!open);
     };
 
+    const theme = useTheme();
+
     return (
         <>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center" }}>
                 <CssBaseline />
                 <Box>
                     <HorizontalLayout open={open} toggleDrawer={toggleDrawer} isHidden={false}></HorizontalLayout>
@@ -46,10 +48,7 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
                 <Box
                     component="main"
                     sx={{
-                        backgroundColor: (theme) =>
-                            theme.palette.mode === 'light'
-                                ? theme.palette.grey[100]
-                                : theme.palette.grey[900],
+                        backgroundColor: theme.palette.customColors.trackBg,
                         flexGrow: 1,
                         height: '100vh',
                         overflow: 'auto',
@@ -57,10 +56,10 @@ const UserLayout: NextPage<TProps> = ({ children }) => {
                 >
                     <Toolbar />
                     <Box sx={{
-                        width:"calc(100% - 32px)",
-                        overflow:"auto",
-                        margin:"20px auto",
-                        borderRadius:"5px"
+                        width: "calc(100% - 32px)",
+                        overflow: "auto",
+                        margin: "20px auto",
+                        borderRadius: "5px",
                     }}>
                         {children}
                     </Box>

@@ -1,13 +1,17 @@
 import { alpha, Box, Button, IconButton, InputBase, Modal, ModalProps, styled, Tooltip, Typography } from "@mui/material";
 import { NextPage } from "next";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import IconifyIcon from "../Icon";
 import { useTranslation } from "react-i18next";
+import useDebounce from "src/hooks/useDebounce";
 
 
 
 
-interface TProps { }
+interface TProps {
+    value: string,
+    onChange: (value: string) => void
+}
 
 
 const Search = styled('div')(({ theme }) => ({
@@ -37,8 +41,8 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    border:`1px solid ${theme.palette.customColors.borderColor}`,
-    borderRadius:"7px",
+    border: `1px solid ${theme.palette.customColors.borderColor}`,
+    borderRadius: "7px",
     color: 'inherit',
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
@@ -54,9 +58,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 
-export const InputSearch: NextPage<TProps> = () => {
+export const InputSearch: NextPage<TProps> = ({ value, onChange }) => {
 
     const { t } = useTranslation();
+
+    const [search, setSearch] = useState(value);
+    const debounceSearch = useDebounce(search,300);
+
+    useEffect(() => {
+        onChange(debounceSearch)
+    },[debounceSearch])
 
     return (
         <>
@@ -65,8 +76,12 @@ export const InputSearch: NextPage<TProps> = () => {
                     <IconifyIcon icon={"material-symbols:search"}></IconifyIcon>
                 </SearchIconWrapper>
                 <StyledInputBase
+                    value={search}
                     placeholder="Search…"
                     inputProps={{ 'aria-label': 'search' }}
+                    onChange={(e) => {
+                        setSearch(e.target.value)
+                    }}
                 />
             </Search>
         </>

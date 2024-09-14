@@ -17,5 +17,4 @@ const ChangePassword:NextPage<TProps> = () => {
 
 
 export default ChangePassword;
-
 ChangePassword.getLayout = (page : React.ReactNode) => <><LayoutNoApp>{page}</LayoutNoApp> </>

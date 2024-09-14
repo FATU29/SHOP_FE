@@ -14,7 +14,7 @@ const StyledCustomGrid = styled(DataGrid)<DataGridProps>(({ theme }) => ({
 // ForwardRef component for CustomDataGrid
 const CustomDataGrid = React.forwardRef<HTMLDivElement, DataGridProps>((props, ref) => {
   return (
-    <Box sx={{ height: 400, width: '100%' }}>
+    <Box sx={{ height: 500, width: '100%' }}>
       <StyledCustomGrid
         {...props}
         ref={ref}  // Ensure ref is passed to the StyledCustomGrid

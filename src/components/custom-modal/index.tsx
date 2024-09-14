@@ -1,4 +1,4 @@
-import { Box, Button, Modal, ModalProps, styled, Typography } from "@mui/material";
+import { Box, Modal, ModalProps, styled, Typography } from "@mui/material";
 import { NextPage } from "next";
 import React from "react";
 
@@ -36,7 +36,7 @@ const style = {
 
 
 
-export const CustomModal: NextPage<TCustomModal> = ({ children, onClose, open }) => {
+export const CustomModal: NextPage<TCustomModal> = ({ children, onClose, open,...rest }) => {
 
 
     return (
@@ -48,10 +48,8 @@ export const CustomModal: NextPage<TCustomModal> = ({ children, onClose, open })
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
-
+                <Box sx={style} {...rest}>
                     {children}
-
                 </Box>
 
             </StyledModal>

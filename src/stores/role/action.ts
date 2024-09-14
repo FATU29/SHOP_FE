@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createRole, deleteRole, getAllRoles, updateRole } from "src/services/role";
-import { TParamsCreateRole, TParamsDeleteRole, TParamsEditRole } from "src/styles/role";
+import { TParamsCreateRole, TParamsDeleteRole, TParamsEditRole, TParamsGetRoles } from "src/styles/role";
 
 export const getAllRolesAction = createAsyncThunk(
   'role/getAllRolesAction',
-  async (data: any, { rejectWithValue }) => {
+  async (data : {params:TParamsGetRoles}, { rejectWithValue }) => {
     try {
       const response = await getAllRoles(data);
       return response;
