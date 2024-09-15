@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
-import { createUsersAction, deleteUsersAction, getAllUsersAction, updateUsersAction } from './action'
+import { createUsersAction, deleteMultipleUsersAction, deleteUsersAction, getAllUsersAction, updateUsersAction } from './action'
 
 
 interface DataParams {
@@ -28,6 +28,9 @@ const initialState = {
   isSuccessDeleteUser: false,
   isErrorDeleteUser: false,
   messageErrorDeleteUser: "",
+  isSuccessMultipleDeleteUser: false,
+  isErrorDeleteMultipleUser: false,
+  messageErrorDeleteMultipleUser: "",
   users: {
     data: [],
     total: 0
@@ -49,6 +52,9 @@ export const userSlice = createSlice({
       state.isSuccessDeleteUser = false
       state.isErrorDeleteUser = false
       state.messageErrorDeleteUser = ""
+      state.isSuccessMultipleDeleteUser= false
+      state.isErrorDeleteMultipleUser= false
+      state.messageErrorDeleteMultipleUser= ""
     },
   },
 
@@ -137,6 +143,32 @@ export const userSlice = createSlice({
       state.messageErrorDeleteUser = action?.payload?.message
       state.typeError = action?.payload?.code
     })
+
+
+
+     //delete multiple user
+     builder.addCase(deleteMultipleUsersAction.pending, (state, action) => {
+      state.isLoading = true
+    })
+
+    builder.addCase(deleteMultipleUsersAction.fulfilled, (state, action: any) => {
+      state.isLoading = false
+      state.isSuccessMultipleDeleteUser = true
+      state.isErrorDeleteMultipleUser = false
+      state.messageErrorDeleteMultipleUser = ""
+      state.typeError = ""
+    })
+
+    builder.addCase(deleteMultipleUsersAction.rejected, (state, action: any) => {
+      state.isLoading = false
+      state.isSuccessMultipleDeleteUser = false
+      state.isErrorDeleteMultipleUser = true
+      state.messageErrorDeleteMultipleUser = action?.payload?.message
+      state.typeError = action?.payload?.code
+    })
+
+  
+
   },
 })
 

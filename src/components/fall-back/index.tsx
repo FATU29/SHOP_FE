@@ -1,14 +1,19 @@
 // ** MUI Imports
+import { Modal, useTheme } from '@mui/material'
 import Box, { BoxProps } from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 
 const FallbackSpinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
   // ** Hook
 
+  const theme = useTheme()
+
   return (
-    <Box
+    <Modal
+      open={true}
       sx={{
         height: '100vh',
+        width:"100vw",
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column',
@@ -16,8 +21,8 @@ const FallbackSpinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
         ...sx
       }}
     >
-      <CircularProgress disableShrink sx={{ mt: 6 }} />
-    </Box>
+      <CircularProgress variant="indeterminate" autoFocus={false} disableShrink sx={{ zIndex:"1600" }} />
+    </Modal>
   )
 }
 
