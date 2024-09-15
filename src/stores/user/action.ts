@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createUsers, getAllUsers,deleteUsers,updateUsers} from "src/services/user";
-import { TParamsCreateUsers,TParamsDeleteUsers,TParamsEditUsers,TParamsGetUsers } from "src/styles/user";
+import { createUsers, getAllUsers,deleteUsers,updateUsers, deleteMultipleUsers} from "src/services/user";
+import { TParamsCreateUsers,TParamsDeleteMultipleUser,TParamsDeleteUsers,TParamsEditUsers,TParamsGetUsers } from "src/styles/user";
 
 export const getAllUsersAction = createAsyncThunk(
   'user/getAllUsersAction',
@@ -69,4 +69,23 @@ export const deleteUsersAction = createAsyncThunk(
     }
   }
 );
+
+
+
+export const deleteMultipleUsersAction = createAsyncThunk(
+  'user/deleteMultipleUsersAction',
+  async (data: TParamsDeleteMultipleUser, { rejectWithValue }) => {
+    try {
+      const response = await deleteMultipleUsers(data);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        {
+          ...error
+        }
+      )
+    }
+  }
+);
+
 

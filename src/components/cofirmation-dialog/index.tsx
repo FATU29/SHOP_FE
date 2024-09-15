@@ -30,6 +30,7 @@ export const CofirmDialog: NextPage<TProps> = ({ open, onClose,title,description
     const dispatch: AppDispatch = useDispatch();
     const { t } = useTranslation();
 
+
  
 
     return (

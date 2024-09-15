@@ -43,7 +43,7 @@ type TDefaultValue = {
 
 const CreateEditUser = (props: TCreateEditUser) => {
 
-    const [isLoading, setLoading] = React.useState<boolean>(false);
+    const [isLoadingCheck, setLoadingCheck] = React.useState<boolean>(false);
     const [avatar, setAvatar] = React.useState<string>("");
     const [listRole, setListRole] = React.useState<{ label: string, value: string }[]>([]);
     const [isDisableRole, setIsDisableRole] = React.useState<boolean>(false);
@@ -55,7 +55,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
     const theme = useTheme();
     const dispatch: AppDispatch = useDispatch();
     const { setUser } = useAuth();
-    const { message } = useSelector((state: RootState) => state.user)
+    const { message, isLoading } = useSelector((state: RootState) => state.user)
     const { userData } = useSelector((state: RootState) => state.auth)
 
 
@@ -117,7 +117,8 @@ const CreateEditUser = (props: TCreateEditUser) => {
                     address: data?.address,
                     city: data?.city,
                     avatar: avatar,
-                    id: idUser
+                    id: idUser,
+                    status:data?.status
                 }))
             } else {
                 dispatch(createUsersAction({
@@ -137,7 +138,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
     }
 
     const fetchAllRoles = async () => {
-        setLoading(true);
+        await setLoadingCheck(true);
         await getAllRoles({ params: { limit: -1, page: -1 } }).then((res) => {
             const data = res?.data?.roles;
             if (data) {
@@ -149,14 +150,14 @@ const CreateEditUser = (props: TCreateEditUser) => {
                 }));
             }
         }).catch((error) => {
-            setLoading(false);
+             setLoadingCheck(false);
         })
-        setLoading(false);
+        await setLoadingCheck(false);
     }
 
 
     const fetchDetailsUsers = async (id: string) => {
-        setLoading(true);
+        setLoadingCheck(true);
         const res: any = await getDetailUsers(id);
         const data = res?.data;
         if (data) {
@@ -172,7 +173,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
             })
             setAvatar(data?.avatar)
         }
-        setLoading(false);
+        setLoadingCheck(false);
     }
 
 
@@ -204,7 +205,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
 
     return (
         <>
-            {isLoading ?? <FallbackSpinner></FallbackSpinner>}
+            {(isLoading || isLoadingCheck) && <FallbackSpinner></FallbackSpinner>}
             <CustomModal
                 onClose={onClose} open={open}>
                 <Box sx={{
@@ -240,7 +241,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                         <Box>
                             <Typography variant='h4' sx={{
                                 fontWeight: 600
-                            }}> {idUser === "" ? t("Create") : t("Change")}</Typography>
+                            }}> {!idUser ? t("Create") : t("Change")}</Typography>
                         </Box>
                         <form style={{ width: "auto" }} onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
                             <Box sx={{
@@ -389,9 +390,10 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                             render={({ field: { onChange, onBlur, value } }) => {
                                                                 return <>
                                                                     <CustomSelect
+                                                                        required
                                                                         value={value}
                                                                         fullWidth
-                                                                        content={t("Role")}
+                                                                        content={t("Role *")}
                                                                         error={Boolean(errors.role)}
                                                                         onBlur={onBlur}
                                                                         onChange={(e) => {
@@ -429,6 +431,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                         control={control}
                                                         render={({ field: { onChange, onBlur, value } }) => (
                                                             <CustomTextField
+                                                                required
                                                                 label={t("Fullname")}
                                                                 placeholder={t("Enter your fullname")}
                                                                 onChange={onChange}
@@ -482,7 +485,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                         control={control}
                                                         render={({ field: { onChange, onBlur, value } }) => (
                                                             <CustomTextField
-
+                                                                required   
                                                                 label={t("Phone")}
                                                                 placeholder={t("Enter your phone")}
                                                                 onChange={(e) => {
@@ -512,8 +515,10 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                                     checked={Boolean(value)}
                                                                     value={value}
                                                                     onChange={(e) => {
-                                                                        onChange(e.target.checked)
+                                                                        const checked = e.target.checked ? 1 : 0
+                                                                        onChange(checked)
                                                                     }}
+                                                                    onBlur={onBlur}
                                                                     defaultChecked />}
                                                                     label={Boolean(value) ? "Active" : "Block"} />
                                                             )}
@@ -534,7 +539,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                 alignItems: "center"
                             }}>
                                 <Button type="submit" variant="contained" size="large">
-                                    {idUser === "" ? t("Create") : t("Change")}
+                                    {!idUser ? t("Create") : t("Change")}
                                 </Button>
                             </Box>
                         </form>

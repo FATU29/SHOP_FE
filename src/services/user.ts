@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreateUsers, TParamsDeleteUsers, TParamsEditUsers, TParamsGetUsers } from "src/styles/user";
+import { TParamsCreateUsers, TParamsDeleteMultipleUser, TParamsDeleteUsers, TParamsEditUsers, TParamsGetUsers } from "src/styles/user";
 
 const headers = {
   'Content-Type': 'application/json',
@@ -60,6 +60,26 @@ export const deleteUsers = async (data: TParamsDeleteUsers) => {
       headers
     });
     return res.data;
+  } catch (error) {
+    console.error("Error deleting Users:", error);
+    throw error;
+  }
+};
+
+export const deleteMultipleUsers = async (data:TParamsDeleteMultipleUser) => {
+  try {
+    const index = API_ENDPOINT.USER.INDEX;
+    const res = await instanceAxios(`${index}/delete-many`, {
+      method: "DELETE",
+      headers,
+      data:JSON.stringify(data)
+    });
+    if(res?.data.status === "Success"){
+      return {
+        data:[]
+      }; 
+    }
+    return {data : null}
   } catch (error) {
     console.error("Error deleting Users:", error);
     throw error;
