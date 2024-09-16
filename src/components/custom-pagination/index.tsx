@@ -30,7 +30,9 @@ const CustomPagination: React.FC<CustomPaginationProps> = ({
 
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center" mt={2} p={2} borderTop={`1px solid`} borderColor="divider">
-            <Typography variant="body2">
+            <Typography sx={{
+                display:{xs:"none",md:"inline-block"}
+            }} variant="body2">
                 {`Showing ${pageSize * (page - 1) + 1}-${Math.min(pageSize * page, rowLength)} of ${pageSize}`}
             </Typography>
             <Box display="flex" alignItems="center">

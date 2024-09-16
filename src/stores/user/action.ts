@@ -2,8 +2,13 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createUsers, getAllUsers,deleteUsers,updateUsers, deleteMultipleUsers} from "src/services/user";
 import { TParamsCreateUsers,TParamsDeleteMultipleUser,TParamsDeleteUsers,TParamsEditUsers,TParamsGetUsers } from "src/styles/user";
 
+
+
+export const serviceName = "user"
+
+
 export const getAllUsersAction = createAsyncThunk(
-  'user/getAllUsersAction',
+  `${serviceName}/getAllUsersAction`,
   async (data : {params:TParamsGetUsers}, { rejectWithValue }) => {
     try {
       const response = await getAllUsers(data);
@@ -20,7 +25,7 @@ export const getAllUsersAction = createAsyncThunk(
 
 
 export const createUsersAction = createAsyncThunk(
-  'user/createUsersAction',
+  `${serviceName}/createUsersAction`,
   async (data: TParamsCreateUsers, { rejectWithValue }) => {
     try {
       const response = await createUsers(data);
@@ -38,7 +43,7 @@ export const createUsersAction = createAsyncThunk(
 
 
 export const updateUsersAction = createAsyncThunk(
-  'user/updateUsersAction',
+  `${serviceName}/updateUsersAction`,
   async (data: TParamsEditUsers, { rejectWithValue }) => {
     try {
       const response = await updateUsers(data);
@@ -55,7 +60,7 @@ export const updateUsersAction = createAsyncThunk(
 
 
 export const deleteUsersAction = createAsyncThunk(
-  'user/deleteUsersAction',
+  `${serviceName}/deleteUsersAction`,
   async (id: TParamsDeleteUsers, { rejectWithValue }) => {
     try {
       const response = await deleteUsers(id);
@@ -73,7 +78,7 @@ export const deleteUsersAction = createAsyncThunk(
 
 
 export const deleteMultipleUsersAction = createAsyncThunk(
-  'user/deleteMultipleUsersAction',
+  `${serviceName}/deleteMultipleUsersAction`,
   async (data: TParamsDeleteMultipleUser, { rejectWithValue }) => {
     try {
       const response = await deleteMultipleUsers(data);

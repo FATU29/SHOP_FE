@@ -1,10 +1,5 @@
+import { TextFieldProps, TextField, styled, useTheme } from "@mui/material";
 
-//Mui Import
-import { TextFieldProps, TextField, styled } from "@mui/material";
-
-
-
-//Theme Chính là useTheme() để lấy giá trị thay vì dùng hooks ta dùng theme
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
     return {
         width: "100%", //.MuiFormControl-root .MuiTextField-root
@@ -14,21 +9,21 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
             lineHeight: 1.2,
             position: "relative",
             marginBottom: theme.spacing(1),
-            fontSize: theme.typography.body2.fontSize
+            fontSize: theme.typography.body2.fontSize,
         },
         ".MuiInputBase-root": {
             borderRadius: 8,
             width: "100%",
-            backgroundColor: "transparent",
-            border: `1px solid rgb(${theme.palette.customColors.main},0.2)`,
+            backgroundColor:
+                theme.palette.mode === "dark"
+                    ? theme.palette.background.paper // Background khi ở chế độ dark
+                    : theme.palette.grey[100], // Background khi ở chế độ light
+            border: `1px solid rgba(${theme.palette.customColors.main},0.2)`,
             transition: theme.transitions.create(["border-color", "box-shadow"], {
                 duration: theme.transitions.duration.shorter,
-            },),
-            // "&:after":{
-            //     display:"none"
-            // },
+            }),
             "&:before": {
-                display: "none"
+                display: "none",
             },
             ".MuiInputBase-input": {
                 padding: "12px 16px",
@@ -36,19 +31,22 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
             },
         },
         ".MuiFormHelperText-root": {
-            marginLeft: 0
+            marginLeft: 0,
         },
-
-    }
-
-})
+    };
+});
 
 const CustomTextField = (props: TextFieldProps) => {
-    const { size = "small", variant = "filled" ,InputLabelProps, ...rests } = props;
+    const theme = useTheme(); // Lấy theme ở đây để có thể điều chỉnh theo chế độ dark/light
+    const { size = "small", variant = "standard", InputLabelProps, ...rests } = props;
     return (
-        <TextFieldStyled size={size} variant={variant} InputLabelProps={{ ...InputLabelProps, shrink: true }}{...rests}></TextFieldStyled>
-    )
-}
-
+        <TextFieldStyled
+            size={size}
+            variant={variant}
+            InputLabelProps={{ ...InputLabelProps, shrink: true }}
+            {...rests}
+        />
+    );
+};
 
 export default CustomTextField;

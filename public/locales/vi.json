@@ -37,5 +37,11 @@
     "Disagree": "Không đồng ý",
     "If you delete role, it can't recover": "Nếu bạn xóa, nó sẽ không thể khôi phục",
     "Cofirm form": "Biểu mẫu xác nhận",
-    "Selected": "Đã chọn"
+    "Selected": "Đã chọn",
+    "Enter city name": "Nhập tên thành phố",
+    "Search": "Tìm kiếm",
+    "Name is a required field": "Tên là trường bắt buộc",
+    "Active": "Kích hoạt",
+    "Blocking": "Chặn",
+    "status": "Trạng thái"
 }
