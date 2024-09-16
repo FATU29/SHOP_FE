@@ -8,7 +8,7 @@ const headers = {
 
 export const getAllRoles = async (data : {params: TParamsGetRoles}) => {
   try {
-    const getAll = API_ENDPOINT.ROLE.INDEX;
+    const getAll = API_ENDPOINT.SYSTEM.ROLE.INDEX;
     const res = await instanceAxios(getAll, {
       method: "GET",
       headers,
@@ -23,7 +23,7 @@ export const getAllRoles = async (data : {params: TParamsGetRoles}) => {
 
 export const createRole = async (data: TParamsCreateRole) => {
   try {
-    const index = API_ENDPOINT.ROLE.INDEX;
+    const index = API_ENDPOINT.SYSTEM.ROLE.INDEX;
     const res = await instanceAxios(`${index}`, {
       method: "POST",
       headers,
@@ -38,7 +38,7 @@ export const createRole = async (data: TParamsCreateRole) => {
 
 export const updateRole = async (data: TParamsEditRole) => {
   try {
-    const index = API_ENDPOINT.ROLE.INDEX;
+    const index = API_ENDPOINT.SYSTEM.ROLE.INDEX;
     const { id, ...rest } = data;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "PUT",
@@ -54,7 +54,7 @@ export const updateRole = async (data: TParamsEditRole) => {
 
 export const deleteRole = async (data: TParamsDeleteRole) => {
   try {
-    const index = API_ENDPOINT.ROLE.INDEX;
+    const index = API_ENDPOINT.SYSTEM.ROLE.INDEX;
     const res = await instanceAxios(`${index}/${data.id}`, {
       method: "DELETE",
       headers
@@ -69,7 +69,7 @@ export const deleteRole = async (data: TParamsDeleteRole) => {
 
 export const getDetailRole = async (id: string) => {
   try {
-    const index = API_ENDPOINT.ROLE.INDEX;
+    const index = API_ENDPOINT.SYSTEM.ROLE.INDEX;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "GET",
       headers

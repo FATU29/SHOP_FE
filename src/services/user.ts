@@ -8,7 +8,7 @@ const headers = {
 
 export const getAllUsers = async (data : {params: TParamsGetUsers}) => {
   try {
-    const getAll = API_ENDPOINT.USER.INDEX;
+    const getAll = API_ENDPOINT.SYSTEM.USER.INDEX;
     const res = await instanceAxios(getAll, {
       method: "GET",
       headers,
@@ -23,7 +23,7 @@ export const getAllUsers = async (data : {params: TParamsGetUsers}) => {
 
 export const createUsers = async (data: TParamsCreateUsers) => {
   try {
-    const index = API_ENDPOINT.USER.INDEX;
+    const index = API_ENDPOINT.SYSTEM.USER.INDEX;
     const res = await instanceAxios(`${index}`, {
       method: "POST",
       headers,
@@ -38,7 +38,7 @@ export const createUsers = async (data: TParamsCreateUsers) => {
 
 export const updateUsers = async (data: TParamsEditUsers) => {
   try {
-    const index = API_ENDPOINT.USER.INDEX;
+    const index = API_ENDPOINT.SYSTEM.USER.INDEX;
     const { id, ...rest } = data;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "PUT",
@@ -54,7 +54,7 @@ export const updateUsers = async (data: TParamsEditUsers) => {
 
 export const deleteUsers = async (data: TParamsDeleteUsers) => {
   try {
-    const index = API_ENDPOINT.USER.INDEX;
+    const index = API_ENDPOINT.SYSTEM.USER.INDEX;
     const res = await instanceAxios(`${index}/${data.id}`, {
       method: "DELETE",
       headers
@@ -68,7 +68,7 @@ export const deleteUsers = async (data: TParamsDeleteUsers) => {
 
 export const deleteMultipleUsers = async (data:TParamsDeleteMultipleUser) => {
   try {
-    const index = API_ENDPOINT.USER.INDEX;
+    const index = API_ENDPOINT.SYSTEM.USER.INDEX;
     const res = await instanceAxios(`${index}/delete-many`, {
       method: "DELETE",
       headers,
@@ -89,7 +89,7 @@ export const deleteMultipleUsers = async (data:TParamsDeleteMultipleUser) => {
 
 export const getDetailUsers = async (id: string) => {
   try {
-    const index = API_ENDPOINT.USER.INDEX;
+    const index = API_ENDPOINT.SYSTEM.USER.INDEX;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "GET",
       headers

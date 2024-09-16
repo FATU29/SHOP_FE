@@ -43,5 +43,7 @@
     "Name is a required field": "Tên là trường bắt buộc",
     "Active": "Kích hoạt",
     "Blocking": "Chặn",
-    "status": "Trạng thái"
+    "status": "Trạng thái",
+    "Price": "Giá tiền",
+    "Enter price": "Nhập giá tiền"
 }
