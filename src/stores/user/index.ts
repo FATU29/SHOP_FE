@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
-import { createUsersAction, deleteMultipleUsersAction, deleteUsersAction, getAllUsersAction, updateUsersAction } from './action'
+import { createUsersAction, deleteMultipleUsersAction, deleteUsersAction, getAllUsersAction, serviceName, updateUsersAction } from './action'
 
 
 interface DataParams {
@@ -39,7 +39,7 @@ const initialState = {
 
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: serviceName,
   initialState,
   reducers: {
     resetIntitalState: (state) => {

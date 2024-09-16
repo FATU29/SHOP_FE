@@ -45,7 +45,7 @@ const RoleList = () => {
         id: "",
         name: ""
     });
-    const [isDisablePermission,setIsDisablePermission] = useState<boolean>(false);
+    const [isDisablePermission, setIsDisablePermission] = useState<boolean>(false);
 
 
     const theme = useTheme();
@@ -53,7 +53,7 @@ const RoleList = () => {
     const dispatch: AppDispatch = useDispatch();
     const { isSuccessDeleteRole, isErrorDeleteRole, messageErrorDeleteRole, roles, isSuccessCreateEdit, message, isErrorCreateEdit, messageErrorCreateEdit, isLoading } = useSelector((state: RootState) => state.role)
 
-    const {VIEW,UPDATE,CREATE,DELETE}= usePermission("SYSTEM.ROLE",["CREATE","VIEW","UPDATE","DELETE"])
+    const { VIEW, UPDATE, CREATE, DELETE } = usePermission("SYSTEM.ROLE", ["CREATE", "VIEW", "UPDATE", "DELETE"])
 
 
     const columns: GridColDef<any>[] = [
@@ -232,7 +232,7 @@ const RoleList = () => {
             <CreateEditRole permissionSelected={permissionSelected} open={openCreateEdit.open} onClose={handleOnCloseCreateEditModal} idRole={openCreateEdit._id}></CreateEditRole>
             {(isLoading && isLoadingTmp) ?? <FallbackSpinner></FallbackSpinner>}
             <Box sx={{
-                backgroundColor: theme.palette.customColors.lightPaperBg,
+                backgroundColor: theme.palette.background.paper,
                 borderRadius: "10px",
                 boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px"
             }}>
@@ -259,25 +259,25 @@ const RoleList = () => {
                                         setSearchBy(value)
                                     }}></InputSearch>
                                 </Box>
-                                <AddButton 
+                                <AddButton
                                     disabled={!CREATE}
                                     onClick={() => {
-                                    setOpenCreateEdit({
-                                        open: true,
-                                        _id: "",
-                                    })
-                                    setSelectedRow({
-                                        id:"",
-                                        name:""
-                                    })
-                                }}></AddButton>
+                                        setOpenCreateEdit({
+                                            open: true,
+                                            _id: "",
+                                        })
+                                        setSelectedRow({
+                                            id: "",
+                                            name: ""
+                                        })
+                                    }}></AddButton>
                             </Box>
                             <CustomDataGrid
                                 sx={{
-                                    ".selected-row":{
-                                        backgroundColor:`${hexToRGBA(theme.palette.primary.main,0.2)}`,
-                                        color:`${theme.palette.primary.main}`
-                                    }
+                                    ".selected-row": {
+                                        backgroundColor: `${hexToRGBA(theme.palette.primary.main, 0.5)}`,
+                                        color: `${theme.palette.primary.main}`
+                                    },
                                 }}
                                 rows={rows}
                                 columns={columns}
@@ -300,10 +300,10 @@ const RoleList = () => {
                         </Grid>
                         <Grid item md={8} xs={12}>
                             {selectedRow?.id &&
-                                (<><TablePermission 
-                                setPermissionSelected={setPermissionSelected} 
-                                permissionSelected={permissionSelected}
-                                disable={isDisablePermission}
+                                (<><TablePermission
+                                    setPermissionSelected={setPermissionSelected}
+                                    permissionSelected={permissionSelected}
+                                    disable={isDisablePermission}
                                 ></TablePermission>
                                     <Box sx={{
                                         display: "flex",

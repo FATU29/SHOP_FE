@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, InputAdornment, Typography } from '@mui/material';
+import { Box, Button, CssBaseline, IconButton, Typography, useTheme } from '@mui/material';
 import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -28,10 +28,9 @@ interface TCreateEditRole {
 const CreateEditRole = (props: TCreateEditRole) => {
 
     const [isLoading, setLoading] = React.useState<boolean>(false);
-
-    const { roles } = useSelector((state: RootState) => state.role);
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
+    const theme = useTheme();
 
 
     const { open, onClose, idRole, permissionSelected } = props;
@@ -91,6 +90,7 @@ const CreateEditRole = (props: TCreateEditRole) => {
 
     return (
         <>
+            <CssBaseline></CssBaseline>
             {isLoading ?? <FallbackSpinner></FallbackSpinner>}
             <CustomModal onClose={onClose} open={open}>
                 <Box sx={{
