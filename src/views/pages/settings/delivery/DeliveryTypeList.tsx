@@ -11,20 +11,20 @@ import FallbackSpinner from "src/components/fall-back";
 import toast from "react-hot-toast";
 import DeleteButton from "src/components/grid-delete";
 import EditButton from "src/components/grid-edit";
-import { resetIntitalState } from "src/stores/city";
+import { resetIntitalState } from "src/stores/delivery-type";
 import CofirmDialog from "src/components/cofirmation-dialog";
 import { hexToRGBA } from "src/utils/hex-to-rgba";
 import { usePermission } from "src/hooks/usePermission";
 import { PAGE_SIZE_OPTIONS } from "src/configs/gridConfig";
 import CustomPagination from "src/components/custom-pagination";
 import TableHeader from "src/components/table-header";
-import { deleteCityAction, deleteMultipleCitiesAction, getAllCitiesAction } from "src/stores/city/action";
-import CreateEditCity from "./component/CreateEditCity";
+import { deleteDeliveryTypeAction, deleteMultipleDeliveryTypesAction, getAllDeliveryTypesAction } from "src/stores/delivery-type/action";
+import CreateEditDeliveryType from "./component/CreateEditDeliveryType";
 
 
 
 
-const CityList = () => {
+const DeliveryTypeList = () => {
     const { t, i18n } = useTranslation();
 
 
@@ -51,24 +51,24 @@ const CityList = () => {
     const dispatch: AppDispatch = useDispatch();
 
     const {
-        isSuccessDeleteCity,
-        isErrorDeleteCity,
-        messageErrorDeleteCity,
-        cities,
-        isSuccessCreateEdit,
-        message,
+        deliveryTypes,
         isErrorCreateEdit,
-        messageErrorCreateEdit,
+        isErrorDeleteDeliveryType,
+        isErrorDeleteMultipleDeliveryType,
         isLoading,
-        isSuccessMultipleDeleteCity,
-        isErrorDeleteMultipleCity,
-        messageErrorDeleteMultipleCity
-    } = useSelector((state: RootState) => state.city)
+        isSuccessCreateEdit,
+        isSuccessDeleteDeliveryType,
+        isSuccessMultipleDeleteDeliveryType,
+        message,
+        messageErrorCreateEdit,
+        messageErrorDeleteDeliveryType,
+        messageErrorDeleteMultipleDeliveryType,
+    } = useSelector((state: RootState) => state.deliveryType)
 
 
     const { VIEW, UPDATE, CREATE, DELETE } = usePermission("SETTING.CITY", ["CREATE", "VIEW", "UPDATE", "DELETE"])
 
-    const rows = cities?.data || [];
+    const rows = deliveryTypes?.data || [];
 
 
     const columns: GridColDef<any>[] = [
@@ -83,6 +83,20 @@ const CityList = () => {
                 const { row } = params
                 return <>
                     <Typography>{row?.name}</Typography>
+                </>
+            }
+        },
+        {
+            field: "price",
+            headerName: t("Price"),
+            width: 150,
+            editable: true,
+            flex: 1,
+            sortable: true,
+            renderCell: (params) => {
+                const { row } = params
+                return <>
+                    <Typography>{row?.price}</Typography>
                 </>
             }
         },
@@ -142,7 +156,7 @@ const CityList = () => {
         return (
             <>
                 <CustomPagination
-                    rowLength={cities?.total}
+                    rowLength={deliveryTypes?.total}
                     pageSize={pageSize}
                     page={page}
                     pageSizeOptions={PAGE_SIZE_OPTIONS}
@@ -173,7 +187,7 @@ const CityList = () => {
         setOpenCofirmMultipleDialog({ open: false });
     }
 
-    const handleGetListCities = async () => {
+    const handleGetListDeliveryTypes = async () => {
         const query: any = {
             params: {
                 limit: pageSize,
@@ -182,7 +196,7 @@ const CityList = () => {
                 order: sortBy,
             }
         }
-        await dispatch(getAllCitiesAction(query));
+        await dispatch(getAllDeliveryTypesAction(query));
     }
 
     const handleSort = (sort: GridSortModel) => {
@@ -200,13 +214,13 @@ const CityList = () => {
     }
 
     const handleDelete = () => {
-        dispatch(deleteCityAction({ id: openCofirmDialog?._id }))
+        dispatch(deleteDeliveryTypeAction({ id: openCofirmDialog?._id }))
         handleOnCloseCofirmDialog();
     }
 
     const handleDeleteMultipleCities = () => {
-        dispatch(deleteMultipleCitiesAction({
-            cityIds: selectedRow
+        dispatch(deleteMultipleDeliveryTypesAction({
+            deliveryTypeIds: selectedRow
         }))
     }
 
@@ -221,7 +235,7 @@ const CityList = () => {
 
 
     useEffect(() => {
-        handleGetListCities();
+        handleGetListDeliveryTypes();
     }, [sortBy, searchBy, i18n, page, pageSize])
 
 
@@ -229,7 +243,7 @@ const CityList = () => {
     useEffect(() => {
         setLoadingTmp(true)
         if (isSuccessCreateEdit) {
-            handleGetListCities();
+            handleGetListDeliveryTypes();
             toast.success(message)
         } else if (isErrorCreateEdit) {
             toast.error(messageErrorCreateEdit)
@@ -243,31 +257,31 @@ const CityList = () => {
 
     useEffect(() => {
         setLoadingTmp(true)
-        if (isSuccessDeleteCity) {
-            handleGetListCities();
+        if (isSuccessDeleteDeliveryType) {
+            handleGetListDeliveryTypes();
             toast.success("Delete successfully")
-        } else if (isErrorDeleteCity) {
-            toast.error(messageErrorDeleteCity)
+        } else if (isErrorDeleteDeliveryType) {
+            toast.error(messageErrorDeleteDeliveryType)
         }
         setLoadingTmp(false)
         handleOnCloseCreateEditModal();
         dispatch(resetIntitalState());
-    }, [isSuccessDeleteCity, isErrorDeleteCity, messageErrorDeleteCity])
+    }, [isSuccessDeleteDeliveryType, isErrorDeleteDeliveryType, messageErrorDeleteDeliveryType])
 
 
 
     useEffect(() => {
         setLoadingTmp(true)
-        if (isSuccessMultipleDeleteCity) {
-            handleGetListCities();
+        if (isSuccessMultipleDeleteDeliveryType) {
+            handleGetListDeliveryTypes();
             toast.success("Delete successfully")
-        } else if (isErrorDeleteMultipleCity) {
-            toast.error(messageErrorDeleteMultipleCity)
+        } else if (isErrorDeleteMultipleDeliveryType) {
+            toast.error(messageErrorDeleteMultipleDeliveryType)
         }
         setLoadingTmp(false)
         handleOnCloseCofirmMultiple()
         dispatch(resetIntitalState());
-    }, [isSuccessMultipleDeleteCity, isErrorDeleteMultipleCity, messageErrorDeleteMultipleCity])
+    }, [isSuccessMultipleDeleteDeliveryType, isErrorDeleteMultipleDeliveryType, messageErrorDeleteMultipleDeliveryType])
 
 
     return (
@@ -277,21 +291,21 @@ const CityList = () => {
                 onClose={handleOnCloseCofirmDialog}
                 handleAction={handleDelete}
                 title={t("Cofirm form")}
-                description={t("If you delete this city, it can't recover")}
+                description={t("If you delete this delivery-type, it can't recover")}
             ></CofirmDialog>
             <CofirmDialog
                 open={openCofirmMultipleDialog}
                 onClose={handleOnCloseCofirmMultiple}
                 handleAction={handleDeleteMultipleCities}
                 title={t("Delete Multiple Cities")}
-                description={t("If you delete cities, it can't recover")}
+                description={t("If you delete delivery-types, it can't recover")}
             ></CofirmDialog>
-            <CreateEditCity
+            <CreateEditDeliveryType
                 open={openCreateEdit?.open}
                 onClose={handleOnCloseCreateEditModal}
-                idCity={openCreateEdit?.id}
+                idDeliveryType={openCreateEdit?.id}
             >
-            </CreateEditCity>
+            </CreateEditDeliveryType>
             {(isLoading && isLoadingTmp) ?? <FallbackSpinner></FallbackSpinner>}
             <Box sx={{
                 backgroundColor: theme.palette.background.paper,
@@ -397,4 +411,4 @@ const CityList = () => {
 }
 
 
-export default CityList;
+export default DeliveryTypeList;

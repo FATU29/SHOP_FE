@@ -38,7 +38,7 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
 
 const CustomTextField = (props: TextFieldProps) => {
     const theme = useTheme(); // Lấy theme ở đây để có thể điều chỉnh theo chế độ dark/light
-    const { size = "small", variant = "standard", InputLabelProps, ...rests } = props;
+    const { size = "small", variant = "filled", InputLabelProps, ...rests } = props;
     return (
         <TextFieldStyled
             size={size}

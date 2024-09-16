@@ -1,14 +1,14 @@
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreateCity, TParamsDeleteMultipleCities, TParamsDeleteCity, TParamsEditCity, TParamsGetCities } from "src/styles/city";
+import { TParamsCreateDeliveryType,TParamsDeleteDeliveryType,TParamsDeleteMultipleDeliveryTypes,TParamsEditDeliveryType,TParamsGetDeliveryTypes } from "src/styles/delivery-type";
 
 const headers = {
   'Content-Type': 'application/json',
 };
 
-export const getAllCities = async (data: { params: TParamsGetCities }) => {
+export const getAllDeliveryTypes = async (data: { params: TParamsGetDeliveryTypes }) => {
   try {
-    const getAll = API_ENDPOINT.SETTING.CITY.INDEX;
+    const getAll = API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX;
     const res = await instanceAxios(getAll, {
       method: "GET",
       headers,
@@ -16,14 +16,14 @@ export const getAllCities = async (data: { params: TParamsGetCities }) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Error getting City:", error);
+    console.error("Error getting Delivery:", error);
     throw error; // Re-throw the error if you want it to be handled by the caller
   }
 };
 
-export const createCity = async (data: TParamsCreateCity) => {
+export const createDeliveryType = async (data: TParamsCreateDeliveryType) => {
   try {
-    const index = API_ENDPOINT.SETTING.CITY.INDEX;
+    const index = API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX;
     const res = await instanceAxios(`${index}`, {
       method: "POST",
       headers,
@@ -31,14 +31,14 @@ export const createCity = async (data: TParamsCreateCity) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Error creating City:", error);
+    console.error("Error creating Delivery:", error);
     throw error;
   }
 };
 
-export const updateCities = async (data: TParamsEditCity) => {
+export const updateDeliveryType = async (data: TParamsEditDeliveryType) => {
   try {
-    const index = API_ENDPOINT.SETTING.CITY.INDEX;
+    const index = API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX;
     const { id, ...rest } = data;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "PUT",
@@ -47,28 +47,28 @@ export const updateCities = async (data: TParamsEditCity) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Error updating City:", error);
+    console.error("Error updating Delivery:", error);
     throw error;
   }
 };
 
-export const deleteCity = async (data: TParamsDeleteCity) => {
+export const deleteDeliveryType = async (data: TParamsDeleteDeliveryType) => {
   try {
-    const index = API_ENDPOINT.SETTING.CITY.INDEX;
+    const index = API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX;
     const res = await instanceAxios(`${index}/${data.id}`, {
       method: "DELETE",
       headers
     });
     return res.data;
   } catch (error) {
-    console.error("Error deleting City:", error);
+    console.error("Error deleting Delivery:", error);
     throw error;
   }
 };
 
-export const deleteMultipleCities = async (data: TParamsDeleteMultipleCities) => {
+export const deleteMultipleDeliveryTypes = async (data: TParamsDeleteMultipleDeliveryTypes) => {
   try {
-    const index = API_ENDPOINT.SETTING.CITY.INDEX;
+    const index = API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX;
     const res = await instanceAxios(`${index}/delete-many`, {
       method: "DELETE",
       headers,
@@ -81,22 +81,22 @@ export const deleteMultipleCities = async (data: TParamsDeleteMultipleCities) =>
     }
     return { data: null }
   } catch (error) {
-    console.error("Error deleting multiple City:", error);
+    console.error("Error deleting multiple Delivery:", error);
     throw error;
   }
 };
 
 
-export const getDetailCity = async (id: string) => {
+export const getDetailDeliveryType = async (id: string) => {
   try {
-    const index = API_ENDPOINT.SETTING.CITY.INDEX;
+    const index = API_ENDPOINT.SETTING.DELIVERY_TYPE.INDEX;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "GET",
       headers
     });
     return res.data;
   } catch (error) {
-    console.error("Error get detail City:", error);
+    console.error("Error get detail Delivery:", error);
     throw error;
   }
 };

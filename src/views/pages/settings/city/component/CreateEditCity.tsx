@@ -19,7 +19,6 @@ interface TCreateEditCity {
     open: boolean,
     onClose: () => void,
     idCity?: string,
-    permissionSelected: string[]
 }
 
 
@@ -34,7 +33,7 @@ const CreateEditCity = (props: TCreateEditCity) => {
     const [isLoadingCheck, setLoadingCheck] = React.useState<boolean>(false);
 
 
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const theme = useTheme();
     const dispatch: AppDispatch = useDispatch();
     const { isLoading } = useSelector((state: RootState) => state.city)
