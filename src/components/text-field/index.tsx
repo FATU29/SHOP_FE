@@ -1,4 +1,4 @@
-import { TextFieldProps, TextField, styled, useTheme } from "@mui/material";
+import { TextFieldProps, TextField, styled } from "@mui/material";
 
 const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
     return {
@@ -16,8 +16,8 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
             width: "100%",
             backgroundColor:
                 theme.palette.mode === "dark"
-                    ? theme.palette.background.paper // Background khi ở chế độ dark
-                    : theme.palette.grey[100], // Background khi ở chế độ light
+                    ? theme.palette.background.default // Background khi ở chế độ dark
+                    : theme.palette.grey[200], // Background khi ở chế độ light
             border: `1px solid rgba(${theme.palette.customColors.main},0.2)`,
             transition: theme.transitions.create(["border-color", "box-shadow"], {
                 duration: theme.transitions.duration.shorter,
@@ -28,16 +28,23 @@ const TextFieldStyled = styled(TextField)<TextFieldProps>(({ theme }) => {
             ".MuiInputBase-input": {
                 padding: "12px 16px",
                 width: "100%",
+                color:
+                    theme.palette.mode === "dark"
+                        ? theme.palette.text.primary // Màu chữ khi ở chế độ dark
+                        : theme.palette.text.secondary, // Màu chữ khi ở chế độ light
             },
         },
         ".MuiFormHelperText-root": {
             marginLeft: 0,
+            color:
+                theme.palette.mode === "dark"
+                    ? theme.palette.text.secondary // Màu thông báo khi ở chế độ dark
+                    : theme.palette.text.primary, // Màu thông báo khi ở chế độ light
         },
     };
 });
 
 const CustomTextField = (props: TextFieldProps) => {
-    const theme = useTheme(); // Lấy theme ở đây để có thể điều chỉnh theo chế độ dark/light
     const { size = "small", variant = "filled", InputLabelProps, ...rests } = props;
     return (
         <TextFieldStyled
