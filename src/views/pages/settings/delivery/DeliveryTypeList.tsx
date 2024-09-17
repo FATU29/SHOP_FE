@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, useTheme } from "@mui/material";
+import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "src/stores";
@@ -232,6 +232,12 @@ const DeliveryTypeList = () => {
         }
     }
 
+    const handleClearFilter = () => {
+        setSortBy("")
+        setSearchBy("");
+        handleGetListDeliveryTypes();
+    }
+
 
 
     useEffect(() => {
@@ -332,6 +338,12 @@ const DeliveryTypeList = () => {
                                         gap: "5px"
 
                                     }}>
+                                        <Box>
+                                            <Button onClick={handleClearFilter} sx={{
+                                                backgroundColor: theme.palette.primary.main,
+                                                color: theme.palette.common.white
+                                            }}>{t("Clear filter")}</Button>
+                                        </Box>
                                         <Box sx={{
                                             width: "200px"
                                         }}>
