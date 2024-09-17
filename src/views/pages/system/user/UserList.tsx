@@ -1,4 +1,4 @@
-import { Box, Chip, ChipProps, Grid, styled, Typography, useTheme } from "@mui/material";
+import { Box, Button, Chip, ChipProps, Grid, styled, Typography, useTheme } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "src/stores";
@@ -25,6 +25,7 @@ import { CONFIG_PERMISSIONS } from "src/configs/permission";
 import CustomSelect from "src/components/custom-select";
 import { getAllRoles } from "src/services/role";
 import { OBJECT_STATUS_USER } from "src/configs/users";
+import { getAllCities } from "src/services/city";
 
 
 
@@ -73,20 +74,21 @@ const UserList = () => {
 
     const [openCofirmMultipleDialog, setOpenCofirmMultipleDialog] = useState<{ open: boolean }>({ open: false });
     const [listRole, setListRole] = useState<{ label: string, value: string }[]>([]);
-    
-    
-    
+    const [listCities, setListCities] = useState<{ label: string, value: string }[]>([]);
+
+
+
     const [searchBy, setSearchBy] = useState<string>("")
     const [isLoadingTmp, setLoadingTmp] = useState<boolean>(false);
     const [sortBy, setSortBy] = useState<string>("createdAt asc");
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
-    const [permissionSelected, setPermissionSelected] = useState<string[]>([]);
     const [selectedRow, setSelectedRow] = useState<TSelectedRow[]>([]);
     const [roleSelected, setRoleSelected] = useState<string>("");
-    const [fillterBy, setFillterBy] = useState<Record<string, string>>({});
     const [statusSelected, setStatusSelected] = useState<string>("");
-    
+    const [citySelected, setCitySelected] = useState<string>("");
+    const [fillterBy, setFillterBy] = useState<Record<string, string>>({});
+
 
     const theme = useTheme();
 
@@ -183,7 +185,7 @@ const UserList = () => {
             renderCell: (params) => {
                 const { row } = params
                 return <>
-                    <Typography>{row?.city && ""}</Typography>
+                    <Typography>{row?.city?.name}</Typography>
                 </>
             }
         },
@@ -251,10 +253,10 @@ const UserList = () => {
 
 
 
+
     const handleOnChangePagination = (page: number, pageSize: number) => {
         setPage(page)
         setPageSize(pageSize);
-        console.log("page", page, " ", pageSize)
     }
 
     const PaginationComponent = () => {
@@ -296,6 +298,17 @@ const UserList = () => {
     const handleOnCloseCofirmMultiple = () => {
         setOpenCofirmMultipleDialog({ open: false });
     }
+
+    const handleClearFilter = () => {
+        setFillterBy({});
+        setSortBy("")
+        setSearchBy("");
+        setStatusSelected("")
+        setRoleSelected("")
+        setCitySelected("")
+        handleGetListUsers();
+    }
+
 
     const handleGetListUsers = async () => {
         const query: any = {
@@ -363,6 +376,26 @@ const UserList = () => {
     }
 
 
+    const fetchAllCities = async () => {
+        setLoadingTmp(true);
+        await getAllCities({ params: { limit: -1, page: -1 } }).then((res) => {
+            const data = res?.data?.cities
+            if(data){
+                const objectListCities = data?.map((item:any) => {
+                    return {
+                        label:item?.name,
+                        value:item?._id
+                    }
+                })
+                setListCities(objectListCities)
+            }
+        }).catch((e:any) => {
+            setLoadingTmp(false);
+        })
+        setLoadingTmp(false);
+    }
+
+
     useEffect(() => {
         handleGetListUsers();
     }, [sortBy, searchBy, i18n, page, pageSize, fillterBy])
@@ -370,11 +403,12 @@ const UserList = () => {
 
     useEffect(() => {
         fetchAllRoles();
+        fetchAllCities();
     }, [])
 
     useEffect(() => {
-        setFillterBy({ roleId: roleSelected,status:statusSelected })
-    }, [roleSelected,statusSelected])
+        setFillterBy({ roleId: roleSelected, status: statusSelected, cityId:citySelected })
+    }, [roleSelected, statusSelected,citySelected])
 
     useEffect(() => {
         setLoadingTmp(true)
@@ -439,7 +473,6 @@ const UserList = () => {
                 description={t("If you delete users, it can't recover")}
             ></CofirmDialog>
             <CreateEditUser
-                permissionSelected={permissionSelected}
                 open={openCreateEdit?.open}
                 onClose={handleOnCloseCreateEditModal}
                 idUser={openCreateEdit?.id}
@@ -468,10 +501,16 @@ const UserList = () => {
                                         justifyContent: "right",
                                         alignItems: "center",
                                         marginBottom: 5,
-                                        gap:"5px",
-                                        flexDirection:{md:"row",xs:"column"}
+                                        gap: "5px",
+                                        flexDirection: { md: "row", xs: "column" }
                                     }
                                     }>
+                                        <Box>
+                                            <Button onClick={handleClearFilter} sx={{
+                                                backgroundColor: theme.palette.primary.main,
+                                                color: theme.palette.common.white
+                                            }}>{t("Clear filter")}</Button>
+                                        </Box>
                                         <Box sx={{
                                             width: "200px",
                                             mt: "-20px"
@@ -490,7 +529,7 @@ const UserList = () => {
                                         </Box>
                                         <Box sx={{
                                             width: "200px",
-                                            mt: {md:"-20px",xs:"0"}
+                                            mt: { md: "-20px", xs: "0" }
                                         }}>
                                             <CustomSelect
                                                 label={t("Role")}
@@ -502,14 +541,31 @@ const UserList = () => {
                                                 options={listRole}
                                                 content={t("Role")}
                                             ></CustomSelect>
-
+                                        </Box>
+                                        <Box sx={{
+                                            width: "200px",
+                                            mt: { md: "-20px", xs: "0" }
+                                        }}>
+                                            <CustomSelect
+                                                label={t("City")}
+                                                fullWidth={true}
+                                                onChange={(e) => {
+                                                    setCitySelected(e?.target?.value as string)
+                                                }}
+                                                value={citySelected}
+                                                options={listCities}
+                                                content={t("City")}
+                                            ></CustomSelect>
                                         </Box>
                                         <Box sx={{
                                             width: "200px"
                                         }}>
-                                            <InputSearch value={searchBy} onChange={(value: string) => {
-                                                setSearchBy(value)
-                                            }}></InputSearch>
+                                            <InputSearch
+                                                value={searchBy}
+                                                onChange={(value: string) => {
+                                                    setSearchBy(value)
+                                                }}>
+                                            </InputSearch>
                                         </Box>
                                         <AddButton
                                             disabled={!CREATE}

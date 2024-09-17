@@ -18,13 +18,14 @@ import WrapperFileUpload from 'src/views/layouts/components/wrap-file-upload';
 import { convertImgToBase64, separationFullname, toFullName } from 'src/utils';
 import { getAllRoles } from 'src/services/role';
 import { useAuth } from 'src/hooks/useAuth';
+import { getAllCities } from 'src/services/city';
 
 
 interface TCreateEditUser {
     open: boolean,
     onClose: () => void,
     idUser?: string,
-    permissionSelected: string[]
+
 }
 
 
@@ -46,6 +47,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
     const [isLoadingCheck, setLoadingCheck] = React.useState<boolean>(false);
     const [avatar, setAvatar] = React.useState<string>("");
     const [listRole, setListRole] = React.useState<{ label: string, value: string }[]>([]);
+    const [listCities, setListCities] = React.useState<{ label: string, value: string }[]>([]);
     const [isDisableRole, setIsDisableRole] = React.useState<boolean>(false);
     const [showPassword, setShowPassword] = React.useState<Boolean>(false);
 
@@ -59,7 +61,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
     const { userData } = useSelector((state: RootState) => state.auth)
 
 
-    const { open, onClose, idUser, permissionSelected } = props;
+    const { open, onClose, idUser} = props;
 
 
 
@@ -155,6 +157,25 @@ const CreateEditUser = (props: TCreateEditUser) => {
         await setLoadingCheck(false);
     }
 
+    const fetchAllCities = async () => {
+        setLoadingCheck(true);
+        await getAllCities({ params: { limit: -1, page: -1 } }).then((res) => {
+            const data = res?.data?.cities
+            if(data){
+                const objectListCities = data?.map((item:any) => {
+                    return {
+                        label:item?.name,
+                        value:item?._id
+                    }
+                })
+                setListCities(objectListCities)
+            }
+        }).catch((e:any) => {
+            setLoadingCheck(false);
+        })
+        setLoadingCheck(false);
+    }
+
 
     const fetchDetailsUsers = async (id: string) => {
         setLoadingCheck(true);
@@ -179,6 +200,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
 
     React.useEffect(() => {
         fetchAllRoles();
+        fetchAllCities();
     }, [])
 
 
@@ -198,6 +220,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
             setUser({ ...userData,["avatar"]:avatar })
         }
     }, [message])
+
 
 
 
@@ -472,7 +495,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                                                                     onChange={onChange}
                                                                     onBlur={onBlur}
                                                                     value={value}
-                                                                    options={[]}
+                                                                    options={listCities}
                                                                     content={t("City")}
                                                                 ></CustomSelect>
                                                             </>
