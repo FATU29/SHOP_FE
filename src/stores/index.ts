@@ -7,6 +7,7 @@ import auth from 'src/stores/auth'
 import role from 'src/stores/role'
 import city from 'src/stores/city'
 import deliveryType from 'src/stores/delivery-type'
+import paymentType from 'src/stores/payment-type'
 
 
 export const store = configureStore({
@@ -15,7 +16,8 @@ export const store = configureStore({
     auth,
     role,
     city,
-    deliveryType
+    deliveryType,
+    paymentType
     
   },
   middleware: getDefaultMiddleware =>

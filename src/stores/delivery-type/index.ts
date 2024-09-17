@@ -84,7 +84,7 @@ export const citySlice = createSlice({
       state.isLoading = false
       state.isSuccessCreateEdit = true
       state.isErrorCreateEdit = false
-      state.message = "Adding a Successful city"
+      state.message = "Adding a Successful delivery"
       state.typeError = ""
 
 
@@ -108,7 +108,7 @@ export const citySlice = createSlice({
       state.isSuccessCreateEdit = action?.payload?.data?._id
       state.isErrorCreateEdit = false
       state.messageErrorCreateEdit = ""
-      state.message = "Update a successful city"
+      state.message = "Update a successful delivery"
       state.typeError = ""
 
     })

@@ -11,20 +11,20 @@ import FallbackSpinner from "src/components/fall-back";
 import toast from "react-hot-toast";
 import DeleteButton from "src/components/grid-delete";
 import EditButton from "src/components/grid-edit";
-import { resetIntitalState } from "src/stores/delivery-type";
+import { resetIntitalState } from "src/stores/payment-type";
 import CofirmDialog from "src/components/cofirmation-dialog";
 import { hexToRGBA } from "src/utils/hex-to-rgba";
 import { usePermission } from "src/hooks/usePermission";
 import { PAGE_SIZE_OPTIONS } from "src/configs/gridConfig";
 import CustomPagination from "src/components/custom-pagination";
 import TableHeader from "src/components/table-header";
-import { deleteDeliveryTypeAction, deleteMultipleDeliveryTypesAction, getAllDeliveryTypesAction } from "src/stores/delivery-type/action";
-import CreateEditDeliveryType from "./component/CreateEditDeliveryType";
+import { deletePaymentTypeAction, deleteMultiplePaymentTypesAction, getAllPaymentTypesAction } from "src/stores/payment-type/action";
+import CreateEditPaymentType from "./component/CreateEditPaymentType";
 
 
 
 
-const DeliveryTypeList = () => {
+const PaymentTypeList = () => {
     const { t, i18n } = useTranslation();
 
 
@@ -51,24 +51,24 @@ const DeliveryTypeList = () => {
     const dispatch: AppDispatch = useDispatch();
 
     const {
-        deliveryTypes,
-        isErrorCreateEdit,
-        isErrorDeleteDeliveryType,
-        isErrorDeleteMultipleDeliveryType,
-        isLoading,
-        isSuccessCreateEdit,
-        isSuccessDeleteDeliveryType,
-        isSuccessMultipleDeleteDeliveryType,
-        message,
-        messageErrorCreateEdit,
-        messageErrorDeleteDeliveryType,
-        messageErrorDeleteMultipleDeliveryType,
-    } = useSelector((state: RootState) => state.deliveryType)
+       isErrorCreateEdit,
+       isErrorDeleteMultiplePaymentType,
+       isErrorDeletePaymentType,
+       isLoading,
+       isSuccessCreateEdit,
+       isSuccessDeletePaymentType,
+       isSuccessMultipleDeletePaymentType,
+       message,
+       messageErrorCreateEdit,
+       messageErrorDeleteMultiplePaymentType,
+       messageErrorDeletePaymentType,
+       paymentTypes,
+    } = useSelector((state: RootState) => state.paymentType)
 
 
-    const { VIEW, UPDATE, CREATE, DELETE } = usePermission("SETTING.DELIVERY_TYPE", ["CREATE", "VIEW", "UPDATE", "DELETE"])
+    const { VIEW, UPDATE, CREATE, DELETE } = usePermission("SETTING.PAYMENT_TYPE", ["CREATE", "VIEW", "UPDATE", "DELETE"])
 
-    const rows = deliveryTypes?.data || [];
+    const rows = paymentTypes?.data || [];
 
 
     const columns: GridColDef<any>[] = [
@@ -87,8 +87,8 @@ const DeliveryTypeList = () => {
             }
         },
         {
-            field: "price",
-            headerName: t("Price"),
+            field: "type",
+            headerName: t("Type"),
             width: 150,
             editable: true,
             flex: 1,
@@ -96,7 +96,7 @@ const DeliveryTypeList = () => {
             renderCell: (params) => {
                 const { row } = params
                 return <>
-                    <Typography>{row?.price}</Typography>
+                    <Typography>{row?.type}</Typography>
                 </>
             }
         },
@@ -156,7 +156,7 @@ const DeliveryTypeList = () => {
         return (
             <>
                 <CustomPagination
-                    rowLength={deliveryTypes?.total}
+                    rowLength={paymentTypes?.total}
                     pageSize={pageSize}
                     page={page}
                     pageSizeOptions={PAGE_SIZE_OPTIONS}
@@ -187,7 +187,7 @@ const DeliveryTypeList = () => {
         setOpenCofirmMultipleDialog({ open: false });
     }
 
-    const handleGetListDeliveryTypes = async () => {
+    const handleGetListPaymentTypes = async () => {
         const query: any = {
             params: {
                 limit: pageSize,
@@ -196,7 +196,7 @@ const DeliveryTypeList = () => {
                 order: sortBy,
             }
         }
-        await dispatch(getAllDeliveryTypesAction(query));
+        await dispatch(getAllPaymentTypesAction(query));
     }
 
     const handleSort = (sort: GridSortModel) => {
@@ -214,13 +214,13 @@ const DeliveryTypeList = () => {
     }
 
     const handleDelete = () => {
-        dispatch(deleteDeliveryTypeAction({ id: openCofirmDialog?._id }))
+        dispatch(deletePaymentTypeAction({ id: openCofirmDialog?._id }))
         handleOnCloseCofirmDialog();
     }
 
     const handleDeleteMultipleCities = () => {
-        dispatch(deleteMultipleDeliveryTypesAction({
-            deliveryTypeIds: selectedRow
+        dispatch(deleteMultiplePaymentTypesAction({
+            paymentTypeIds: selectedRow
         }))
     }
 
@@ -235,7 +235,7 @@ const DeliveryTypeList = () => {
 
 
     useEffect(() => {
-        handleGetListDeliveryTypes();
+        handleGetListPaymentTypes();
     }, [sortBy, searchBy, i18n, page, pageSize])
 
 
@@ -243,7 +243,7 @@ const DeliveryTypeList = () => {
     useEffect(() => {
         setLoadingTmp(true)
         if (isSuccessCreateEdit) {
-            handleGetListDeliveryTypes();
+            handleGetListPaymentTypes();
             toast.success(message)
         } else if (isErrorCreateEdit) {
             toast.error(messageErrorCreateEdit)
@@ -257,31 +257,31 @@ const DeliveryTypeList = () => {
 
     useEffect(() => {
         setLoadingTmp(true)
-        if (isSuccessDeleteDeliveryType) {
-            handleGetListDeliveryTypes();
+        if (isSuccessDeletePaymentType) {
+            handleGetListPaymentTypes();
             toast.success("Delete successfully")
-        } else if (isErrorDeleteDeliveryType) {
-            toast.error(messageErrorDeleteDeliveryType)
+        } else if (isErrorDeletePaymentType) {
+            toast.error(messageErrorDeletePaymentType)
         }
         setLoadingTmp(false)
         handleOnCloseCreateEditModal();
         dispatch(resetIntitalState());
-    }, [isSuccessDeleteDeliveryType, isErrorDeleteDeliveryType, messageErrorDeleteDeliveryType])
+    }, [isSuccessDeletePaymentType, isErrorDeletePaymentType, messageErrorDeletePaymentType])
 
 
 
     useEffect(() => {
         setLoadingTmp(true)
-        if (isSuccessMultipleDeleteDeliveryType) {
-            handleGetListDeliveryTypes();
+        if (isSuccessMultipleDeletePaymentType) {
+            handleGetListPaymentTypes();
             toast.success("Delete successfully")
-        } else if (isErrorDeleteMultipleDeliveryType) {
-            toast.error(messageErrorDeleteMultipleDeliveryType)
+        } else if (isErrorDeleteMultiplePaymentType) {
+            toast.error(messageErrorDeleteMultiplePaymentType)
         }
         setLoadingTmp(false)
         handleOnCloseCofirmMultiple()
         dispatch(resetIntitalState());
-    }, [isSuccessMultipleDeleteDeliveryType, isErrorDeleteMultipleDeliveryType, messageErrorDeleteMultipleDeliveryType])
+    }, [isSuccessMultipleDeletePaymentType, isErrorDeleteMultiplePaymentType, messageErrorDeleteMultiplePaymentType])
 
 
     return (
@@ -291,22 +291,22 @@ const DeliveryTypeList = () => {
                 onClose={handleOnCloseCofirmDialog}
                 handleAction={handleDelete}
                 title={t("Cofirm form")}
-                description={t("If you delete this delivery-type, it can't recover")}
+                description={t("If you delete this payment-type, it can't recover")}
             ></CofirmDialog>
             <CofirmDialog
                 open={openCofirmMultipleDialog}
                 onClose={handleOnCloseCofirmMultiple}
                 handleAction={handleDeleteMultipleCities}
                 title={t("Delete Multiple Cities")}
-                description={t("If you delete delivery-types, it can't recover")}
+                description={t("If you delete payment-types, it can't recover")}
             ></CofirmDialog>
-            <CreateEditDeliveryType
+            <CreateEditPaymentType
                 open={openCreateEdit?.open}
                 onClose={handleOnCloseCreateEditModal}
-                idDeliveryType={openCreateEdit?.id}
+                idPaymentType={openCreateEdit?.id}
             >
-            </CreateEditDeliveryType>
-            {(isLoading && isLoadingTmp) && <FallbackSpinner></FallbackSpinner>}
+            </CreateEditPaymentType>
+            {(isLoading && isLoadingTmp) ?? <FallbackSpinner></FallbackSpinner>}
             <Box sx={{
                 backgroundColor: theme.palette.background.paper,
                 borderRadius: "10px",
@@ -411,4 +411,4 @@ const DeliveryTypeList = () => {
 }
 
 
-export default DeliveryTypeList;
+export default PaymentTypeList;

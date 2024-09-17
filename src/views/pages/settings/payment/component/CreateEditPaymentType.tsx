@@ -1,5 +1,6 @@
-import { Box, Button, FormControlLabel, Grid, IconButton, Switch, Typography, useTheme } from '@mui/material';
+import { Box, Button, Grid, IconButton, Typography, useTheme } from '@mui/material';
 import * as React from 'react';
+import * as yup from "yup"
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,28 +8,31 @@ import IconifyIcon from 'src/components/Icon';
 import CustomTextField from 'src/components/text-field';
 import { AppDispatch, RootState } from 'src/stores';
 import { yupResolver } from "@hookform/resolvers/yup"
-import * as yup from "yup"
 import FallbackSpinner from 'src/components/fall-back';
-import { createDeliveryTypeAction, updateDeliveryTypeAction } from 'src/stores/delivery-type/action';
-import { getDetailDeliveryType } from 'src/services/delivery-type';
 import CustomModal from 'src/components/custom-modal';
+import { createPaymentTypeAction, updatePaymentTypeAction } from 'src/stores/payment-type/action';
+import { getDetailPaymentType } from 'src/services/payment-type';
+import CustomSelect from 'src/components/custom-select';
+import { PAYMENT_TYPES } from 'src/configs/payment';
 
 
-interface TCreateEditDeliveryType {
+interface TCreateEditPaymentType {
     open: boolean,
     onClose: () => void,
-    idDeliveryType?: string,
+    idPaymentType?: string,
 }
 
 
 type TDefaultValue = {
     name: string,
-    price: number
+    type: string
 }
 
 
 
-const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
+const CreateEditPaymentType = (props: TCreateEditPaymentType) => {
+
+    const ObjectPaymentType = PAYMENT_TYPES();
 
     const [isLoadingCheck, setLoadingCheck] = React.useState<boolean>(false);
 
@@ -39,21 +43,19 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
     const { isLoading } = useSelector((state: RootState) => state.deliveryType)
 
 
-    const { open, onClose, idDeliveryType } = props;
+    const { open, onClose, idPaymentType } = props;
 
 
 
     const defaultValues: TDefaultValue = {
         name: "",
-        price: 1000
+        type: "PAYMENT_LATER"
     }
 
     const schema = yup
         .object({
             name: yup.string().required("Name is a required field"),
-            price: yup.number().required("Price is a required field").test('Higher or equal 1000','Higher or equal 1000', (value) => {
-                return value >= 1000
-            }),
+            type: yup.string().required("Type is a required field"),
 
         })
         .required()
@@ -69,16 +71,16 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
 
     const onSubmit = async (data: any) => {
         if (!Object.keys(errors).length) {
-            if (idDeliveryType) {
-                dispatch(updateDeliveryTypeAction({
+            if (idPaymentType) {
+                dispatch(updatePaymentTypeAction({
                     name: data?.name,
-                    price: data?.price,
-                    id: idDeliveryType
+                    type: data?.type,
+                    id: idPaymentType
                 }))
             } else {
-                dispatch(createDeliveryTypeAction({
+                dispatch(createPaymentTypeAction({
                     name: data?.name,
-                    price: data?.price
+                    type: data?.type
                 }))
             }
         }
@@ -86,14 +88,14 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
 
 
 
-    const fetchDetailDeliveryType = async (id: string) => {
+    const fetchDetailPaymentType = async (id: string) => {
         setLoadingCheck(true);
-        const res: any = await getDetailDeliveryType(id);
+        const res: any = await getDetailPaymentType(id);
         const data = res?.data;
         if (data) {
             reset({
                 name: data?.name,
-                price: data?.price
+                type: data?.type
             })
         }
         setLoadingCheck(false);
@@ -106,10 +108,11 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
             reset({
                 ...defaultValues
             })
-        } else if (open && idDeliveryType) {
-            fetchDetailDeliveryType(idDeliveryType)
+        } else if (open && idPaymentType) {
+            fetchDetailPaymentType(idPaymentType)
         }
-    }, [open, idDeliveryType])
+    }, [open, idPaymentType])
+
 
 
 
@@ -151,7 +154,7 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
                         <Box>
                             <Typography variant='h4' sx={{
                                 fontWeight: 600
-                            }}> {!idDeliveryType ? t("Create") : t("Change")}</Typography>
+                            }}> {!idPaymentType ? t("Create") : t("Change")}</Typography>
                         </Box>
                         <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
                             <Grid container item md={12} xs={12} spacing={5}>
@@ -164,8 +167,8 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
                                                     <CustomTextField
                                                         fullWidth
                                                         required
-                                                        label={t("Delivery Type")}
-                                                        placeholder={t("Enter delivery-type name")}
+                                                        label={t("Payment Type")}
+                                                        placeholder={t("Enter payment-type name")}
                                                         onChange={onChange}
                                                         onBlur={onBlur}
                                                         value={value}
@@ -183,18 +186,21 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
                                             <Controller
                                                 control={control}
                                                 render={({ field: { onChange, onBlur, value } }) => (
-                                                    <CustomTextField
+                                                    <CustomSelect
+                                                        content='Type'
+                                                        options={Object.values(ObjectPaymentType)}
                                                         fullWidth
                                                         required
-                                                        label={t("Price")}
-                                                        placeholder={t("Enter price")}
-                                                        onChange={onChange}
+                                                        label={t("Type")}
+                                                        placeholder={t("Enter type")}
+                                                        onChange={(e) => {
+                                                            onChange(e.target.value)
+                                                        }}
                                                         onBlur={onBlur}
                                                         value={value}
-                                                        helperText={errors.price?.message}
-                                                    ></CustomTextField>
+                                                    ></CustomSelect>
                                                 )}
-                                                name="price"
+                                                name="type"
                                             />
                                         </Box>
                                     </Grid>
@@ -207,7 +213,7 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
                                 mt: "15px"
                             }}>
                                 <Button type="submit" variant="contained" size="large">
-                                    {!idDeliveryType ? t("Create") : t("Change")}
+                                    {!idPaymentType ? t("Create") : t("Change")}
                                 </Button>
                             </Box>
                         </form>
@@ -219,4 +225,4 @@ const CreateEditDeliveryType = (props: TCreateEditDeliveryType) => {
 }
 
 
-export default CreateEditDeliveryType;
+export default CreateEditPaymentType;

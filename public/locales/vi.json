@@ -45,5 +45,6 @@
     "Blocking": "Chặn",
     "status": "Trạng thái",
     "Price": "Giá tiền",
-    "Enter price": "Nhập giá tiền"
+    "Enter price": "Nhập giá tiền",
+    "type":"Loại"
 }
