@@ -123,14 +123,7 @@ const RoleList = () => {
         });
     }
 
-    const handleClearFilter = () => {
-        setFillterBy({});
-        setSortBy("")
-        setSearchBy("");
-        setStatusSelected("")
-        setRoleSelected("")
-        handleGetListUsers();
-    }
+    
 
 
     const handleGetListRoles = () => {
