@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {createCity,deleteCity,deleteMultipleCities,getAllCities,getDetailCity,updateCities } from "src/services/city";
-import { TParamsCreateCity, TParamsDeleteCity, TParamsDeleteMultipleCities, TParamsEditCity, TParamsGetCities } from "src/styles/city";
+import { TParamsCreateCity, TParamsDeleteCity, TParamsDeleteMultipleCities, TParamsEditCity, TParamsGetCities } from "src/types/city";
 
 
 

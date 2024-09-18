@@ -19,6 +19,7 @@ import { updateAuthMeAction } from "src/stores/auth/action";
 import FallbackSpinner from "src/components/fall-back";
 import CustomSelect from "src/components/custom-select";
 import { getAllRoles } from "src/services/role";
+import { getAllCities } from "src/services/city";
 
 type TProps = {}
 
@@ -39,6 +40,7 @@ const MyProfile: NextPage<TProps> = () => {
     const [user, setUser] = useState<any | null>(null);
     const [avatar, setAvatar] = useState<string>("");
     const [listRole, setListRole] = useState<{ label: string, value: string }[]>([]);
+    const [listCities, setListCities] = useState<{ label: string, value: string }[]>([])
     const [isDisableRole, setIsDisableRole] = useState<boolean>(false);
 
 
@@ -139,15 +141,36 @@ const MyProfile: NextPage<TProps> = () => {
         setLoading(false);
     }
 
+    const fetchAllCities = async () => {
+        setLoading(true);
+        await getAllCities({ params: { limit: -1, page: -1 } }).then((res) => {
+            const data = res?.data?.cities;
+            if (data) {
+                const objectListCities = data?.map((item: any) => {
+                    return {
+                        label: item.name,
+                        value: item._id
+                    }
+                })
+                setListCities(objectListCities)
+                
+            }
+        }).catch((e: any) => {
+            setLoading(false);
+        })
+        setLoading(false);
+    }
+
     useEffect(() => {
         fetchGetAuthMe();
     }, [i18n.language])
 
     useEffect(() => {
         fetchAllRoles();
+        fetchAllCities();
     }, [])
 
-   
+
 
     useEffect(() => {
         if (messageUpdateMe) {
@@ -275,16 +298,14 @@ const MyProfile: NextPage<TProps> = () => {
                                         <Controller
                                             control={control}
                                             render={({ field: { onChange, onBlur, value } }) => {
-                                               return <>
+                                                return <>
                                                     <CustomSelect
                                                         value={value}
                                                         fullWidth
                                                         content={t("Role")}
                                                         error={Boolean(errors.role)}
                                                         onBlur={onBlur}
-                                                        onChange={(e) => {
-                                                            onChange(e.target.value)
-                                                        }}
+                                                        onChange={onChange}
                                                         options={listRole}
                                                         label={t("Role")}
                                                         placeholder="Enter your role"
@@ -358,7 +379,7 @@ const MyProfile: NextPage<TProps> = () => {
                                                     onChange={onChange}
                                                     onBlur={onBlur}
                                                     value={value}
-                                                    options={[]}
+                                                    options={listCities}
                                                     content={t("City")}
                                                 ></CustomSelect>
                                             </>

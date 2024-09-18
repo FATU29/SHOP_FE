@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createDeliveryType,deleteDeliveryType,deleteMultipleDeliveryTypes,getAllDeliveryTypes,getDetailDeliveryType,updateDeliveryType } from "src/services/delivery-type";
-import { TParamsCreateDeliveryType, TParamsDeleteDeliveryType, TParamsDeleteMultipleDeliveryTypes, TParamsEditDeliveryType, TParamsGetDeliveryTypes } from "src/styles/delivery-type";
+import { TParamsCreateDeliveryType, TParamsDeleteDeliveryType, TParamsDeleteMultipleDeliveryTypes, TParamsEditDeliveryType, TParamsGetDeliveryTypes } from "src/types/delivery-type";
 
 
 

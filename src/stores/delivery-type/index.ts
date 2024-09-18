@@ -38,7 +38,7 @@ const initialState = {
 }
 
 
-export const citySlice = createSlice({
+export const deliverySlice = createSlice({
   name: serviceName,
   initialState,
   reducers: {
@@ -170,5 +170,5 @@ export const citySlice = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { resetIntitalState } = citySlice.actions
-export default citySlice.reducer
+export const { resetIntitalState } = deliverySlice.actions
+export default deliverySlice.reducer

@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreateCity, TParamsDeleteMultipleCities, TParamsDeleteCity, TParamsEditCity, TParamsGetCities } from "src/styles/city";
+import { TParamsCreateCity, TParamsDeleteMultipleCities, TParamsDeleteCity, TParamsEditCity, TParamsGetCities } from "src/types/city";
 
 const headers = {
   'Content-Type': 'application/json',

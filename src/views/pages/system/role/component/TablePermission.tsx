@@ -15,7 +15,6 @@ interface TProps {
     setPermissionSelected: React.Dispatch<React.SetStateAction<string[]>>,
     permissionSelected: string[],
     disable: boolean
-
 }
 
 
@@ -152,7 +151,6 @@ const TablePermission = (props: TProps) => {
             minWidth: 100,
             maxWidth: 100,
             sortable: false,
-
             renderCell: (params: GridRenderCellParams) => {
                 const { row } = params;
                 const value = getValuePermission(row.value, "VIEW", row.parentValue);

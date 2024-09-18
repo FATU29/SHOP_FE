@@ -2,7 +2,7 @@
 import { API_ENDPOINT } from "src/configs/api";
 
 // ** type
-import { TChangePassword, TLoginAuth, TRegisterAuth } from "src/styles/auth";
+import { TChangePassword, TLoginAuth, TRegisterAuth } from "src/types/auth";
 
 // ** fetch
 import { instanceAxios } from "src/helpers/intercepterAxios";

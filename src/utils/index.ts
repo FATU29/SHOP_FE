@@ -70,9 +70,9 @@ export const getAllValueObject = (obj: any, arrExlude?: string[]) => {
     const value: any[] = [];
     for (let key in obj) {
       if (typeof obj[key] === "object") {
-        value.push(...getAllValueObject(obj[key],arrExlude))
+        value.push(...getAllValueObject(obj[key], arrExlude))
       } else {
-        if(!arrExlude?.includes(obj[key])){
+        if (!arrExlude?.includes(obj[key])) {
           value.push(obj[key])
         }
       }
@@ -82,4 +82,21 @@ export const getAllValueObject = (obj: any, arrExlude?: string[]) => {
   } catch (error) {
     return []
   }
+}
+
+
+export const stringToSlug = (str: string) => {
+  // remove accents
+  var from = "àáãảạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđùúủũụưừứửữựòóỏõọôồốổỗộơờớởỡợìíỉĩịäëïîöüûñçýỳỹỵỷ",
+    to = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeduuuuuuuuuuuoooooooooooooooooiiiiiaeiiouuncyyyyy";
+  for (var i = 0, l = from.length; i < l; i++) {
+    str = str.replace(RegExp(from[i], "gi"), to[i]);
+  }
+
+  str = str.toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\-]/g, '-')
+    .replace(/-+/g, '-');
+
+  return str;
 }
