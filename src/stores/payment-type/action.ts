@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createPaymentType,deletePaymentType,deleteMultiplePaymentTypes,getAllPaymentTypes,getDetailPaymentType,updatePaymentType } from "src/services/payment-type";
-import { TParamsCreatePaymentType, TParamsDeletePaymentType, TParamsDeleteMultiplePaymentTypes, TParamsEditPaymentType, TParamsGetPaymentTypes } from "src/styles/payment-type";
+import { TParamsCreatePaymentType, TParamsDeletePaymentType, TParamsDeleteMultiplePaymentTypes, TParamsEditPaymentType, TParamsGetPaymentTypes } from "src/types/payment-type";
 
 
 

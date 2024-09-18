@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreatePaymentType, TParamsDeleteMultiplePaymentTypes, TParamsDeletePaymentType, TParamsEditPaymentType, TParamsGetPaymentTypes } from "src/styles/payment-type";
+import { TParamsCreatePaymentType, TParamsDeleteMultiplePaymentTypes, TParamsDeletePaymentType, TParamsEditPaymentType, TParamsGetPaymentTypes } from "src/types/payment-type";
 
 const headers = {
   'Content-Type': 'application/json',

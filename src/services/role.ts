@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreateRole, TParamsDeleteRole, TParamsEditRole, TParamsGetRoles } from "src/styles/role";
+import { TParamsCreateRole, TParamsDeleteRole, TParamsEditRole, TParamsGetRoles } from "src/types/role";
 
 const headers = {
   'Content-Type': 'application/json',

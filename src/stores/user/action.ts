@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createUsers, getAllUsers,deleteUsers,updateUsers, deleteMultipleUsers} from "src/services/user";
-import { TParamsCreateUsers,TParamsDeleteMultipleUser,TParamsDeleteUsers,TParamsEditUsers,TParamsGetUsers } from "src/styles/user";
+import { TParamsCreateUsers,TParamsDeleteMultipleUser,TParamsDeleteUsers,TParamsEditUsers,TParamsGetUsers } from "src/types/user";
 
 
 

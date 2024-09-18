@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createRole, deleteRole, getAllRoles, updateRole } from "src/services/role";
-import { TParamsCreateRole, TParamsDeleteRole, TParamsEditRole, TParamsGetRoles } from "src/styles/role";
+import { TParamsCreateRole, TParamsDeleteRole, TParamsEditRole, TParamsGetRoles } from "src/types/role";
 
 export const getAllRolesAction = createAsyncThunk(
   'role/getAllRolesAction',

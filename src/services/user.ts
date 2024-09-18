@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreateUsers, TParamsDeleteMultipleUser, TParamsDeleteUsers, TParamsEditUsers, TParamsGetUsers } from "src/styles/user";
+import { TParamsCreateUsers, TParamsDeleteMultipleUser, TParamsDeleteUsers, TParamsEditUsers, TParamsGetUsers } from "src/types/user";
 
 const headers = {
   'Content-Type': 'application/json',
