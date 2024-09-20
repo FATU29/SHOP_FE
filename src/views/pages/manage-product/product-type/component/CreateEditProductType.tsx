@@ -56,7 +56,7 @@ const CreateEditProductType = (props: TCreateEditProductType) => {
         })
         .required()
 
-    const { handleSubmit, control,getValues, reset, formState: { errors } } = useForm({
+    const { handleSubmit, control, getValues, reset, formState: { errors } } = useForm({
         defaultValues,
         mode: "onBlur",
         resolver: yupResolver(schema)
@@ -152,70 +152,75 @@ const CreateEditProductType = (props: TCreateEditProductType) => {
                             }}> {!idProductType ? t("Create") : t("Change")}</Typography>
                         </Box>
                         <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
-                            <Grid container item md={12} xs={12} spacing={5}>
-                                <Grid container item md={6} xs={12}>
-                                    <Grid item md={12} xs={12}>
-                                        <Box>
-                                            <Controller
-                                                control={control}
-                                                render={({ field: { onChange, onBlur, value } }) => (
-                                                    <CustomTextField
-                                                        fullWidth
-                                                        required
-                                                        label={t("Product Type")}
-                                                        placeholder={t("Enter product-type name")}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value
-                                                            const replace =stringToSlug(value) 
-                                                            onChange(value)
-                                                            reset({
-                                                                ...getValues(),
-                                                                slug:replace
-                                                            })
-                                                        }}
-                                                        onBlur={onBlur}
-                                                        value={value}
-                                                        helperText={errors.name?.message}
-                                                    ></CustomTextField>
-                                                )}
-                                                name="name"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                </Grid>
-                                <Grid container item md={6} xs={12}>
-                                    <Grid item md={12} xs={12}>
-                                        <Box>
-                                            <Controller
-                                                control={control}
-                                                render={({ field: { onChange, onBlur, value } }) => (
-                                                    <CustomTextField
-                                                        disabled
-                                                        fullWidth
-                                                        required
-                                                        label={t("Slug")}
-                                                        placeholder={t("Enter Slug")}
-                                                        onChange={onChange}
-                                                        onBlur={onBlur}
-                                                        value={value}
-                                                        helperText={errors.slug?.message}
-                                                    ></CustomTextField>
-                                                )}
-                                                name="slug"
-                                            />
-                                        </Box>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
                             <Box sx={{
-                                display: "flex",
-                                justifyContent: "flex-end",
-                                alignItems: "center",
-                                mt: "15px"
+                                overflow: { md: "unset", xs: "scroll" },
                             }}>
-                                <Button type="submit" variant="contained" size="large">
-                                    {!idProductType ? t("Create") : t("Change")}
-                                </Button>
+                                <Grid container item md={12} xs={12} spacing={5}>
+                                    <Grid container item md={6} xs={12}>
+                                        <Grid item md={12} xs={12}>
+                                            <Box>
+                                                <Controller
+                                                    control={control}
+                                                    render={({ field: { onChange, onBlur, value } }) => (
+                                                        <CustomTextField
+                                                            fullWidth
+                                                            required
+                                                            label={t("Product Type")}
+                                                            placeholder={t("Enter product-type name")}
+                                                            onChange={(e) => {
+                                                                const value = e.target.value
+                                                                const replace = stringToSlug(value)
+                                                                onChange(value)
+                                                                reset({
+                                                                    ...getValues(),
+                                                                    slug: replace
+                                                                })
+                                                            }}
+                                                            onBlur={onBlur}
+                                                            value={value}
+                                                            helperText={errors.name?.message}
+                                                        ></CustomTextField>
+                                                    )}
+                                                    name="name"
+                                                />
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                    <Grid container item md={6} xs={12}>
+                                        <Grid item md={12} xs={12}>
+                                            <Box>
+                                                <Controller
+                                                    control={control}
+                                                    render={({ field: { onChange, onBlur, value } }) => (
+                                                        <CustomTextField
+                                                            disabled
+                                                            fullWidth
+                                                            required
+                                                            label={t("Slug")}
+                                                            placeholder={t("Enter Slug")}
+                                                            onChange={onChange}
+                                                            onBlur={onBlur}
+                                                            value={value}
+                                                            helperText={errors.slug?.message}
+                                                        ></CustomTextField>
+                                                    )}
+                                                    name="slug"
+                                                />
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Box sx={{
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                    alignItems: "center",
+                                    mt: "15px"
+                                }}>
+                                    <Button type="submit" variant="contained" size="large">
+                                        {!idProductType ? t("Create") : t("Change")}
+                                    </Button>
+                                </Box>
+
                             </Box>
                         </form>
                     </Box>

@@ -268,7 +268,7 @@ const CreateEditUser = (props: TCreateEditUser) => {
                         </Box>
                         <form style={{ width: "auto" }} onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
                             <Box sx={{
-                                overflow: "scroll",
+                                overflow: {md:"unset",xs:"scroll"},
                                 width: { md: "auto", xs: "calc(100vw - 110px)" },
                                 height: { md: "auto", xs: "600px" }
                             }}>

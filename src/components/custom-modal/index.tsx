@@ -7,13 +7,6 @@ import React from "react";
 
 interface TCustomModal extends ModalProps {}
 
-const StyledModal = styled(Modal)<ModalProps>(({ theme }) => {
-    return (
-        {
-     
-        }
-    )
-})
 
 
 
@@ -37,12 +30,10 @@ const style = {
 
 
 export const CustomModal: NextPage<TCustomModal> = ({ children, onClose, open,...rest }) => {
-
-
     return (
         <>
             {/* <Button onClick={handleOpen}>Open modal</Button> */}
-            <StyledModal
+            <Modal
                 open={open}
                 onClose={onClose}
                 aria-labelledby="modal-modal-title"
@@ -51,8 +42,7 @@ export const CustomModal: NextPage<TCustomModal> = ({ children, onClose, open,..
                 <Box sx={style} {...rest}>
                     {children}
                 </Box>
-
-            </StyledModal>
+            </Modal>
         </>
     )
 }
