@@ -9,6 +9,7 @@ import city from 'src/stores/city'
 import deliveryType from 'src/stores/delivery-type'
 import paymentType from 'src/stores/payment-type'
 import productType from 'src/stores/product-type'
+import products from 'src/stores/products'
 
 
 export const store = configureStore({
@@ -19,7 +20,8 @@ export const store = configureStore({
     city,
     deliveryType,
     paymentType,
-    productType
+    productType,
+    products
     
   },
   middleware: getDefaultMiddleware =>

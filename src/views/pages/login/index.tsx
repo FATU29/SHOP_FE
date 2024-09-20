@@ -279,11 +279,9 @@ const LoginPage: NextPage<TProps> = () => {
                                     </IconButton>
                                 </Box>
                             </Box>
-
                         </Box>
                     </Box>
                 </Box>
-
             </Box>
         </Box >
     )

@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography, useTheme } from "@mui/material";
+import { Box, Button, Chip, ChipProps, Grid, styled, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "src/stores";
@@ -11,20 +11,45 @@ import FallbackSpinner from "src/components/fall-back";
 import toast from "react-hot-toast";
 import DeleteButton from "src/components/grid-delete";
 import EditButton from "src/components/grid-edit";
-import { resetIntitalState } from "src/stores/product-type";
+import { resetIntitalState } from "src/stores/products";
 import CofirmDialog from "src/components/cofirmation-dialog";
 import { hexToRGBA } from "src/utils/hex-to-rgba";
 import { usePermission } from "src/hooks/usePermission";
 import { PAGE_SIZE_OPTIONS } from "src/configs/gridConfig";
 import CustomPagination from "src/components/custom-pagination";
 import TableHeader from "src/components/table-header";
-import { deleteProductTypeAction, deleteMultipleProductTypesAction, getAllProductTypesAction } from "src/stores/product-type/action";
-import CreateEditProductType from "./component/CreateEditProductType";
+import { deleteProductAction, deleteMultipleProductsAction, getAllProductsAction } from "src/stores/products/action";
+import CreateEditProduct from "./component/CreateEditProduct";
+import CustomSelect from "src/components/custom-select";
+import { OBJECT_STATUS_USER } from "src/configs/users";
+import { getAllProductTypes } from "src/services/product-type";
+import { OBJECT_STATUS_Product } from "src/configs/products";
 
 
 
+const ActiveProductStyled = styled(Chip)<ChipProps>(({ theme }) => {
+    return {
+        backgroundColor: `#3a843f29`,
+        color: "#3a843f",
+        fontSize: "14px",
+        padding: "8px 4px",
+        fontWeight: "600"
+    }
+})
 
-const ProductTypeList = () => {
+
+const DeActiveProductStyled = styled(Chip)<ChipProps>(({ theme }) => {
+    return {
+        backgroundColor: `#da251d29`,
+        color: "#da251d",
+        fontSize: "14px",
+        padding: "8px 4px",
+        fontWeight: "600"
+    }
+})
+
+
+const ProductList = () => {
     const { t, i18n } = useTranslation();
 
 
@@ -45,6 +70,11 @@ const ProductTypeList = () => {
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
     const [selectedRow, setSelectedRow] = useState<string[]>([]);
 
+    const [listType, setListType] = useState<{ label: string, value: string }[]>([]);
+    const [statusSelected, setStatusSelected] = useState<string>("");
+    const [typeSelected, setTypeSelected] = useState<string>("");
+    const [fillterBy, setFillterBy] = useState<Record<string, string>>({});
+
 
     const theme = useTheme();
 
@@ -52,23 +82,23 @@ const ProductTypeList = () => {
 
     const {
         isErrorCreateEdit,
-        isErrorDeleteMultipleProductType,
-        isErrorDeleteProductType,
+        isErrorDeleteMultipleProduct,
+        isErrorDeleteProduct,
         isLoading,
         isSuccessCreateEdit,
-        isSuccessDeleteProductType,
-        isSuccessMultipleDeleteProductType,
+        isSuccessDeleteProduct,
+        isSuccessMultipleDeleteProduct,
         message,
         messageErrorCreateEdit,
-        messageErrorDeleteMultipleProductType,
-        messageErrorDeleteProductType,
-        productTypes
-    } = useSelector((state: RootState) => state.productType)
+        messageErrorDeleteMultipleProduct,
+        messageErrorDeleteProduct,
+        products
+    } = useSelector((state: RootState) => state.products)
 
 
-    const { VIEW, UPDATE, CREATE, DELETE } = usePermission("MANAGE_PRODUCT.PRODUCT_TYPE", ["CREATE", "VIEW", "UPDATE", "DELETE"])
+    const { VIEW, UPDATE, CREATE, DELETE } = usePermission("MANAGE_PRODUCT.PRODUCT", ["CREATE", "VIEW", "UPDATE", "DELETE"])
 
-    const rows = productTypes?.data || [];
+    const rows = products?.data || [];
 
 
     const columns: GridColDef<any>[] = [
@@ -87,8 +117,8 @@ const ProductTypeList = () => {
             }
         },
         {
-            field: "slug",
-            headerName: t("Slug"),
+            field: "type",
+            headerName: t("Type"),
             width: 150,
             editable: true,
             flex: 1,
@@ -96,7 +126,52 @@ const ProductTypeList = () => {
             renderCell: (params) => {
                 const { row } = params
                 return <>
-                    <Typography>{row?.slug}</Typography>
+                    <Typography>{row?.type?.name}</Typography>
+                </>
+            }
+        },
+        {
+            field: "price",
+            headerName: t("Price"),
+            width: 150,
+            editable: true,
+            flex: 1,
+            sortable: true,
+            renderCell: (params) => {
+                const { row } = params
+                return <>
+                    <Typography>{row?.price}</Typography>
+                </>
+            }
+        },
+        {
+            field: "countInStock",
+            headerName: t("CountInStock"),
+            width: 150,
+            editable: true,
+            flex: 1,
+            sortable: true,
+            renderCell: (params) => {
+                const { row } = params
+                return <>
+                    <Typography>{row?.countInStock}</Typography>
+                </>
+            }
+        },
+        {
+            field: 'status',
+            headerName: t("status"),
+            width: 150,
+            editable: true,
+            flex: 1,
+            sortable: true,
+            align: "left",
+            renderCell: (params) => {
+                const { row } = params
+                return <>
+                    {row.status ? (
+                        <ActiveProductStyled label={t("Public")}></ActiveProductStyled>
+                    ) : <DeActiveProductStyled label={t("Private")}></DeActiveProductStyled>}
                 </>
             }
         },
@@ -156,7 +231,7 @@ const ProductTypeList = () => {
         return (
             <>
                 <CustomPagination
-                    rowLength={productTypes?.total}
+                    rowLength={products?.total}
                     pageSize={pageSize}
                     page={page}
                     pageSizeOptions={PAGE_SIZE_OPTIONS}
@@ -187,16 +262,17 @@ const ProductTypeList = () => {
         setOpenCofirmMultipleDialog({ open: false });
     }
 
-    const handleGetListProductTypes = async () => {
+    const handleGetListProducts = async () => {
         const query: any = {
             params: {
                 limit: pageSize,
                 page: page,
                 search: searchBy,
                 order: sortBy,
+                ...fillterBy
             }
         }
-        await dispatch(getAllProductTypesAction(query));
+        await dispatch(getAllProductsAction(query));
     }
 
     const handleSort = (sort: GridSortModel) => {
@@ -214,13 +290,13 @@ const ProductTypeList = () => {
     }
 
     const handleDelete = () => {
-        dispatch(deleteProductTypeAction({ id: openCofirmDialog?._id }))
+        dispatch(deleteProductAction({ id: openCofirmDialog?._id }))
         handleOnCloseCofirmDialog();
     }
 
     const handleDeleteMultipleCities = () => {
-        dispatch(deleteMultipleProductTypesAction({
-            productTypeIds: selectedRow
+        dispatch(deleteMultipleProductsAction({
+            productIds: selectedRow
         }))
     }
 
@@ -233,23 +309,45 @@ const ProductTypeList = () => {
     }
 
     const handleClearFilter = () => {
-        setSortBy("")
-        setSearchBy("");
-        handleGetListProductTypes();
+        setStatusSelected("")
+        setTypeSelected("")
+        setFillterBy({})
+        handleGetListProducts();
     }
 
-
+    const fetchAllProductType = async () => {
+        setLoadingTmp(true);
+        await getAllProductTypes({ params: { limit: -1, page: -1 } }).then((res) => {
+            const data = res?.data?.productTypes;
+            if(data){
+                const objectProductTypes = data?.map((item:any) => {
+                    return {
+                        label:item.name,
+                        value:item._id
+                    }
+                })
+                setListType(objectProductTypes)
+            }
+        }).catch((e) => {
+            setLoadingTmp(false);
+        })
+        setLoadingTmp(false);
+    }
 
     useEffect(() => {
-        handleGetListProductTypes();
-    }, [sortBy, searchBy, i18n, page, pageSize])
+        fetchAllProductType();
+    },[])
+
+    useEffect(() => {
+        handleGetListProducts();
+    }, [sortBy, searchBy, i18n, page, pageSize,fillterBy])
 
 
 
     useEffect(() => {
         setLoadingTmp(true)
         if (isSuccessCreateEdit) {
-            handleGetListProductTypes();
+            handleGetListProducts();
             toast.success(message)
         } else if (isErrorCreateEdit) {
             toast.error(messageErrorCreateEdit)
@@ -263,31 +361,35 @@ const ProductTypeList = () => {
 
     useEffect(() => {
         setLoadingTmp(true)
-        if (isSuccessDeleteProductType) {
-            handleGetListProductTypes();
+        if (isSuccessDeleteProduct) {
+            handleGetListProducts();
             toast.success("Delete successfully")
-        } else if (isErrorDeleteProductType) {
-            toast.error(messageErrorDeleteProductType)
+        } else if (isErrorDeleteProduct) {
+            toast.error(messageErrorDeleteProduct)
         }
         setLoadingTmp(false)
         handleOnCloseCreateEditModal();
         dispatch(resetIntitalState());
-    }, [isSuccessDeleteProductType, isErrorDeleteProductType, messageErrorDeleteProductType])
+    }, [isSuccessDeleteProduct, isErrorDeleteProduct, messageErrorDeleteProduct])
 
 
 
     useEffect(() => {
         setLoadingTmp(true)
-        if (isSuccessMultipleDeleteProductType) {
-            handleGetListProductTypes();
+        if (isSuccessMultipleDeleteProduct) {
+            handleGetListProducts();
             toast.success("Delete successfully")
-        } else if (isErrorDeleteMultipleProductType) {
-            toast.error(messageErrorDeleteMultipleProductType)
+        } else if (isErrorDeleteMultipleProduct) {
+            toast.error(messageErrorDeleteMultipleProduct)
         }
         setLoadingTmp(false)
         handleOnCloseCofirmMultiple()
         dispatch(resetIntitalState());
-    }, [isSuccessMultipleDeleteProductType, isErrorDeleteMultipleProductType, messageErrorDeleteMultipleProductType])
+    }, [isSuccessMultipleDeleteProduct, isErrorDeleteMultipleProduct, messageErrorDeleteMultipleProduct])
+
+    useEffect(() => {
+        setFillterBy({ productType: typeSelected, status: statusSelected })
+    }, [typeSelected, statusSelected])
 
 
     return (
@@ -297,21 +399,21 @@ const ProductTypeList = () => {
                 onClose={handleOnCloseCofirmDialog}
                 handleAction={handleDelete}
                 title={t("Cofirm form")}
-                description={t("If you delete this product-type, it can't recover")}
+                description={t("If you delete this product, it can't recover")}
             ></CofirmDialog>
             <CofirmDialog
                 open={openCofirmMultipleDialog}
                 onClose={handleOnCloseCofirmMultiple}
                 handleAction={handleDeleteMultipleCities}
                 title={t("Delete Multiple Cities")}
-                description={t("If you delete product-types, it can't recover")}
+                description={t("If you delete product, it can't recover")}
             ></CofirmDialog>
-            <CreateEditProductType
+            <CreateEditProduct
                 open={openCreateEdit?.open}
                 onClose={handleOnCloseCreateEditModal}
-                idProductType={openCreateEdit?.id}
+                idProduct={openCreateEdit?.id}
             >
-            </CreateEditProductType>
+            </CreateEditProduct>
             {(isLoading && isLoadingTmp) && <FallbackSpinner></FallbackSpinner>}
             <Box sx={{
                 backgroundColor: theme.palette.background.paper,
@@ -345,12 +447,43 @@ const ProductTypeList = () => {
                                             }}>{t("Clear filter")}</Button>
                                         </Box>
                                         <Box sx={{
+                                            width: "200px",
+                                            mt: { md: "-20px", xs: "0" }
+                                        }}>
+                                            <CustomSelect
+                                                label={t("Type_Product")}
+                                                fullWidth={true}
+                                                onChange={(e) => {
+                                                    setTypeSelected(e?.target?.value as string)
+                                                }}
+                                                value={typeSelected}
+                                                options={listType}
+                                                content={t("Type_Product")}
+                                            ></CustomSelect>
+                                        </Box>
+                                        <Box sx={{
+                                            width: "200px",
+                                            mt: "-20px"
+                                        }}>
+                                            <CustomSelect
+                                                label={t("Status")}
+                                                fullWidth={true}
+                                                onChange={(e) => {
+                                                    setStatusSelected(e?.target?.value as string)
+                                                }}
+                                                value={statusSelected}
+                                                options={Object.values(OBJECT_STATUS_Product)}
+                                                content={t("Status")}
+                                            ></CustomSelect>
+                                        </Box>
+                                        <Box sx={{
                                             width: "200px"
                                         }}>
                                             <InputSearch value={searchBy} onChange={(value: string) => {
                                                 setSearchBy(value)
                                             }}></InputSearch>
                                         </Box>
+
                                         <AddButton
                                             disabled={!CREATE}
                                             onClick={() => {
@@ -423,4 +556,4 @@ const ProductTypeList = () => {
 }
 
 
-export default ProductTypeList;
+export default ProductList;

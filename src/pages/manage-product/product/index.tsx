@@ -1,4 +1,6 @@
 import { NextPage } from "next";
+import { CONFIG_PERMISSIONS } from "src/configs/permission";
+import ProductList from "src/views/pages/manage-product/product/ProductList";
 
 
 
@@ -6,13 +8,14 @@ import { NextPage } from "next";
 
 type TProps = {}
 
-const TypeProduct : NextPage<TProps> = () => {
+const Product : NextPage<TProps> = () => {
     return (
         <>
-            TypeProduct
+            <ProductList></ProductList>
         </>
     )
 }
 
 
-export default TypeProduct;
+Product.permission = [CONFIG_PERMISSIONS.MANAGE_PRODUCT.PRODUCT.VIEW]
+export default Product;
