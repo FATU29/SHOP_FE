@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import { ROUTE_CONFIG } from 'src/configs/route';
 import { getAuthMe } from 'src/services/auth';
 import FallbackSpinner from 'src/components/fall-back';
+import Link from 'next/link';
 
 
 
@@ -77,56 +78,57 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
 
     return (
         <>
-        {!isLoading || <><FallbackSpinner></FallbackSpinner></> }
-        <AppBar position="absolute" open={open}>
-            <Toolbar
-                sx={{
-                    pr: '24px', // keep right padding when drawer closed
-                }}
-            >
-                <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={toggleDrawer}
+            {!isLoading || <><FallbackSpinner></FallbackSpinner></>}
+            <AppBar position="absolute" open={open}>
+                <Toolbar
                     sx={{
-                        marginRight: '36px',
-                        ...(open && { display: 'none' }),
+                        pr: '24px', // keep right padding when drawer closed
                     }}
                 >
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={toggleDrawer}
+                        sx={{
+                            marginRight: '36px',
+                            ...(open && { display: 'none' }),
+                        }}
+                    >
 
-                    {!isHidden && (
-                        <>
-                            <IconifyIcon icon="ic:round-menu" style={{
-                                marginLeft: "5px"
-                            }}></IconifyIcon>
-                        </>
-                    )}
+                        {!isHidden && (
+                            <>
+                                <IconifyIcon icon="ic:round-menu" style={{
+                                    marginLeft: "5px"
+                                }}></IconifyIcon>
+                            </>
+                        )}
 
-                </IconButton>
-                <Typography
-                    component="h1"
-                    variant="h6"
-                    color="inherit"
-                    noWrap
-                    sx={{ flexGrow: 1 }}
-                >
-                    Dashboard
-                </Typography>
-
-
-                {user ? (<>
-                    <IconButton color="inherit">
-                        <Badge badgeContent={4} color="secondary">
-                            <IconifyIcon icon="mingcute:notification-line"></IconifyIcon>
-                        </Badge>
                     </IconButton>
-                    <ModeToggle></ModeToggle>
-                    <LanguageDropDown></LanguageDropDown>
-                    <UserDropDown></UserDropDown> </>) :
-                    (<Button variant='contained' onClick={() => { router.push(`/${ROUTE_CONFIG.LOGIN}`) }}>Log In</Button>)}
-            </Toolbar>
-        </AppBar>
+                    <Typography
+                        component="h1"
+                        variant="h6"
+                        color="inherit"
+                        noWrap
+                        sx={{ flexGrow: 1, textDecoration: "none" }}
+                    >
+                        <Link href={ROUTE_CONFIG.HOME}  style={{ textDecoration: 'none', color: 'inherit' }}>
+                            Dashboard
+                        </Link>
+                    </Typography>
+
+                    {user ? (<>
+                        <IconButton color="inherit">
+                            <Badge badgeContent={4} color="secondary">
+                                <IconifyIcon icon="mingcute:notification-line"></IconifyIcon>
+                            </Badge>
+                        </IconButton>
+                        <ModeToggle></ModeToggle>
+                        <LanguageDropDown></LanguageDropDown>
+                        <UserDropDown></UserDropDown> </>) :
+                        (<Button variant='contained' onClick={() => { router.push(`/${ROUTE_CONFIG.LOGIN}`) }}>Log In</Button>)}
+                </Toolbar>
+            </AppBar>
         </>
     );
 }

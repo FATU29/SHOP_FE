@@ -1,6 +1,7 @@
 export const ROUTE_CONFIG = {
     MY_PROFILE: "/my-profile",
     LOGIN: "/login",
+    HOME:"/",
     CHANGE_PASSWORD: "/change-password",
     DASHBOARD: "/dashboard",
     SYSTEM: {
