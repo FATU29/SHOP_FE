@@ -4,6 +4,7 @@
 ## SUMMARY
 - Use React-Hook-Form to check valid data
 - Use React-redux redux-thunk to save data in store and crud status (including massage, isLoading,...)
+- Use Provider Context to save current user
 - Use MUI to do layout showing DataGrid for CRUD
 
 
