@@ -61,7 +61,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export const InputSearch: NextPage<TProps> = ({ value, onChange }) => {
     const [search, setSearch] = useState(value);
-    const debounceSearch = useDebounce(search, 300);
+    const debounceSearch = useDebounce(search, 500);
 
     useEffect(() => {
         onChange(debounceSearch);

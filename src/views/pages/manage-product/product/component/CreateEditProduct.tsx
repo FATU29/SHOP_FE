@@ -11,7 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as yup from "yup"
 import { createProductAction, updateProductAction } from 'src/stores/products/action';
 import FallbackSpinner from 'src/components/fall-back';
-import {getDetailProduct } from 'src/services/products';
+import { getDetailProduct } from 'src/services/products';
 import CustomSelect from 'src/components/custom-select';
 import WrapperFileUpload from 'src/views/layouts/components/wrap-file-upload';
 import { convertHTMLtoDraft, convertImgToBase64, stringToSlug } from 'src/utils';
@@ -21,6 +21,7 @@ import { EditorState } from 'react-draft-wysiwyg';
 import { getAllProductTypes } from 'src/services/product-type';
 import draftToHtml from 'draftjs-to-html';
 import { convertToRaw } from 'draft-js';
+import { Image } from '@mui/icons-material';
 
 
 interface TCreateEditUser {
@@ -87,15 +88,15 @@ const CreateEditProduct = (props: TCreateEditUser) => {
             price: yup.string().required(`${t("required field")}`).test("higher or equal 0", "higher or equal 0", (value) => {
                 return Number(value) >= 0
             }),
-            discount: yup.string().nonNullable().test("discount","at_least_1_in_discount",(value,context) => {
+            discount: yup.string().nonNullable().test("discount", "at_least_1_in_discount", (value, context) => {
                 const discountStartDate = context.parent.discountStartDate;
                 const discountEndDate = context.parent.discountEndDate;
-                if(value){
-                    if(!discountStartDate){
-                        setError("discountStartDate",{ type: 'Exist', message: 'Required discountStartDate' });
+                if (value) {
+                    if (!discountStartDate) {
+                        setError("discountStartDate", { type: 'Exist', message: 'Required discountStartDate' });
                     }
-                    if(!discountEndDate){
-                        setError("discountEndDate",{ type: 'Exist', message: 'Required discountEndDate' });
+                    if (!discountEndDate) {
+                        setError("discountEndDate", { type: 'Exist', message: 'Required discountEndDate' });
                     }
                 } else {
                     clearErrors("discountStartDate")
@@ -104,20 +105,20 @@ const CreateEditProduct = (props: TCreateEditUser) => {
                 return !value || Number(value) >= 1
             }),
             description: yup.object().nonNullable(),
-            discountEndDate: yup.date().notRequired().test("discountEndDate","Error discountEndDate",(value, context) => {
+            discountEndDate: yup.date().notRequired().test("discountEndDate", "Error discountEndDate", (value, context) => {
                 const discount = context?.parent?.discount;
                 const discountStartDate = context.parent.discountStartDate
-                let checkValidStartEndDate:boolean = false
-                if(value){
+                let checkValidStartEndDate: boolean = false
+                if (value) {
                     checkValidStartEndDate = value?.getTime() > discountStartDate?.getTime()
                 }
                 return (discount && value && checkValidStartEndDate) || !discount
             }),
-            discountStartDate: yup.date().notRequired().test("discountStartDate","Error discountStartDate",(value,context) => {
+            discountStartDate: yup.date().notRequired().test("discountStartDate", "Error discountStartDate", (value, context) => {
                 const discount = context?.parent?.discount;
                 const discountEndDate = context.parent.discountEndDate
-                let checkValidStartEndDate:boolean = false
-                if(value){
+                let checkValidStartEndDate: boolean = false
+                if (value) {
                     checkValidStartEndDate = value?.getTime() < discountEndDate?.getTime()
                 }
                 return (discount && value && checkValidStartEndDate) || !discount
@@ -126,7 +127,7 @@ const CreateEditProduct = (props: TCreateEditUser) => {
         })
         .required()
 
-    const { handleSubmit, getValues,setError,clearErrors, control, reset, formState: { errors } } = useForm({
+    const { handleSubmit, getValues, setError, clearErrors, control, reset, formState: { errors } } = useForm({
         defaultValues,
         mode: "onBlur",
         resolver: yupResolver(schema)
@@ -212,7 +213,7 @@ const CreateEditProduct = (props: TCreateEditUser) => {
                 discountEndDate: data?.discountEndDate,
                 discountStartDate: data?.discountStartDate,
             })
-            setImageProduct(data?.imageProduct)
+            setImageProduct(data?.image)
         }
         setLoadingCheck(false);
     }
@@ -278,7 +279,7 @@ const CreateEditProduct = (props: TCreateEditUser) => {
                         </Box>
                         <form style={{ width: "100%" }} onSubmit={handleSubmit(onSubmit)} autoComplete="off" noValidate>
                             <Box sx={{
-                                overflow: {md:"unset",xs:"scroll"},
+                                overflow: { md: "unset", xs: "scroll" },
                                 width: { md: "auto", xs: "calc(100vw - 110px)" },
                                 height: { md: "auto", xs: "600px" }
                             }}>
@@ -315,16 +316,16 @@ const CreateEditProduct = (props: TCreateEditUser) => {
                                                                     {imageProduct ?
                                                                         (<>
                                                                             <Avatar sx={{
-                                                                                width: "80px",
-                                                                                height: "80px"
-                                                                            }} src={imageProduct || "/broken-image.jpg"}></Avatar>
+                                                                                width: "100%",
+                                                                                height: "100%"
+                                                                            }} variant='square' src={imageProduct || "/broken-image.jpg"}></Avatar>
 
                                                                         </>) :
                                                                         (<>
                                                                             <Avatar sx={{
-                                                                                width: "80px",
-                                                                                height: "80px"
-                                                                            }} src="/broken-image.jpg"></Avatar>
+                                                                                width: "100%",
+                                                                                height: "100%"
+                                                                            }} variant='square' src="/broken-image.jpg"></Avatar>
                                                                         </>)}
                                                                 </Box>
                                                                 <Box sx={{

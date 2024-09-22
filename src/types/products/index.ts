@@ -45,3 +45,19 @@ export type TParamsDeleteProduct = {
 export type TParamsDeleteMultipleProducts = {
     productIds: string[]
 }
+
+
+
+export type TProduct = {
+    _id:string,
+    averageRating: number,
+    createdAt: Date | null,
+    image: string,
+    price: number,
+    discount:number,
+    name: string,
+    slug: string,
+    totalLike: number,
+    countInStock:number,
+
+}
