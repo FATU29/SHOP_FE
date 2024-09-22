@@ -309,21 +309,24 @@ const ProductList = () => {
     }
 
     const handleClearFilter = () => {
+        setLoadingTmp(true);
         setStatusSelected("")
         setTypeSelected("")
+        setSearchBy("createdAt desc")
         setFillterBy({})
         handleGetListProducts();
+        setLoadingTmp(false);
     }
 
     const fetchAllProductType = async () => {
         setLoadingTmp(true);
         await getAllProductTypes({ params: { limit: -1, page: -1 } }).then((res) => {
             const data = res?.data?.productTypes;
-            if(data){
-                const objectProductTypes = data?.map((item:any) => {
+            if (data) {
+                const objectProductTypes = data?.map((item: any) => {
                     return {
-                        label:item.name,
-                        value:item._id
+                        label: item.name,
+                        value: item._id
                     }
                 })
                 setListType(objectProductTypes)
@@ -336,11 +339,11 @@ const ProductList = () => {
 
     useEffect(() => {
         fetchAllProductType();
-    },[])
+    }, [])
 
     useEffect(() => {
         handleGetListProducts();
-    }, [sortBy, searchBy, i18n, page, pageSize,fillterBy])
+    }, [sortBy, searchBy, i18n, page, pageSize, fillterBy])
 
 
 
@@ -392,8 +395,10 @@ const ProductList = () => {
     }, [typeSelected, statusSelected])
 
 
+
     return (
         <>
+            {(isLoading || isLoadingTmp) && <FallbackSpinner></FallbackSpinner>}
             <CofirmDialog
                 open={openCofirmDialog}
                 onClose={handleOnCloseCofirmDialog}
@@ -414,7 +419,6 @@ const ProductList = () => {
                 idProduct={openCreateEdit?.id}
             >
             </CreateEditProduct>
-            {(isLoading && isLoadingTmp) && <FallbackSpinner></FallbackSpinner>}
             <Box sx={{
                 backgroundColor: theme.palette.background.paper,
                 borderRadius: "10px",

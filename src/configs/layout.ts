@@ -52,16 +52,16 @@ export const VerticalItem = [
                 icon: "icon-park-outline:category-management",
                 path: ROUTE_CONFIG.PRODUCT.MANAGE_TYPE_PRODUCT,
             },
-            {
-                title: "Danh sách đơn hàng",
-                icon: "lets-icons:order",
-                path: ROUTE_CONFIG.MANAGE_ORDER.MANAGE_ORDER,
-            },
-            {
-                title: "Danh sách đánh giá",
-                icon: "material-symbols-light:star-rate-outline",
-                path: ROUTE_CONFIG.MANAGE_ORDER.MANAGE_REVIEW,
-            },
+            // {
+            //     title: "Danh sách đơn hàng",
+            //     icon: "lets-icons:order",
+            //     path: ROUTE_CONFIG.MANAGE_ORDER.MANAGE_ORDER,
+            // },
+            // {
+            //     title: "Danh sách đánh giá",
+            //     icon: "material-symbols-light:star-rate-outline",
+            //     path: ROUTE_CONFIG.MANAGE_ORDER.MANAGE_REVIEW,
+            // },
         ],
     },
     {

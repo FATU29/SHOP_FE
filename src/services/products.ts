@@ -1,6 +1,6 @@
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreateProduct,TParamsDeleteProduct,TParamsDeleteMultipleProducts,TParamsEditProduct,TParamsGetProducts } from "src/types/products";
+import { TParamsCreateProduct, TParamsDeleteProduct, TParamsDeleteMultipleProducts, TParamsEditProduct, TParamsGetProducts } from "src/types/products";
 
 const headers = {
   'Content-Type': 'application/json',
@@ -12,7 +12,7 @@ export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
     const res = await instanceAxios(getAll, {
       method: "GET",
       headers,
-      params: data.params 
+      params: data.params
     });
     return res.data;
   } catch (error) {
@@ -90,6 +90,38 @@ export const deleteMultipleProducts = async (data: TParamsDeleteMultipleProducts
 export const getDetailProduct = async (id: string) => {
   try {
     const index = API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX;
+    const res = await instanceAxios(`${index}/${id}`, {
+      method: "GET",
+      headers
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error get detail Product:", error);
+    throw error;
+  }
+};
+
+
+//server side 
+export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
+  try {
+    const getAll = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`;
+    const res = await instanceAxios(getAll, {
+      method: "GET",
+      headers,
+      params: data.params
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error getting Product:", error);
+    throw error;
+  }
+};
+
+
+export const getDetailProductPublic = async (id: string) => {
+  try {
+    const index = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`;
     const res = await instanceAxios(`${index}/${id}`, {
       method: "GET",
       headers

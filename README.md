@@ -10,7 +10,7 @@
 
 
 ### BASIC PAGE
-- Have basic page as Login , Register, Change Password
+- Have basic pages as Login , Register, Change Password
 - Call API to login and save user'information by Contex Provider use for showing information (avatar, profile page, permission,...)
 
 

@@ -309,6 +309,7 @@ const MyProfile: NextPage<TProps> = () => {
                                                         options={listRole}
                                                         label={t("Role")}
                                                         placeholder="Enter your role"
+                                                        disabled
                                                     ></CustomSelect>
                                                 </>
                                             }}
