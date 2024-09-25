@@ -21,6 +21,7 @@ import CartProducts from './components/cart-product';
 
 
 
+
 const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
@@ -118,6 +119,9 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
                             textDecoration: "none",
                             color: 'inherit'
                         }} href={ROUTE_CONFIG.HOME}>
+                        sx={{ flexGrow: 1, textDecoration: "none" }}
+                    >
+                        <Link href={ROUTE_CONFIG.HOME}  style={{ textDecoration: 'none', color: 'inherit' }}>
                             Dashboard
                         </Link>
                     </Typography>
@@ -127,6 +131,14 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
                         <ModeToggle></ModeToggle>
                         <LanguageDropDown></LanguageDropDown>
                         <CartProducts></CartProducts>
+                    {user ? (<>
+                        <IconButton color="inherit">
+                            <Badge badgeContent={4} color="secondary">
+                                <IconifyIcon icon="mingcute:notification-line"></IconifyIcon>
+                            </Badge>
+                        </IconButton>
+                        <ModeToggle></ModeToggle>
+                        <LanguageDropDown></LanguageDropDown>
                         <UserDropDown></UserDropDown> </>) :
                         (<Button variant='contained' onClick={() => { router.push(`/${ROUTE_CONFIG.LOGIN}`) }}>Log In</Button>)}
                 </Toolbar>
