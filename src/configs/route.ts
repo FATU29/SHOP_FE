@@ -4,12 +4,13 @@ export const ROUTE_CONFIG = {
     HOME:"/",
     CHANGE_PASSWORD: "/change-password",
     DASHBOARD: "/dashboard",
+    PRODUCT:"/product",
     SYSTEM: {
         ROLE: "/system/role",
         USER: "/system/user",
 
     },
-    PRODUCT: {
+    MANAGE_PRODUCT: {
         MANAGE_PRODUCT: "/manage-product/product",
         MANAGE_TYPE_PRODUCT: "/manage-product/manage-type-product",
     },

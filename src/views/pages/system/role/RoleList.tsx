@@ -229,7 +229,7 @@ const RoleList = () => {
                 description={t("If you delete this role, it can't recover")}
             ></CofirmDialog>
             <CreateEditRole permissionSelected={permissionSelected} open={openCreateEdit.open} onClose={handleOnCloseCreateEditModal} idRole={openCreateEdit._id}></CreateEditRole>
-            {(isLoading && isLoadingTmp) ?? <FallbackSpinner></FallbackSpinner>}
+            {(isLoading || isLoadingTmp) && <FallbackSpinner></FallbackSpinner>}
             <Box sx={{
                 backgroundColor: theme.palette.background.paper,
                 borderRadius: "10px",

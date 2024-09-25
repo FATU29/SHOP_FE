@@ -1,3 +1,4 @@
+import axios, { AxiosRequestConfig } from "axios";
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
 import { TParamsCreateProduct, TParamsDeleteProduct, TParamsDeleteMultipleProducts, TParamsEditProduct, TParamsGetProducts } from "src/types/products";
@@ -9,7 +10,7 @@ const headers = {
 export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
   try {
     const getAll = API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX;
-    const res = await instanceAxios(getAll, {
+    const res = await axios(getAll, {
       method: "GET",
       headers,
       params: data.params
@@ -103,13 +104,17 @@ export const getDetailProduct = async (id: string) => {
 
 
 //server side 
-export const getAllProductsPublic = async (data: { params: TParamsGetProducts }) => {
+export const getAllProductsPublic = async (
+  data: { params: TParamsGetProducts }, 
+  config?: AxiosRequestConfig
+) => {
   try {
     const getAll = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`;
-    const res = await instanceAxios(getAll, {
+    const res = await axios(getAll, {
       method: "GET",
       headers,
-      params: data.params
+      params: data.params,
+      ...config // Truyền thêm config vào axios, bao gồm signal nếu có
     });
     return res.data;
   } catch (error) {
@@ -122,7 +127,22 @@ export const getAllProductsPublic = async (data: { params: TParamsGetProducts })
 export const getDetailProductPublic = async (id: string) => {
   try {
     const index = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public`;
-    const res = await instanceAxios(`${index}/${id}`, {
+    const res = await axios(`${index}/${id}`, {
+      method: "GET",
+      headers
+    });
+    return res.data;
+  } catch (error) {
+    console.error("Error get detail Product:", error);
+    throw error;
+  }
+};
+
+
+export const getDetailProductPublicBySlug = async (slug: string) => {
+  try {
+    const index = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug`;
+    const res = await axios(`${index}/${slug}`, {
       method: "GET",
       headers
     });

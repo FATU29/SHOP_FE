@@ -74,7 +74,7 @@ export const updateAuthMe = async (data: any) => {
 export const getAuthMe = async () => {
   try {
     const getAuthMeAPI = API_ENDPOINT.AUTH.AUTH_ME;
-    const res = await instanceAxios(getAuthMeAPI, {
+    const res = await axios(getAuthMeAPI, {
       method: "GET",
       headers
     })
@@ -87,7 +87,7 @@ export const getAuthMe = async () => {
 export const changePasswordMe = async (data:TChangePassword) => {
   try {
     const getAuthMeAPI = API_ENDPOINT.AUTH.CHANGE_PASSWORD;
-    const res = await instanceAxios(getAuthMeAPI, {
+    const res = await axios(getAuthMeAPI, {
       method: "PATCH",
       headers,
       data:JSON.stringify(data)

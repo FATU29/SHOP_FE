@@ -1,3 +1,4 @@
+import axios from "axios";
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
 import { TParamsCreateProductType,TParamsDeleteProductType,TParamsDeleteMultipleProductTypes,TParamsEditProductType,TParamsGetProductTypes } from "src/types/product-type";
@@ -9,7 +10,7 @@ const headers = {
 export const getAllProductTypes = async (data: { params: TParamsGetProductTypes }) => {
   try {
     const getAll = API_ENDPOINT.MANAGE_PRODUCT.PRODUCT_TYPE.INDEX;
-    const res = await instanceAxios(getAll, {
+    const res = await axios(getAll, {
       method: "GET",
       headers,
       params: data.params // For GET requests, use params instead of data

@@ -13,7 +13,7 @@ const FallbackSpinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
       open={true}
       sx={{
         height: '100vh',
-        width:"100vw",
+        width: "100vw",
         display: 'flex',
         alignItems: 'center',
         flexDirection: 'column',
@@ -21,7 +21,12 @@ const FallbackSpinner = ({ sx }: { sx?: BoxProps['sx'] }) => {
         ...sx
       }}
     >
-      <CircularProgress variant="indeterminate" autoFocus={false} disableShrink sx={{ zIndex:"1600" }} />
+      <CircularProgress variant="indeterminate" autoFocus={false} disableShrink
+        sx={{
+          zIndex: "1600", "&:focus": {
+            outline: 'none'
+          }
+        }} />
     </Modal>
   )
 }

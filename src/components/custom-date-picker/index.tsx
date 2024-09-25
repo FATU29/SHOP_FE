@@ -104,8 +104,6 @@ export const CustomDatePicker: NextPage<TCustomDatePicker> = (props: TCustomDate
     const { selectedDate, onChange, typeDateText, error, ...rest } = props
     const { t } = useTranslation();
 
-    console.log("error", error)
-
 
     return (
         <>

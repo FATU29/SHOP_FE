@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { clearLocalUserData, clearTemporaryToken, getLocalUserData, getTemporaryToken, setLocalUserData, setTemporaryToken } from "../storage";
 import { jwtDecode } from "jwt-decode";
 import { NextPage } from "next";
-import { useEffect } from "react";
 import { useAuth } from "src/hooks/useAuth";
 import { BASE_URL, API_ENDPOINT } from "src/configs/api";
 import axios from "axios";
@@ -56,7 +55,6 @@ const IntercepterAxios: NextPage<TProps> = ({ children }) => {
                   setTemporaryToken(newToken);
                 }
               }
-
             }).catch((error) => {
               setUser(null);
               clearLocalUserData();

@@ -59,5 +59,9 @@ export type TProduct = {
     slug: string,
     totalLike: number,
     countInStock:number,
-
+    discountStartDate: Date | null,
+    discountEndDate: Date | null,
 }
+
+
+export const LOCAL_PRODUCT_CART = "productCart"

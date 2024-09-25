@@ -14,6 +14,7 @@ const GuestGuard = (props: GuestGuardProps) => {
 
   const authContext = useAuth()
   const router = useRouter()
+
   
   useEffect(() => {
     if (!router.isReady) {
@@ -24,11 +25,13 @@ const GuestGuard = (props: GuestGuardProps) => {
       router.replace("/")
     }
   }, [router.route])
+  
 
-  if (authContext.loading || (authContext.user && !authContext.loading)) {
+  
+  if (authContext.loading) {
     return fallback
   }
-
+  
   return <>{children}</>
 }
 
