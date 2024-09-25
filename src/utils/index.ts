@@ -105,12 +105,52 @@ export const stringToSlug = (str: string) => {
 
 import { EditorState, ContentState } from 'draft-js';
 import htmlToDraft from 'html-to-draftjs';
+import { TItemOrderProduct } from 'src/types/order-products';
 
 export const convertHTMLtoDraft = (html: string) => {
-const blocksFromHtml = htmlToDraft(html);
-const { contentBlocks, entityMap } = blocksFromHtml;
-const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
-const editorState = EditorState.createWithContent(contentState);
+  const blocksFromHtml = htmlToDraft(html);
+  const { contentBlocks, entityMap } = blocksFromHtml;
+  const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+  const editorState = EditorState.createWithContent(contentState);
 
-return editorState;
+  return editorState;
+}
+
+
+export const formatCurrencyVND = (money: any) => {
+  const formatter = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    currencyDisplay: 'symbol',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+
+  return formatter.format(money);
+};
+
+export const cloneDeep = (data: any) => {
+  try {
+    return JSON.parse(JSON.stringify(data));
+  } catch (error) {
+    return data
+  }
+};
+
+
+
+
+export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
+  try {
+    const cloneOrderItems = cloneDeep(orderItems);
+    const index = cloneOrderItems.findIndex((item:any) => item.product === addItem.product);
+    if (index >= 0) {
+      cloneOrderItems[index].amount += addItem.amount;
+    } else {
+      cloneOrderItems.push(addItem);
+    }
+    return cloneOrderItems
+  } catch (error) {
+    return orderItems
+  }
 }

@@ -1,5 +1,5 @@
 import { Box, Grid, Tab, Tabs, Typography, useTheme } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import FallbackSpinner from "src/components/fall-back";
 import { PAGE_SIZE_OPTIONS } from "src/configs/gridConfig";
@@ -24,13 +24,13 @@ const HomePage = () => {
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
     const [listType, setListType] = useState<{ label: string, value: string }[]>([]);
     const [fillterBy, setFillterBy] = useState<Record<string, string>>({});
-    const [reviewSelected,setReviewSelected] = useState<string>("")
+    const [reviewSelected, setReviewSelected] = useState<string>("")
     const [productPublic, setProductPublic] = useState({
         data: [],
         count: 0
     })
     const [productTypeSelected, setProductTypeSelected] = useState("")
-    const [value, setValue] = useState('one');
+    const firstRender = useRef<Boolean>(false);
 
 
     const theme = useTheme();
@@ -42,12 +42,24 @@ const HomePage = () => {
     }
 
 
-    const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-        setValue(newValue);
+    const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+        setProductTypeSelected(newValue);
     };
 
 
+
+    const controllerRef = useRef<AbortController | null>(null);
+
     const handleGetListProducts = async () => {
+        // Hủy request trước đó (nếu có)
+        if (controllerRef.current) {
+            controllerRef.current.abort();
+        }
+
+        // Tạo một controller mới cho request hiện tại
+        const controller = new AbortController();
+        controllerRef.current = controller;
+
         const query: any = {
             params: {
                 limit: pageSize,
@@ -56,23 +68,33 @@ const HomePage = () => {
                 order: sortBy,
                 ...fillterBy
             }
-        }
+        };
+
         setLoadingTmp(true);
-        await getAllProductsPublic(query).then((res) => {
-            const data = res?.data
+
+        try {
+            const res = await getAllProductsPublic(query, { signal: controller.signal });
+            const data = res?.data;
+
             if (data) {
                 setProductPublic({
                     data: data?.products,
                     count: data?.totalCount
-                })
+                });
             }
-        }).catch((e) => {
+        } catch (error:any) {
+            if (error.name === 'AbortError') {
+                console.log("Request bị hủy bỏ.");
+            } else {
+                console.error(error);
+            }
+        } finally {
             setLoadingTmp(false);
-        })
-        setLoadingTmp(false);
-    }
+        }
+    };
 
-    const handleFilterProduct = (review:string):void => {
+
+    const handleFilterProduct = (review: string): void => {
         setReviewSelected(review)
     }
 
@@ -91,6 +113,7 @@ const HomePage = () => {
                 })
                 setListType(objectProductTypes)
                 setProductTypeSelected(data[0]?._id)
+                firstRender.current = true;
             }
         }).catch((e) => {
             setLoadingTmp(false);
@@ -103,14 +126,18 @@ const HomePage = () => {
     }, [])
 
     useEffect(() => {
+        if(firstRender.current){
         handleGetListProducts();
+        }
     }, [sortBy, searchBy, i18n, page, pageSize, fillterBy])
 
 
 
     useEffect(() => {
-        setFillterBy({ productType: productTypeSelected,minStar:reviewSelected })
-    }, [productTypeSelected,reviewSelected])
+        if(firstRender.current){
+            setFillterBy({ productType: productTypeSelected, minStar: reviewSelected })
+        }
+    }, [productTypeSelected, reviewSelected])
 
 
     return (
@@ -129,7 +156,6 @@ const HomePage = () => {
                     <Tabs
                         value={productTypeSelected}
                         onChange={handleChange}
-                        aria-label="wrapped label tabs example"
                     >
                         {listType?.map((item) => {
                             return <Tab
@@ -166,7 +192,7 @@ const HomePage = () => {
                                 border: "1px solid",
                                 borderColor: `rgba(${theme.palette.customColors.main},0.05)`,
                                 borderRadius: "10px",
-                                p:5
+                                p: 5
                             }}>
                                 <FilterProduct handleFilterProduct={handleFilterProduct}></FilterProduct>
                             </Box>
@@ -184,12 +210,12 @@ const HomePage = () => {
                                             md={4}
                                             xs={12}
                                             sm={6}>
-                                            <CardProduct item={item}></CardProduct>
+                                            <CardProduct key={item._id} item={item}></CardProduct>
                                         </Grid>
                                     ))}
                                 </>
                             ) : (
-                                <Typography>No Data</Typography>
+                                <Typography textAlign={"center"}>No Data</Typography>
                             )}
                         </Grid>
                     </Grid>

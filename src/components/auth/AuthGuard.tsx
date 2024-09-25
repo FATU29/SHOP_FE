@@ -62,8 +62,9 @@ const AuthGuard = (props: AuthGuardProps) => {
 
   },[])
 
+  
 
-  if(authContext.loading || authContext.user === null){
+  if(authContext.loading || !authContext.user){
     return fallback
   }
 

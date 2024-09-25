@@ -17,5 +17,6 @@ const Product : NextPage<TProps> = () => {
 }
 
 
+
 Product.permission = [CONFIG_PERMISSIONS.MANAGE_PRODUCT.PRODUCT.VIEW]
 export default Product;

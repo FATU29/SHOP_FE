@@ -21,7 +21,9 @@ import { EditorState } from 'react-draft-wysiwyg';
 import { getAllProductTypes } from 'src/services/product-type';
 import draftToHtml from 'draftjs-to-html';
 import { convertToRaw } from 'draft-js';
-import { Image } from '@mui/icons-material';
+import moment from 'moment';
+import Image from 'next/image';
+import products from 'src/stores/products';
 
 
 interface TCreateEditUser {
@@ -315,17 +317,17 @@ const CreateEditProduct = (props: TCreateEditUser) => {
                                                                 <Box>
                                                                     {imageProduct ?
                                                                         (<>
-                                                                            <Avatar sx={{
+                                                                            <Image style={{
                                                                                 width: "100%",
                                                                                 height: "100%"
-                                                                            }} variant='square' src={imageProduct || "/broken-image.jpg"}></Avatar>
+                                                                            }} width={0} height={0} alt={products?.name} src={imageProduct || "/broken-image.jpg"}></Image>
 
                                                                         </>) :
                                                                         (<>
-                                                                            <Avatar sx={{
+                                                                            <Image style={{
                                                                                 width: "100%",
                                                                                 height: "100%"
-                                                                            }} variant='square' src="/broken-image.jpg"></Avatar>
+                                                                            }} width={0} height={0} alt={products?.name} src="/broken-image.jpg"></Image>
                                                                         </>)}
                                                                 </Box>
                                                                 <Box sx={{
@@ -546,36 +548,42 @@ const CreateEditProduct = (props: TCreateEditUser) => {
                                                 <Grid item md={6} xs={12}>
                                                     <Controller
                                                         control={control}
-                                                        render={({ field: { onChange, onBlur, value } }) => (
-                                                            <CustomDatePicker
+                                                        render={({ field: { onChange, onBlur, value } }) => {
+                                                            const isValidDate = moment(value, moment.ISO_8601, true).isValid(); // Kiểm tra nếu value hợp lệ
+                                                            return <CustomDatePicker
+                                                                dateFormat="MM-dd-yyyy"
                                                                 onChange={(date) => onChange(date)}
                                                                 onBlur={onBlur}
-                                                                selectedDate={value}
+                                                                selectedDate={isValidDate ? moment(value).toDate() : null} // Chỉ chuyển đổi khi value hợp lệ
                                                                 typeDateText="Discount_StartDate"
                                                                 error={errors.discountStartDate?.message}
                                                                 minDate={new Date(Date.now())}
                                                             >
                                                             </CustomDatePicker>
-                                                        )}
+                                                        }}
                                                         name="discountStartDate"
                                                     />
                                                 </Grid>
                                                 <Grid item md={6} xs={12}>
                                                     <Controller
                                                         control={control}
-                                                        render={({ field: { onChange, onBlur, value } }) => (
-                                                            <CustomDatePicker
-                                                                onChange={(date) => onChange(date)}
-                                                                onBlur={onBlur}
-                                                                selectedDate={value}
-                                                                typeDateText="Discount_EndDate"
-                                                                error={errors.discountEndDate?.message}
-                                                            >
-                                                            </CustomDatePicker>
-                                                        )}
+                                                        render={({ field: { onChange, onBlur, value } }) => {
+                                                            const isValidDate = moment(value, moment.ISO_8601, true).isValid(); // Kiểm tra nếu value hợp lệ
+                                                            return (
+                                                                <CustomDatePicker
+                                                                    dateFormat="MM-dd-yyyy"
+                                                                    onChange={(date) => onChange(date)}
+                                                                    onBlur={onBlur}
+                                                                    selectedDate={isValidDate ? moment(value).toDate() : null} // Chỉ chuyển đổi khi value hợp lệ
+                                                                    typeDateText="Discount_EndDate"
+                                                                    error={errors.discountEndDate?.message}
+                                                                />
+                                                            );
+                                                        }}
                                                         name="discountEndDate"
                                                     />
                                                 </Grid>
+
                                                 <Grid item md={12} xs={12}>
                                                     <Controller
                                                         control={control}

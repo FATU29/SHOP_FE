@@ -21,7 +21,6 @@ import TableHeader from "src/components/table-header";
 import { deleteProductAction, deleteMultipleProductsAction, getAllProductsAction } from "src/stores/products/action";
 import CreateEditProduct from "./component/CreateEditProduct";
 import CustomSelect from "src/components/custom-select";
-import { OBJECT_STATUS_USER } from "src/configs/users";
 import { getAllProductTypes } from "src/services/product-type";
 import { OBJECT_STATUS_Product } from "src/configs/products";
 
@@ -69,11 +68,12 @@ const ProductList = () => {
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0]);
     const [selectedRow, setSelectedRow] = useState<string[]>([]);
-
     const [listType, setListType] = useState<{ label: string, value: string }[]>([]);
     const [statusSelected, setStatusSelected] = useState<string>("");
     const [typeSelected, setTypeSelected] = useState<string>("");
     const [fillterBy, setFillterBy] = useState<Record<string, string>>({});
+
+
 
 
     const theme = useTheme();
@@ -94,6 +94,7 @@ const ProductList = () => {
         messageErrorDeleteProduct,
         products
     } = useSelector((state: RootState) => state.products)
+
 
 
     const { VIEW, UPDATE, CREATE, DELETE } = usePermission("MANAGE_PRODUCT.PRODUCT", ["CREATE", "VIEW", "UPDATE", "DELETE"])
@@ -391,7 +392,8 @@ const ProductList = () => {
     }, [isSuccessMultipleDeleteProduct, isErrorDeleteMultipleProduct, messageErrorDeleteMultipleProduct])
 
     useEffect(() => {
-        setFillterBy({ productType: typeSelected, status: statusSelected })
+        if(typeSelected || statusSelected)
+        setFillterBy({ productType: typeSelected, statusSelected })
     }, [typeSelected, statusSelected])
 
 

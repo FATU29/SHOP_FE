@@ -298,7 +298,7 @@ const CityList = () => {
                 idCity={openCreateEdit?.id}
             >
             </CreateEditCity>
-            {(isLoading && isLoadingTmp) ?? <FallbackSpinner></FallbackSpinner>}
+            {(isLoading || isLoadingTmp) ?? <FallbackSpinner></FallbackSpinner>}
             <Box sx={{
                 backgroundColor: theme.palette.background.paper,
                 borderRadius: "10px",

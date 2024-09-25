@@ -312,7 +312,7 @@ const DeliveryTypeList = () => {
                 idDeliveryType={openCreateEdit?.id}
             >
             </CreateEditDeliveryType>
-            {(isLoading && isLoadingTmp) && <FallbackSpinner></FallbackSpinner>}
+            {(isLoading || isLoadingTmp) && <FallbackSpinner></FallbackSpinner>}
             <Box sx={{
                 backgroundColor: theme.palette.background.paper,
                 borderRadius: "10px",

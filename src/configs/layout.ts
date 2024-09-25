@@ -45,12 +45,12 @@ export const VerticalItem = [
             {
                 title: "Danh sách sản phẩm",
                 icon: "fluent-mdl2:product-list",
-                path: ROUTE_CONFIG.PRODUCT.MANAGE_PRODUCT,
+                path: ROUTE_CONFIG.MANAGE_PRODUCT.MANAGE_PRODUCT,
             },
             {
                 title: "Danh mục sản phẩm",
                 icon: "icon-park-outline:category-management",
-                path: ROUTE_CONFIG.PRODUCT.MANAGE_TYPE_PRODUCT,
+                path: ROUTE_CONFIG.MANAGE_PRODUCT.MANAGE_TYPE_PRODUCT,
             },
             // {
             //     title: "Danh sách đơn hàng",
