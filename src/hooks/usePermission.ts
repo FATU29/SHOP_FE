@@ -22,7 +22,6 @@ export const usePermission = (key: string, actions: TActions[]) => {
     const getObjectValue = (obj: any, key: string) => {
         const keys = key.split(".");
         let result = obj;
-        //console.log("keys",keys);
         if (keys && !!key.length) {
             for (const k of keys) {
                 if (k in obj) {

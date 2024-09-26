@@ -140,10 +140,10 @@ export const cloneDeep = (data: any) => {
 
 
 
-export const convertAddProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
+export const convertupdateProductToCart = (orderItems: TItemOrderProduct[], addItem: TItemOrderProduct) => {
   try {
-    const cloneOrderItems = cloneDeep(orderItems);
-    const index = cloneOrderItems.findIndex((item:any) => item.product === addItem.product);
+    const cloneOrderItems = orderItems ? cloneDeep(orderItems) : [];
+    const index = cloneOrderItems ? cloneOrderItems?.findIndex((item:any) => item.product === addItem.product) : -1;
     if (index >= 0) {
       cloneOrderItems[index].amount += addItem.amount;
     } else {

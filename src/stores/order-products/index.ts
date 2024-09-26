@@ -28,9 +28,10 @@ export const orderProductsSlice = createSlice({
   name: serviceName,
   initialState,
   reducers: {
-    addProductToCart: (state, action) => {
+    updateProductToCart: (state, action) => {
       state.orderItems = action.payload.orderItems
     },
+
   },
 
   extraReducers: builder => { },
@@ -38,5 +39,5 @@ export const orderProductsSlice = createSlice({
 
 
 // Action creators are generated for each case reducer function
-export const { addProductToCart } = orderProductsSlice.actions
+export const { updateProductToCart } = orderProductsSlice.actions
 export default orderProductsSlice.reducer

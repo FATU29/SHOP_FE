@@ -1,5 +1,5 @@
 // ** React Imports
-import { createContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useEffect, useState, ReactNode, useRef } from 'react'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -41,6 +41,7 @@ const AuthProvider = ({ children }: Props) => {
 
   // ** Hooks
   const router = useRouter()
+  const firstRender = useRef(false)
 
   useEffect(() => {
     const initAuth = async (): Promise<void> => {
@@ -65,11 +66,15 @@ const AuthProvider = ({ children }: Props) => {
               router.replace('/login')
             }
           })
-      } else {
-        setLoading(false)
+        } else {
+          setLoading(false)
+        }
       }
-    }
-    initAuth();
+        
+      if(!firstRender.current){
+        initAuth();
+        firstRender.current = true
+      }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

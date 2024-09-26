@@ -15,7 +15,7 @@ import FilterProduct from "./component/FilterProduct";
 
 
 const HomePage = () => {
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
 
     const [searchBy, setSearchBy] = useState<string>("")
     const [isLoadingTmp, setLoadingTmp] = useState<boolean>(false);
@@ -75,6 +75,7 @@ const HomePage = () => {
         try {
             const res = await getAllProductsPublic(query, { signal: controller.signal });
             const data = res?.data;
+
 
             if (data) {
                 setProductPublic({

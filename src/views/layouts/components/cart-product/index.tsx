@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
 import { TItemOrderProduct } from 'src/types/order-products'
 import { getLocalProductCart } from 'src/helpers/storage'
-import { addProductToCart } from 'src/stores/order-products'
+import { updateProductToCart } from 'src/stores/order-products'
 import { useAuth } from 'src/hooks/useAuth'
 import Image from 'next/image'
 import { Height } from '@mui/icons-material'
@@ -37,7 +37,6 @@ const CartProducts: NextPage<TProps> = () => {
   }
 
   const handleComDetailPage = (slug: string) => () => {
-    console.log('slug', slug)
     router.push(`/${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
 
@@ -46,7 +45,7 @@ const CartProducts: NextPage<TProps> = () => {
     const parseData = JSON.parse(productCart as string)
     if (user?.user?._id && parseData !== null) {
       dispatch(
-        addProductToCart({
+        updateProductToCart({
           orderItems: parseData[user?.user?._id]
         })
       )
@@ -54,9 +53,12 @@ const CartProducts: NextPage<TProps> = () => {
   }, [user.user])
 
   const totalItemsCart = useMemo(() => {
-    const total = orderItems?.reduce((result, current: TItemOrderProduct) => {
-      return result + current?.amount
-    }, 0)
+    let total: number = 0
+    if (Array.isArray(orderItems)) {
+      total = orderItems?.reduce((result, current: TItemOrderProduct) => {
+        return result + current?.amount
+      }, 0)
+    }
     return total
   }, [orderItems])
 
@@ -116,7 +118,7 @@ const CartProducts: NextPage<TProps> = () => {
               maxHeight: '400px'
             }}
           >
-            {orderItems.map((item: any) => {
+            {Array.isArray(orderItems) && orderItems?.map((item: any) => {
               return (
                 <>
                   <Tooltip title={t('Click_to_show_details')} onClick={handleComDetailPage(item.slug)}>
@@ -126,12 +128,12 @@ const CartProducts: NextPage<TProps> = () => {
                         height: 'auto'
                       }}
                     >
-                      <Grid container>
+                      <Grid container spacing={5}>
                         <Grid
                           item
                           md={4}
                           sx={{
-                            width: { xs: '100%', md: '50px' },
+                            width: { xs: '100%', md: '200px' },
                             height: { xs: '100%', md: '120px' }
                           }}
                         >
@@ -147,11 +149,11 @@ const CartProducts: NextPage<TProps> = () => {
                             alt={item?.name}
                           ></Image>
                         </Grid>
-                        <Grid item container direction={'column'} md={5} spacing={1}>
+                        <Grid item container direction={'column'} md={5}>
                           <Grid item md={5}>
                             <Box
                               sx={{
-                                width: '100%'
+                                width: '250px'
                               }}
                             >
                               <Typography
@@ -169,7 +171,11 @@ const CartProducts: NextPage<TProps> = () => {
                             </Box>
                           </Grid>
                           <Grid item md={6}>
-                            {item?.discount ? (
+                            {item?.discount &&
+                            item?.discountEndDate &&
+                            item?.discountStartDate &&
+                            Date.now() <= new Date(item?.discountEndDate).getTime() &&
+                            Date.now() >= new Date(item?.discountStartDate).getTime() ? (
                               <>
                                 <Box
                                   sx={{
@@ -196,7 +202,7 @@ const CartProducts: NextPage<TProps> = () => {
                             ) : (
                               <>
                                 <Typography color={theme.palette.primary.main} variant='h6' fontWeight={'bold'}>
-                                  {item?.price} VND
+                                  {formatCurrencyVND(item?.price)}
                                 </Typography>
                               </>
                             )}
@@ -232,7 +238,7 @@ const CartProducts: NextPage<TProps> = () => {
                 </>
               )
             })}
-            {orderItems.length <= 0 && (
+            {Array.isArray(orderItems) && orderItems?.length <= 0 && (
               <>
                 <MenuItem>
                   <Typography
@@ -247,7 +253,7 @@ const CartProducts: NextPage<TProps> = () => {
               </>
             )}
           </Box>
-          {orderItems.length > 0 && (
+          {Array.isArray(orderItems) && orderItems?.length > 0 && (
             <>
               <Box
                 sx={{
@@ -257,7 +263,14 @@ const CartProducts: NextPage<TProps> = () => {
                   marginTop: 2
                 }}
               >
-                <Button variant='contained'>{t('View_your_cart')}</Button>
+                <Button
+                  onClick={() => {
+                    router.push(`${ROUTE_CONFIG.MY_CART}`)
+                  }}
+                  variant='contained'
+                >
+                  {t('View_your_cart')}
+                </Button>
               </Box>
             </>
           )}

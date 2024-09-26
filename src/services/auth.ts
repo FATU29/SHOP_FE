@@ -74,7 +74,7 @@ export const updateAuthMe = async (data: any) => {
 export const getAuthMe = async () => {
   try {
     const getAuthMeAPI = API_ENDPOINT.AUTH.AUTH_ME;
-    const res = await axios(getAuthMeAPI, {
+    const res = await instanceAxios(getAuthMeAPI, {
       method: "GET",
       headers
     })

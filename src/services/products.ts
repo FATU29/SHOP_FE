@@ -10,7 +10,7 @@ const headers = {
 export const getAllProducts = async (data: { params: TParamsGetProducts }) => {
   try {
     const getAll = API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX;
-    const res = await axios(getAll, {
+    const res = await instanceAxios(getAll, {
       method: "GET",
       headers,
       params: data.params

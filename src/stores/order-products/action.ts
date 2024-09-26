@@ -2,6 +2,6 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 
 
-export const serviceName = "order-product"
+export const serviceName = "order-products"
 
 
