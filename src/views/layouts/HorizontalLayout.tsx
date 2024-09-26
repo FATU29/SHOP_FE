@@ -4,7 +4,6 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import Badge from '@mui/material/Badge'
 import { NextPage } from 'next'
 import IconifyIcon from 'src/components/Icon'
 import UserDropDown from 'src/views/layouts/components/user-dropdown'
@@ -83,7 +82,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
       <AppBar position='absolute' open={open}>
         <Toolbar
           sx={{
-            pr: '24px' // keep right padding when drawer closed
+            pr: '24px'
           }}
         >
           <IconButton
@@ -124,7 +123,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHidden }) =>
               <ModeToggle></ModeToggle>
               <LanguageDropDown></LanguageDropDown>
               <CartProducts></CartProducts>
-              <UserDropDown></UserDropDown>{' '}
+              <UserDropDown></UserDropDown>
             </>
           ) : (
             <Button

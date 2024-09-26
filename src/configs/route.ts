@@ -22,6 +22,7 @@ export const ROUTE_CONFIG = {
         SETTING_CITY: "/setting/city",
         SETTING_DELIVERY: "/setting/delivery",
         SETTING_PAY: "/setting/payment"
-    }
+    },
+    MY_CART:`/my-cart`,
 
 }

@@ -61,7 +61,10 @@ export const CofirmDialog: NextPage<TProps> = ({ open, onClose,title,description
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={onClose}>{t("Disagree")}</Button>
-                    <Button onClick={handleAction} autoFocus>
+                    <Button onClick={() => {
+                        handleAction();
+                        onClose();
+                    }} autoFocus>
                         {t("Agree")}
                     </Button>
                 </DialogActions>

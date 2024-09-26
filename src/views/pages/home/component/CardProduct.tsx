@@ -29,9 +29,9 @@ import { ROUTE_CONFIG } from 'src/configs/route'
 import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { useAuth } from 'src/hooks/useAuth'
 import { AppDispatch, RootState } from 'src/stores'
-import { addProductToCart } from 'src/stores/order-products'
+import { updateProductToCart } from 'src/stores/order-products'
 import { TProduct } from 'src/types/products'
-import { convertAddProductToCart, formatCurrencyVND } from 'src/utils'
+import { convertupdateProductToCart, formatCurrencyVND } from 'src/utils'
 
 const labels: { [index: string]: string } = {
   0.5: 'Useless',
@@ -58,45 +58,45 @@ interface ExpandMoreProps extends IconButtonProps {
   expand: boolean
 }
 
-
 const CardProduct = (props: TCardProduct) => {
   const [value, setValue] = React.useState<number | null>(2)
   const [hover, setHover] = React.useState(-1)
   const [isLoadingCheck, setLoadingCheck] = React.useState<boolean>(false)
   const theme = useTheme()
   const router = useRouter()
-  const user = useAuth();
+  const user = useAuth()
 
   const dispatch: AppDispatch = useDispatch()
   const { orderItems } = useSelector((state: RootState) => state.cartProducts)
-
   const { item } = props
 
-  
   const handleNavigationDetails = (slug: string) => {
     router.push(`${ROUTE_CONFIG.PRODUCT}/${slug}`)
   }
-  
-  const handleAddProductToCart = (item: TProduct) => {
-    const productCart = getLocalProductCart();
-    const parseData = productCart ?  JSON.parse(productCart as string) : {}
-    const listOrderItem = convertAddProductToCart(orderItems, {
+
+  const handleupdateProductToCart = (item: TProduct) => {
+    const productCart = getLocalProductCart()
+    const parseData = productCart ? JSON.parse(productCart as string) : {}
+    const listOrderItem = convertupdateProductToCart(orderItems, {
       name: item?.name,
       amount: 1,
       image: item?.image,
       price: item.price,
       discount: item.discount,
       product: item._id,
-      slug: item.slug
-    })
-  
+      slug: item.slug,
+      discountStartDate: item.discountStartDate,
+      discountEndDate: item.discountEndDate
+    })    
+
     dispatch(
-      addProductToCart({
+      updateProductToCart({
         orderItems: listOrderItem
       })
     )
-    if(user?.user?._id){
-        setLocalProductToCart({...parseData,[user?.user?._id] : listOrderItem});
+
+    if (user?.user?._id) {
+      setLocalProductToCart({ ...parseData, [user?.user?._id]: listOrderItem })
     }
   }
 
@@ -154,7 +154,12 @@ const CardProduct = (props: TCardProduct) => {
           >
             {item?.name}
           </Typography>
-          {item?.discount ? (
+          {item?.discount &&
+          item?.discountEndDate &&
+          item?.discountStartDate &&
+          item?.discount &&
+          Date.now() <= new Date(item?.discountEndDate).getDate() &&
+          Date.now() >= new Date(item?.discountStartDate).getTime() ? (
             <>
               <Box
                 sx={{
@@ -180,7 +185,7 @@ const CardProduct = (props: TCardProduct) => {
           ) : (
             <>
               <Typography color={theme.palette.primary.main} variant='h6' fontWeight={'bold'}>
-                {item?.price} VND
+                {formatCurrencyVND(item?.price)}
               </Typography>
             </>
           )}
@@ -228,7 +233,7 @@ const CardProduct = (props: TCardProduct) => {
             <Tooltip title='Add_to_cart' arrow>
               <IconButton
                 onClick={() => {
-                  handleAddProductToCart(item)
+                  handleupdateProductToCart(item)
                 }}
               >
                 <IconifyIcon icon={'gridicons:add-outline'}></IconifyIcon>
