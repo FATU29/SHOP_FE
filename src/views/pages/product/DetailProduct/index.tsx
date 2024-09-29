@@ -17,8 +17,6 @@ import { updateProductToCart } from 'src/stores/order-products'
 import { useAuth } from 'src/hooks/useAuth'
 import { IconButton } from '@mui/material'
 import CardProduct from '../../home/component/CardProduct'
-import { TParamsGetProductRelatedBySlug } from 'src/types/product-type'
-import { pages } from 'next/dist/build/templates/app-page'
 
 type TProps = {}
 
