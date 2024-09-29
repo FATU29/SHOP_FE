@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import { TProduct } from 'src/types/products'
 import Image from 'next/image'
 import Countdown from 'react-countdown'
-import { convertHTMLtoDraft, convertupdateProductToCart, formatCurrencyVND } from 'src/utils'
+import { convertupdateProductToCart, formatCurrencyVND } from 'src/utils'
 import IconifyIcon from 'src/components/Icon'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
@@ -17,8 +17,7 @@ import { updateProductToCart } from 'src/stores/order-products'
 import { useAuth } from 'src/hooks/useAuth'
 import { IconButton } from '@mui/material'
 import CardProduct from '../../home/component/CardProduct'
-import { TParamsGetProductRelatedBySlug } from 'src/types/product-type'
-import { pages } from 'next/dist/build/templates/app-page'
+
 
 type TProps = {}
 

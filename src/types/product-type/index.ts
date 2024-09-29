@@ -1,29 +1,33 @@
-
 export type TParamsGetProductTypes = {
-    limit: number,
-    page: number,
-    search?: string,
-    order?: string
+  limit: number
+  page: number
+  search?: string
+  order?: string
 }
 
+export type TParamsGetProductRelatedBySlug = {
+  slug: string
+  limit?: number
+  page?: number
+  search?: string
+  order?: string
+}
 
 export type TParamsCreateProductType = {
-    name: string,
-    slug: number
+  name: string
+  slug: number
 }
-
 
 export type TParamsEditProductType = {
-    id: string,
-    name: string,
-    slug: number
+  id: string
+  name: string
+  slug: number
 }
 
-
 export type TParamsDeleteProductType = {
-    id: string
+  id: string
 }
 
 export type TParamsDeleteMultipleProductTypes = {
-    productTypeIds: string[]
+  productTypeIds: string[]
 }
