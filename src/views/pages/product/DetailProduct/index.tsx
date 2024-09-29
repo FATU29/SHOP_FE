@@ -3,12 +3,12 @@ import { NextPage } from 'next'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import FallbackSpinner from 'src/components/fall-back'
-import { getDetailProductPublicBySlug } from 'src/services/products'
+import { getDetailProductPublicBySlug, getDetailProductRelatedBySlug } from 'src/services/products'
 import { useRouter } from 'next/router'
 import { TProduct } from 'src/types/products'
 import Image from 'next/image'
 import Countdown from 'react-countdown'
-import { convertupdateProductToCart, formatCurrencyVND } from 'src/utils'
+import { convertHTMLtoDraft, convertupdateProductToCart, formatCurrencyVND } from 'src/utils'
 import IconifyIcon from 'src/components/Icon'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/stores'
@@ -16,6 +16,9 @@ import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { updateProductToCart } from 'src/stores/order-products'
 import { useAuth } from 'src/hooks/useAuth'
 import { IconButton } from '@mui/material'
+import CardProduct from '../../home/component/CardProduct'
+import { TParamsGetProductRelatedBySlug } from 'src/types/product-type'
+import { pages } from 'next/dist/build/templates/app-page'
 
 type TProps = {}
 
@@ -25,6 +28,7 @@ const DetailProductPage: NextPage<TProps> = () => {
   const { user } = useAuth()
   const [loading, setLoading] = useState<boolean>(false)
   const [dataDetailProduct, setDataDetailProduct] = useState<TProduct | any>()
+  const [listProductRelated, setListProductRelated] = useState([])
   const router = useRouter()
   const { productId } = router.query
   const [valueTextField, setValueTextField] = useState<number>(1)
@@ -110,9 +114,29 @@ const DetailProductPage: NextPage<TProps> = () => {
     setLoading(false)
   }
 
+  const getDetailProductByProductType = async (slug: string) => {
+    const params = {
+      params: {
+        slug: slug,
+        limit: 3,
+        pages: 1
+      }
+    }
+    await getDetailProductRelatedBySlug(params)
+    .then(res => {
+      const data = res.data
+      setListProductRelated(data.products)
+      })
+      .catch(error => {
+        console.log('error getDetailProductByProductType ', error)
+      })
+  }
+
+
   useEffect(() => {
     if (productId) {
       fetchGetDetailProduct(productId as string)
+      getDetailProductByProductType(productId as string)
     }
   }, [productId])
 
@@ -121,8 +145,6 @@ const DetailProductPage: NextPage<TProps> = () => {
       {loading && <FallbackSpinner></FallbackSpinner>}
       <Box
         sx={{
-          backgroundColor: theme.palette.background.paper,
-          p: 5,
           width: '100%',
           height: '100%'
         }}
@@ -131,270 +153,373 @@ const DetailProductPage: NextPage<TProps> = () => {
           sx={{
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            marginTop: '-50px'
           }}
         >
-          <Grid container spacing={10}>
-            <Grid item md={5} xs={12}>
-              <Box>
-                <Image
-                  width={0}
-                  height={0}
-                  src={dataDetailProduct?.image}
-                  alt={dataDetailProduct?.name}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'contain',
-                    border: '1px solid'
-                  }}
-                ></Image>
-              </Box>
-            </Grid>
-            <Grid item md={7} xs={12} justifyContent={'center'} alignItems={'center'} display={'flex'}>
-              <Box
-                sx={{
-                  width: '100%',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 2
-                }}
-              >
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    width: '100%'
-                  }}
-                >
-                  <Tooltip title={dataDetailProduct?.name}>
-                    <Typography
-                      sx={{
-                        fontSize: '20px',
-                        fontWeight: 'bold',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        '-webkitBoxOrient': 'vertical',
-                        '-webkitLineClamp': '2',
-                        overflow: 'hidden'
-                      }}
-                    >
-                      {dataDetailProduct?.name}
-                    </Typography>
-                  </Tooltip>
+          <Grid container rowGap={5} sx={{ width: '100%', height: '100%' }}>
+            <Grid
+              p={5}
+              container
+              item
+              xs={12}
+              sx={{
+                backgroundColor: theme.palette.background.paper,
+                p: 5,
+                width: '100%',
+                height: '100%',
+                borderRadius: '10px',
+                boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <Grid p={5} item md={5} xs={12} alignItems={'center'} justifyItems={'center'} display={'flex'}>
+                <Box>
+                  <Image
+                    width={0}
+                    height={0}
+                    src={dataDetailProduct?.image}
+                    alt={dataDetailProduct?.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'contain',
+                      border: '1px solid',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  ></Image>
                 </Box>
+              </Grid>
+              <Grid item md={7} xs={12} justifyContent={'center'} alignItems={'center'} display={'flex'}>
                 <Box
                   sx={{
                     display: 'flex',
-                    justifyContent: 'space-between'
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '100%',
+                    height: '100%'
                   }}
                 >
                   <Box
                     sx={{
+                      width: '100%',
+                      height: '100%',
                       display: 'flex',
-                      gap: '5px'
+                      flexDirection: 'column',
+                      gap: 2
                     }}
                   >
-                    <Typography
+                    <Box
                       sx={{
-                        textDecoration: 'underline',
-                        color: 'red'
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        width: '100%'
                       }}
                     >
-                      {dataDetailProduct?.averageRating}
-                    </Typography>
-                    <Rating value={dataDetailProduct?.averageRating} readOnly></Rating>
-                  </Box>
-                  <Box>
-                    <Typography color={theme.palette.text.primary}>Report</Typography>
-                  </Box>
-                </Box>
-                <Box
-                  sx={{
-                    backgroundColor: theme.palette.background.default,
-                    p: 6,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 5
-                  }}
-                >
-                  {checkValidDiscount() && (
-                    <>
+                      <Tooltip title={dataDetailProduct?.name}>
+                        <Typography
+                          sx={{
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                            textOverflow: 'ellipsis',
+                            display: '-webkit-box',
+                            '-webkitBoxOrient': 'vertical',
+                            '-webkitLineClamp': '2',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          {dataDetailProduct?.name}
+                        </Typography>
+                      </Tooltip>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between'
+                      }}
+                    >
                       <Box
                         sx={{
                           display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          pb: 3,
-                          borderBottom: '1px solid'
+                          gap: '5px'
                         }}
                       >
-                        <Box
+                        <Typography
                           sx={{
-                            display: 'flex',
-                            alignItems: 'center'
+                            textDecoration: 'underline',
+                            color: 'red'
                           }}
                         >
-                          <Typography>
-                            {' '}
-                            F<IconifyIcon icon={'bi:lightning-fill'}></IconifyIcon>ASH SALE
+                          {dataDetailProduct?.averageRating}
+                        </Typography>
+                        <Rating value={dataDetailProduct?.averageRating} readOnly></Rating>
+                      </Box>
+                      <Box>
+                        <Typography color={theme.palette.text.primary}>Report</Typography>
+                      </Box>
+                    </Box>
+                    <Box
+                      sx={{
+                        backgroundColor: theme.palette.background.default,
+                        p: 6,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 5
+                      }}
+                    >
+                      {checkValidDiscount() && (
+                        <>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              pb: 3,
+                              borderBottom: '1px solid'
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center'
+                              }}
+                            >
+                              <Typography>
+                                {' '}
+                                F<IconifyIcon icon={'bi:lightning-fill'}></IconifyIcon>ASH SALE
+                              </Typography>
+                            </Box>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2
+                              }}
+                            >
+                              <IconifyIcon icon={'ri:time-line'}></IconifyIcon>
+                              <Typography>{t('Ends in')}</Typography>
+                              {isSaleDate()}
+                            </Box>
+                          </Box>
+                        </>
+                      )}
+                      {checkValidDiscount() ? (
+                        <>
+                          <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} gap={7}>
+                            <Typography
+                              sx={{
+                                fontSize: '15px',
+                                fontWeight: 'bold',
+                                textDecoration: 'line-through',
+                                color: 'red',
+                                position: 'relative'
+                              }}
+                            >
+                              {' '}
+                              {formatCurrencyVND(dataDetailProduct?.price)}
+                            </Typography>
+                            <Typography
+                              sx={{
+                                fontSize: '25px',
+                                fontWeight: 'bold',
+                                position: 'relative'
+                              }}
+                            >
+                              {formatCurrencyVND(dataDetailProduct?.discount)}
+                            </Typography>
+                          </Box>
+                        </>
+                      ) : (
+                        <>
+                          <Typography
+                            sx={{
+                              fontSize: '25px',
+                              fontWeight: 'bold',
+                              position: 'relative'
+                            }}
+                          >
+                            {formatCurrencyVND(dataDetailProduct?.price)}
                           </Typography>
-                        </Box>
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2
-                          }}
-                        >
-                          <IconifyIcon icon={'ri:time-line'}></IconifyIcon>
-                          <Typography>{t('Ends in')}</Typography>
-                          {isSaleDate()}
-                        </Box>
-                      </Box>
-                    </>
-                  )}
-                  {checkValidDiscount() ? (
-                    <>
-                      <Box display={'flex'} justifyContent={'flex-start'} alignItems={'center'} gap={7}>
-                        <Typography
-                          sx={{
-                            fontSize: '15px',
-                            fontWeight: 'bold',
-                            textDecoration: 'line-through',
-                            color: 'red',
-                            position: 'relative'
-                          }}
-                        >
-                          {' '}
-                          {formatCurrencyVND(dataDetailProduct?.price)}
-                        </Typography>
-                        <Typography
-                          sx={{
-                            fontSize: '25px',
-                            fontWeight: 'bold',
-                            position: 'relative'
-                          }}
-                        >
-                          {formatCurrencyVND(dataDetailProduct?.discount)}
-                        </Typography>
-                      </Box>
-                    </>
-                  ) : (
-                    <>
-                      <Typography
+                        </>
+                      )}
+                    </Box>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        gap: 3
+                      }}
+                    >
+                      <IconButton
+                        onClick={() => {
+                          handleDecreaseCart()
+                        }}
                         sx={{
-                          fontSize: '25px',
-                          fontWeight: 'bold',
-                          position: 'relative'
+                          width: '35px',
+                          height: '35px',
+                          padding: 0,
+                          borderRadius: '50%',
+                          backgroundColor: 'rgba(0,0,0,0.1)'
                         }}
                       >
-                        {formatCurrencyVND(dataDetailProduct?.price)}
-                      </Typography>
-                    </>
-                  )}
-                </Box>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    gap: 3
-                  }}
-                >
-                  <IconButton
-                    onClick={() => {
-                      handleDecreaseCart()
-                    }}
-                    sx={{
-                      width: '35px',
-                      height: '35px',
-                      padding: 0,
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(0,0,0,0.1)'
-                    }}
-                  >
-                    <IconifyIcon icon='ic:round-remove' style={{ color: 'red' }}></IconifyIcon>
-                  </IconButton>
-                  <TextField
-                    sx={{
-                      width: '60px',
-                      '& input': {
-                        padding: '8px 0',
-                        '-moz-appearance': 'textfield',
-                        textAlign: 'center'
-                      },
-                      '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-                        '-webkit-appearance': 'none',
-                        margin: 0
-                      },
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                          borderColor: 'rgba(0, 0, 0, 0.23)'
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(0, 0, 0, 0.23)'
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: 'rgba(0, 0, 0, 0.23)'
-                        }
-                      }
-                    }}
-                    type='number'
-                    value={valueTextField}
-                    onChange={e => {
-                      if (Number(e.target.value) <= 0) {
-                        setValueTextField(1)
-                      } else {
-                        setValueTextField(Number(e.target.value))
-                      }
-                    }}
-                  ></TextField>
-                  <IconButton
-                    onClick={() => {
-                      handleIncreseCart()
-                    }}
-                    sx={{
-                      width: '35px',
-                      height: '35px',
-                      padding: 0,
-                      borderRadius: '50%',
-                      backgroundColor: 'rgba(0,0,0,0.1)'
-                    }}
-                  >
-                    <IconifyIcon icon='ic:round-add' style={{ color: 'green' }}></IconifyIcon>
-                  </IconButton>
-                </Box>
+                        <IconifyIcon icon='ic:round-remove' style={{ color: 'red' }}></IconifyIcon>
+                      </IconButton>
+                      <TextField
+                        sx={{
+                          width: '60px',
+                          '& input': {
+                            padding: '8px 0',
+                            '-moz-appearance': 'textfield',
+                            textAlign: 'center'
+                          },
+                          '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+                            '-webkit-appearance': 'none',
+                            margin: 0
+                          },
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: 'rgba(0, 0, 0, 0.23)'
+                            },
+                            '&:hover fieldset': {
+                              borderColor: 'rgba(0, 0, 0, 0.23)'
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: 'rgba(0, 0, 0, 0.23)'
+                            }
+                          }
+                        }}
+                        type='number'
+                        value={valueTextField}
+                        onChange={e => {
+                          if (Number(e.target.value) <= 0) {
+                            setValueTextField(1)
+                          } else {
+                            setValueTextField(Number(e.target.value))
+                          }
+                        }}
+                      ></TextField>
+                      <IconButton
+                        onClick={() => {
+                          handleIncreseCart()
+                        }}
+                        sx={{
+                          width: '35px',
+                          height: '35px',
+                          padding: 0,
+                          borderRadius: '50%',
+                          backgroundColor: 'rgba(0,0,0,0.1)'
+                        }}
+                      >
+                        <IconifyIcon icon='ic:round-add' style={{ color: 'green' }}></IconifyIcon>
+                      </IconButton>
+                    </Box>
 
-                <Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      gap: '10px'
-                    }}
-                  >
-                    <Button
-                      sx={{
-                        borderRadius: 0
-                      }}
-                      onClick={() => handleupdateProductToCart(dataDetailProduct, valueTextField)}
-                      variant='contained'
-                    >
-                      {t('Add_to_cart')}
-                    </Button>
-                    <Button
-                      sx={{
-                        borderRadius: 0
-                      }}
-                      variant='contained'
-                    >
-                      {t('Buy_now')}
-                    </Button>
+                    <Box>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-start',
+                          gap: '10px'
+                        }}
+                      >
+                        <Button
+                          sx={{
+                            borderRadius: 0
+                          }}
+                          onClick={() => handleupdateProductToCart(dataDetailProduct, valueTextField)}
+                          variant='contained'
+                        >
+                          {t('Add_to_cart')}
+                        </Button>
+                        <Button
+                          sx={{
+                            borderRadius: 0
+                          }}
+                          variant='contained'
+                        >
+                          {t('Buy_now')}
+                        </Button>
+                      </Box>
+                    </Box>
                   </Box>
                 </Box>
-              </Box>
+              </Grid>
+            </Grid>
+            <Grid
+              container
+              item
+              xs={12}
+              sx={{
+                width: '100%',
+                height: '100%'
+              }}
+            >
+              <Grid container item>
+                <Grid item xs={12} md={8}>
+                  <Box
+                    sx={{
+                      backgroundColor: theme.palette.background.paper,
+                      p: 5,
+                      borderRadius: '10px',
+                      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+                      height: '100%',
+                      marginRight: 3
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                        alignItems: 'flex-start',
+                        flexDirection: 'column',
+                        gap: 4
+                      }}
+                    >
+                      <Typography variant='h3'>{t('Description')}</Typography>
+                      <Typography
+                        letterSpacing={1}
+                        variant='h6'
+                        dangerouslySetInnerHTML={{ __html: dataDetailProduct?.description }}
+                      />
+                    </Box>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Box
+                    sx={{
+                      backgroundColor: theme.palette.background.paper,
+                      p: 5,
+                      borderRadius: '10px',
+                      boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
+                      height: '100%'
+                    }}
+                  >
+                    <Typography variant='h2'>Related</Typography>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'column',
+                        gap: 5
+                      }}
+                    >
+                      {listProductRelated.length > 0 ? (
+                        <>{listProductRelated?.map(item => <CardProduct item={item} />)}</>
+                      ) : (
+                        <>
+                          <Typography textAlign={'center'}>No_Product</Typography>
+                        </>
+                      )}
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </Box>
