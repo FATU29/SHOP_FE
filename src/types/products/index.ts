@@ -3,7 +3,9 @@ export type TParamsGetProducts = {
     limit: number,
     page: number,
     search?: string,
-    order?: string
+    order?: string,
+    productType?:string | string[]
+
 }
 
 

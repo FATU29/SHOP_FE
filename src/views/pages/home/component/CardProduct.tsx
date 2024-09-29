@@ -30,8 +30,9 @@ import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { useAuth } from 'src/hooks/useAuth'
 import { AppDispatch, RootState } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-products'
+import { TItemOrderProduct } from 'src/types/order-products'
 import { TProduct } from 'src/types/products'
-import { convertupdateProductToCart, formatCurrencyVND } from 'src/utils'
+import { convertupdateProductToCart, formatCurrencyVND, isCheckLeftInStock } from 'src/utils'
 
 const labels: { [index: string]: string } = {
   0.5: 'Useless',
@@ -54,10 +55,6 @@ interface TCardProduct {
   item: TProduct
 }
 
-interface ExpandMoreProps extends IconButtonProps {
-  expand: boolean
-}
-
 const CardProduct = (props: TCardProduct) => {
   const [value, setValue] = React.useState<number | null>(2)
   const [hover, setHover] = React.useState(-1)
@@ -68,6 +65,7 @@ const CardProduct = (props: TCardProduct) => {
 
   const dispatch: AppDispatch = useDispatch()
   const { orderItems } = useSelector((state: RootState) => state.cartProducts)
+  const {products} = useSelector((state:RootState) => state.products )
   const { item } = props
 
   const handleNavigationDetails = (slug: string) => {
@@ -75,6 +73,17 @@ const CardProduct = (props: TCardProduct) => {
   }
 
   const handleupdateProductToCart = (item: TProduct) => {
+    const takeItemInStock = products?.data.find((product:TProduct) => product._id === item._id);
+    const itemIncreaseQuantity = orderItems?.find((product:TItemOrderProduct) => product.product === item._id )
+    console.log("Hello",products)
+    if(takeItemInStock && itemIncreaseQuantity){
+      const quantityInStock = takeItemInStock?.countInStock;
+      const quantityCurrentInCart = itemIncreaseQuantity?.amount + 1;
+      const flag = isCheckLeftInStock(quantityInStock,quantityCurrentInCart);
+      if(!flag){
+        return
+      }
+    }
     const productCart = getLocalProductCart()
     const parseData = productCart ? JSON.parse(productCart as string) : {}
     const listOrderItem = convertupdateProductToCart(orderItems, {

@@ -154,3 +154,12 @@ export const convertupdateProductToCart = (orderItems: TItemOrderProduct[], addI
     return orderItems
   }
 }
+
+
+export const isCheckLeftInStock = (inStock:number,currentQuantity:number) => {
+  if(currentQuantity > inStock){
+    return false 
+  } else {
+    return true
+  }
+}

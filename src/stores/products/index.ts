@@ -4,6 +4,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
 import { createProductAction,deleteProductAction,deleteMultipleProductsAction,getAllProductsAction,serviceName,updateProductAction } from './action'
+import { TProduct } from 'src/types/products'
 
 
 interface DataParams {
@@ -32,7 +33,7 @@ const initialState = {
   isErrorDeleteMultipleProduct: false,
   messageErrorDeleteMultipleProduct: "",
   products: {
-    data: [],
+    data: [] as TProduct[],
     total: 0
   }
 }

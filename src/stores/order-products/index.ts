@@ -2,6 +2,7 @@
 import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { serviceName } from './action'
+import { TItemOrderProduct } from 'src/types/order-products'
 
 // ** Axios Imports
 
@@ -20,7 +21,7 @@ interface Redux {
 }
 
 const initialState = {
-  orderItems: []
+  orderItems: [] as TItemOrderProduct[]
 }
 
 
