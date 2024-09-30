@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API_ENDPOINT } from "src/configs/api";
 import { instanceAxios } from "src/helpers/intercepterAxios";
-import { TParamsCreateProductType,TParamsDeleteProductType,TParamsDeleteMultipleProductTypes,TParamsEditProductType,TParamsGetProductTypes } from "src/types/product-type";
+import { TParamsCreateProductType,TParamsDeleteProductType,TParamsDeleteMultipleProductTypes,TParamsEditProductType,TParamsGetProductTypes, TParamsGetProductRelatedBySlug } from "src/types/product-type";
 
 const headers = {
   'Content-Type': 'application/json',
@@ -101,3 +101,6 @@ export const getDetailProductType = async (id: string) => {
     throw error;
   }
 };
+
+
+

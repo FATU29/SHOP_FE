@@ -24,5 +24,6 @@ export const ROUTE_CONFIG = {
         SETTING_PAY: "/setting/payment"
     },
     MY_CART:`/my-cart`,
+    MY_PRODUCTS:'/my-products'
 
 }

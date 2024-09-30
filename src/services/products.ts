@@ -7,7 +7,9 @@ import {
   TParamsDeleteProduct,
   TParamsDeleteMultipleProducts,
   TParamsEditProduct,
-  TParamsGetProducts
+  TParamsGetProducts,
+  TGetLikeMe,
+  TGetViewProductMe
 } from 'src/types/products'
 
 const headers = {
@@ -164,6 +166,66 @@ export const getDetailProductRelatedBySlug = async (data: { params: TParamsGetPr
     return res.data
   } catch (error) {
     console.error('Error get detail Product:', error)
+    throw error
+  }
+}
+
+export const likeProduct = async (data: { productId: string }) => {
+  try {
+    const index = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/like`
+    const res = await instanceAxios(index, {
+      method: 'POST',
+      headers,
+      data: data
+    })
+    return res.data
+  } catch (error) {
+    console.error('Error POST like Product:', error)
+    throw error
+  }
+}
+
+export const unlikeProduct = async (data: { productId: string }) => {
+  try {
+    const index = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/unlike`
+    const res = await instanceAxios(index, {
+      method: 'POST',
+      headers,
+      data: data
+    })
+    return res.data
+  } catch (error) {
+    console.error('Error POST unlike Product:', error)
+    throw error
+  }
+}
+
+export const getlikeProductMe = async (data: { params: TGetLikeMe }) => {
+  try {
+    const index = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/liked/me`
+    const res = await instanceAxios(index, {
+      method: 'get',
+      headers,
+      data: data
+    })
+    return res.data
+  } catch (error) {
+    console.error('Error get like me Product:', error)
+    throw error
+  }
+}
+
+export const getViewProductMe = async (data: { params: TGetViewProductMe }) => {
+  try {
+    const index = `${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/viewed/me`
+    const res = await instanceAxios(index, {
+      method: 'get',
+      headers,
+      data: data
+    })
+    return res.data
+  } catch (error) {
+    console.error('Error get viewed me Product:', error)
     throw error
   }
 }

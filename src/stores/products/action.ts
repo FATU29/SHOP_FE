@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createProduct,deleteProduct,deleteMultipleProducts,getAllProducts,getDetailProduct,updateProduct } from "src/services/products";
-import { TParamsCreateProduct, TParamsDeleteProduct, TParamsDeleteMultipleProducts, TParamsEditProduct, TParamsGetProducts } from "src/types/products";
+import { createProduct,deleteProduct,deleteMultipleProducts,getAllProducts,getDetailProduct,updateProduct, likeProduct, unlikeProduct, getViewProductMe, getlikeProductMe } from "src/services/products";
+import { TParamsCreateProduct, TParamsDeleteProduct, TParamsDeleteMultipleProducts, TParamsEditProduct, TParamsGetProducts, TGetViewProductMe, TGetLikeMe } from "src/types/products";
 
 
 
@@ -82,6 +82,75 @@ export const deleteMultipleProductsAction = createAsyncThunk(
   async (data: TParamsDeleteMultipleProducts, { rejectWithValue }) => {
     try {
       const response = await deleteMultipleProducts(data);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        {
+          ...error
+        }
+      )
+    }
+  }
+);
+
+
+export const likeProductAction = createAsyncThunk(
+  `${serviceName}/likeProductAction`,
+  async (data: {productId:string}, { rejectWithValue }) => {
+    try {
+      const response = await likeProduct(data);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        {
+          ...error
+        }
+      )
+    }
+  }
+);
+
+
+export const unlikeProductAction = createAsyncThunk(
+  `${serviceName}/unlikeProductAction`,
+  async (data: {productId:string}, { rejectWithValue }) => {
+    try {
+      const response = await unlikeProduct(data);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        {
+          ...error
+        }
+      )
+    }
+  }
+);
+
+
+export const getViewdProductMeAction = createAsyncThunk(
+  `${serviceName}/getViewdProductMeAction`,
+  async (data: TGetViewProductMe, { rejectWithValue }) => {
+    try {
+      const response = await getViewProductMe(data);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        {
+          ...error
+        }
+      )
+    }
+  }
+);
+
+
+
+export const getlikeProductMeAction = createAsyncThunk(
+  `${serviceName}/getlikeProductMeAction`,
+  async (data: TGetLikeMe, { rejectWithValue }) => {
+    try {
+      const response = await getlikeProductMe(data);
       return response;
     } catch (error: any) {
       return rejectWithValue(

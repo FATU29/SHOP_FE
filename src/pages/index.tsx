@@ -45,9 +45,9 @@ export default function Home(props: TProps) {
   )
 }
 
-Home.getLayout = (page: React.ReactNode) => <LayoutNoApp>{page}</LayoutNoApp>
 Home.guestGuard = false
 Home.authGuard = false
+Home.getLayout = (page: React.ReactNode) => <LayoutNoApp>{page}</LayoutNoApp>
 
 export async function getServerSideProps() {
   const limit = 10
