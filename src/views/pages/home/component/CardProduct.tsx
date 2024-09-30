@@ -30,6 +30,7 @@ import { getLocalProductCart, setLocalProductToCart } from 'src/helpers/storage'
 import { useAuth } from 'src/hooks/useAuth'
 import { AppDispatch, RootState } from 'src/stores'
 import { updateProductToCart } from 'src/stores/order-products'
+import { likeProductAction, unlikeProductAction } from 'src/stores/products/action'
 import { TItemOrderProduct } from 'src/types/order-products'
 import { TProduct } from 'src/types/products'
 import { convertupdateProductToCart, formatCurrencyVND, isCheckLeftInStock } from 'src/utils'
@@ -61,11 +62,11 @@ const CardProduct = (props: TCardProduct) => {
   const [isLoadingCheck, setLoadingCheck] = React.useState<boolean>(false)
   const theme = useTheme()
   const router = useRouter()
-  const user = useAuth()
+  const { user } = useAuth()
 
   const dispatch: AppDispatch = useDispatch()
   const { orderItems } = useSelector((state: RootState) => state.cartProducts)
-  const {products} = useSelector((state:RootState) => state.products )
+  const { products } = useSelector((state: RootState) => state.products)
   const { item } = props
 
   const handleNavigationDetails = (slug: string) => {
@@ -73,14 +74,13 @@ const CardProduct = (props: TCardProduct) => {
   }
 
   const handleupdateProductToCart = (item: TProduct) => {
-    const takeItemInStock = products?.data.find((product:TProduct) => product._id === item._id);
-    const itemIncreaseQuantity = orderItems?.find((product:TItemOrderProduct) => product.product === item._id )
-    console.log("Hello",products)
-    if(takeItemInStock && itemIncreaseQuantity){
-      const quantityInStock = takeItemInStock?.countInStock;
-      const quantityCurrentInCart = itemIncreaseQuantity?.amount + 1;
-      const flag = isCheckLeftInStock(quantityInStock,quantityCurrentInCart);
-      if(!flag){
+    const takeItemInStock = products?.data.find((product: TProduct) => product._id === item._id)
+    const itemIncreaseQuantity = orderItems?.find((product: TItemOrderProduct) => product.product === item._id)
+    if (takeItemInStock && itemIncreaseQuantity) {
+      const quantityInStock = takeItemInStock?.countInStock
+      const quantityCurrentInCart = itemIncreaseQuantity?.amount + 1
+      const flag = isCheckLeftInStock(quantityInStock, quantityCurrentInCart)
+      if (!flag) {
         return
       }
     }
@@ -96,7 +96,7 @@ const CardProduct = (props: TCardProduct) => {
       slug: item.slug,
       discountStartDate: item.discountStartDate,
       discountEndDate: item.discountEndDate
-    })    
+    })
 
     dispatch(
       updateProductToCart({
@@ -104,8 +104,25 @@ const CardProduct = (props: TCardProduct) => {
       })
     )
 
-    if (user?.user?._id) {
-      setLocalProductToCart({ ...parseData, [user?.user?._id]: listOrderItem })
+    if (user?._id) {
+      setLocalProductToCart({ ...parseData, [user?._id]: listOrderItem })
+    }
+  }
+
+  const toggleLiked = (isLiked:boolean) => {
+    if (user) {
+      if(isLiked){
+        dispatch(unlikeProductAction({productId:item._id}))
+      } else {
+        dispatch(likeProductAction({productId:item._id}))
+      }
+    } else {
+      router.replace({
+        pathname: ROUTE_CONFIG.LOGIN,
+        query: {
+          returnUrl: router.asPath
+        }
+      })
     }
   }
 
@@ -121,13 +138,6 @@ const CardProduct = (props: TCardProduct) => {
           boxShadow: `rgba(100, 100, 111, 0.5) 0px 7px 29px 0px`
         }}
       >
-        {/* <CardHeader
-                    sx={{
-                        padding: 3
-                    }}
-                    title="Shrimp and Chorizo Paella"
-                    subheader="September 14, 2016"
-                /> */}
         <CardMedia
           component='img'
           height='160'
@@ -230,8 +240,8 @@ const CardProduct = (props: TCardProduct) => {
           </Box>
           <Box>
             <Tooltip title={'Like'} arrow>
-              <IconButton>
-                <IconifyIcon icon={'mdi:heart-outline'}></IconifyIcon>
+              <IconButton onClick={() => toggleLiked(Boolean(user && item?.likedBy.includes(user?._id)))}>
+                <IconifyIcon icon={'mdi:heart-outline'} color={user && item?.likedBy.includes(user?._id) ? "red":theme.palette.text.primary}></IconifyIcon>
               </IconButton>
             </Tooltip>
             <Tooltip title='Share' arrow>

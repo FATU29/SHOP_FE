@@ -3,7 +3,7 @@ import { Dispatch } from 'redux'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 // ** Axios Imports
-import { createProductAction,deleteProductAction,deleteMultipleProductsAction,getAllProductsAction,serviceName,updateProductAction } from './action'
+import { createProductAction,deleteProductAction,deleteMultipleProductsAction,getAllProductsAction,serviceName,updateProductAction, likeProductAction, unlikeProductAction, getlikeProductMeAction, getViewdProductMeAction } from './action'
 import { TProduct } from 'src/types/products'
 
 
@@ -32,8 +32,22 @@ const initialState = {
   isSuccessMultipleDeleteProduct: false,
   isErrorDeleteMultipleProduct: false,
   messageErrorDeleteMultipleProduct: "",
+  isSuccessLike: false,
+  isErrorLike: false,
+  messageErrorLike: "",
+  isSuccessUnlike: false,
+  isErrorUnlike: false,
+  messageErrorUnlike: "",
   products: {
     data: [] as TProduct[],
+    total: 0
+  },
+  likedProducts: {
+    data:[],
+    total: 0
+  },
+  viewedProducts: {
+    data:[],
     total: 0
   }
 }
@@ -56,6 +70,12 @@ export const productSlice = createSlice({
       state.isSuccessMultipleDeleteProduct= false
       state.isErrorDeleteMultipleProduct= false
       state.messageErrorDeleteMultipleProduct= ""
+      state.isSuccessLike= false
+      state.isErrorLike= false
+      state.messageErrorLike= ""
+      state.isSuccessUnlike= false
+      state.isErrorUnlike= false
+      state.messageErrorUnlike= ""
     },
   },
 
@@ -166,6 +186,86 @@ export const productSlice = createSlice({
       state.messageErrorDeleteMultipleProduct = action?.payload?.message
       state.typeError = action?.payload?.code
     })
+
+
+    //Like
+    builder.addCase(likeProductAction.pending, (state, action) => {
+      state.isLoading = true
+    })
+
+    builder.addCase(likeProductAction.fulfilled, (state, action: any) => {
+      state.isLoading = false
+      state.isSuccessLike = true
+      state.isErrorLike = false
+      state.messageErrorLike = ""
+    })
+
+    builder.addCase(likeProductAction.rejected, (state, action: any) => {
+      state.isLoading = false
+      state.isSuccessLike = false
+      state.isErrorLike = true
+      state.messageErrorLike = action?.payload?.message
+    })
+
+
+      //unLike
+      builder.addCase(unlikeProductAction.pending, (state, action) => {
+        state.isLoading = true
+      })
+  
+      builder.addCase(unlikeProductAction.fulfilled, (state, action: any) => {
+        state.isLoading = false
+        state.isSuccessUnlike = true
+        state.isErrorUnlike = false
+        state.messageErrorUnlike = ""
+      })
+  
+      builder.addCase(unlikeProductAction.rejected, (state, action: any) => {
+        state.isLoading = false
+        state.isSuccessUnlike = false
+        state.isErrorUnlike = true
+        state.messageErrorUnlike = action?.payload?.message
+      })
+
+
+      //getAllLiked
+      builder.addCase(getlikeProductMeAction.pending, (state, action) => {
+        state.isLoading = true
+      })
+  
+      builder.addCase(getlikeProductMeAction.fulfilled, (state, action: any) => {
+        state.isLoading = false
+        state.likedProducts = action?.payload?.data
+
+      })
+  
+      builder.addCase(getlikeProductMeAction.rejected, (state, action: any) => {
+        state.isLoading = false
+        state.likedProducts = state.likedProducts;
+      })
+
+
+      
+      //getAllViewedProduct
+      builder.addCase(getViewdProductMeAction.pending, (state, action) => {
+        state.isLoading = true
+      })
+  
+      builder.addCase(getViewdProductMeAction.fulfilled, (state, action: any) => {
+        state.isLoading = false
+        state.likedProducts = action?.payload?.data
+
+      })
+  
+      builder.addCase(getViewdProductMeAction.rejected, (state, action: any) => {
+        state.isLoading = false
+        state.likedProducts = state.likedProducts;
+      })
+
+
+
+
+
   },
 })
 

@@ -58,24 +58,24 @@ const IntercepterAxios: NextPage<TProps> = ({ children }) => {
             }).catch((error) => {
               setUser(null);
               clearLocalUserData();
-              router.replace("/login");
+              // router.replace("/login");
             })
           } else {
             setUser(null);
             clearLocalUserData();
-            router.replace("/login");
+            // router.replace("/login");
           }
         } else {
           setUser(null);
           clearLocalUserData();
-          router.replace("/login");
+          // router.replace("/login");
         }
       }
     } else {
       setUser(null);
       clearLocalUserData();
       clearTemporaryToken();
-      router.replace("/login");
+      // router.replace("/login");
     }
     return config;
   });

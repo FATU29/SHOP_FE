@@ -49,6 +49,11 @@ const UserDropDown: NextPage<TProps> = () => {
         handleClose();
     }
 
+    const handleNavigateMyProduct = () => {
+        router.push(ROUTE_CONFIG.MY_PRODUCTS);
+        handleClose();
+    }
+
     useEffect(() => {
         if(userData){
             setUser({...userData})
@@ -173,6 +178,12 @@ const UserDropDown: NextPage<TProps> = () => {
                             <IconifyIcon icon="iconamoon:profile"></IconifyIcon>
                         </ListItemIcon>
                         <Typography>{t("My Profile")}</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleNavigateMyProduct}>
+                        <ListItemIcon>
+                            <IconifyIcon icon="carbon:product"></IconifyIcon>
+                        </ListItemIcon>
+                        <Typography>{t("My Products")}</Typography>
                     </MenuItem>
                     <MenuItem onClick={handleNavigateChangePassword}>
                         <ListItemIcon>

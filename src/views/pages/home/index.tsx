@@ -11,6 +11,9 @@ import { TProduct } from 'src/types/products'
 import InputSearch from 'src/components/input-search'
 import FilterProduct from './component/FilterProduct'
 import { NextPage } from 'next'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from 'src/stores'
+import { resetIntitalState } from 'src/stores/products'
 
 interface TOptions {
   label: string
@@ -48,39 +51,43 @@ const HomePage: NextPage<TProps> = props => {
 
   const firstRender = useRef<Boolean>(false)
   const isServerRendered = useRef<Boolean>(false)
-  
+
   const { products, total, paramsServer, productTypesServer } = props
-  
+
   const handleOnChangePagination = (page: number, pageSize: number) => {
     setPage(page)
     setPageSize(pageSize)
   }
-  
+
+  const dispatch: AppDispatch = useDispatch()
+  const { isSuccessLike, isErrorUnlike, isErrorLike, isSuccessUnlike, messageErrorLike, messageErrorUnlike } =
+    useSelector((state: RootState) => state.products)
+
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
     if (!firstRender.current) {
       firstRender.current = true
     }
     setProductTypeSelected(newValue)
   }
-  
+
   const handleFilterProduct = (review: string): void => {
     if (!firstRender.current) {
       firstRender.current = true
     }
     setReviewSelected(review)
   }
-  
+
   const controllerRef = useRef<AbortController | null>(null)
   const handleGetListProducts = async () => {
     // Hủy request trước đó (nếu có)
     if (controllerRef.current) {
       controllerRef.current.abort()
     }
-    
+
     // Tạo một controller mới cho request hiện tại
     const controller = new AbortController()
     controllerRef.current = controller
-    
+
     const query: any = {
       params: {
         limit: pageSize,
@@ -90,13 +97,11 @@ const HomePage: NextPage<TProps> = props => {
         ...fillterBy
       }
     }
-    
     setLoadingTmp(true)
-    
     try {
       const res = await getAllProductsPublic(query, { signal: controller.signal })
       const data = res?.data
-      
+
       if (data) {
         setProductPublic({
           data: data?.products,
@@ -113,27 +118,26 @@ const HomePage: NextPage<TProps> = props => {
       setLoadingTmp(false)
     }
   }
-  
+
   useEffect(() => {
     if (firstRender.current && isServerRendered.current) {
       handleGetListProducts()
     }
   }, [sortBy, searchBy, i18n, page, pageSize, fillterBy])
-  
+
   useEffect(() => {
     if (firstRender.current && isServerRendered.current) {
       setFillterBy({ productType: productTypeSelected, minStar: reviewSelected })
     }
   }, [productTypeSelected, reviewSelected])
-  
+
   useEffect(() => {
     if (!isServerRendered.current && paramsServer && total && !!products.length && productTypesServer) {
       setPage(paramsServer.page)
       setPageSize(paramsServer.limit)
       setSortBy(paramsServer.order)
-      if (productTypesServer) {
-        setProductTypeSelected(paramsServer.productSelected)
-      }
+      setProductTypeSelected(paramsServer.productSelected)
+      setFillterBy({ productType: paramsServer.productSelected })
       setProductPublic({
         data: products,
         count: total
@@ -142,7 +146,14 @@ const HomePage: NextPage<TProps> = props => {
       isServerRendered.current = true
     }
   }, [paramsServer, products, total])
-  
+
+  useEffect(() => {
+    if (isSuccessLike || isSuccessUnlike) {
+      handleGetListProducts()
+      dispatch(resetIntitalState())
+    }
+  }, [isSuccessLike, isErrorUnlike, isErrorLike, isSuccessUnlike, messageErrorLike, messageErrorUnlike])
+
   return (
     <>
       {isLoadingTmp && <FallbackSpinner></FallbackSpinner>}
@@ -156,7 +167,7 @@ const HomePage: NextPage<TProps> = props => {
           flexDirection: 'column',
           gap: 5
         }}
-        >
+      >
         <Box>
           <Tabs value={productTypeSelected} onChange={handleChange}>
             {listType?.map(item => {
@@ -170,16 +181,15 @@ const HomePage: NextPage<TProps> = props => {
             justifyContent: 'flex-end',
             alignItems: 'center'
           }}
-          >
+        >
           <Box
             sx={{
               width: '200px'
             }}
-            >
+          >
             <InputSearch
               value={searchBy}
               onChange={(value: string) => {
-
                 if (!firstRender.current && isServerRendered.current) {
                   firstRender.current = true
                 }
