@@ -130,7 +130,7 @@ export const unlikeProductAction = createAsyncThunk(
 
 export const getViewdProductMeAction = createAsyncThunk(
   `${serviceName}/getViewdProductMeAction`,
-  async (data: TGetViewProductMe, { rejectWithValue }) => {
+  async (data: {params: TGetViewProductMe}, { rejectWithValue }) => {
     try {
       const response = await getViewProductMe(data);
       return response;
@@ -148,7 +148,7 @@ export const getViewdProductMeAction = createAsyncThunk(
 
 export const getlikeProductMeAction = createAsyncThunk(
   `${serviceName}/getlikeProductMeAction`,
-  async (data: TGetLikeMe, { rejectWithValue }) => {
+  async (data: {params: TGetLikeMe}, { rejectWithValue }) => {
     try {
       const response = await getlikeProductMe(data);
       return response;

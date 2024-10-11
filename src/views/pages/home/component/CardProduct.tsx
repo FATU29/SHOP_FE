@@ -240,8 +240,8 @@ const CardProduct = (props: TCardProduct) => {
           </Box>
           <Box>
             <Tooltip title={'Like'} arrow>
-              <IconButton onClick={() => toggleLiked(Boolean(user && item?.likedBy.includes(user?._id)))}>
-                <IconifyIcon icon={'mdi:heart-outline'} color={user && item?.likedBy.includes(user?._id) ? "red":theme.palette.text.primary}></IconifyIcon>
+              <IconButton onClick={() => toggleLiked(Boolean(user && item?.likedBy?.includes(user?._id)))}>
+                <IconifyIcon icon={'mdi:heart-outline'} color={user && item?.likedBy?.includes(user?._id) ? "red":theme.palette.text.primary}></IconifyIcon>
               </IconButton>
             </Tooltip>
             <Tooltip title='Share' arrow>
