@@ -8,7 +8,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 
 // ** Config
-import authConfig from 'src/configs/auth'
+import authConfig, { LIST_NOTRETURN_LOGIN } from 'src/configs/auth'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
@@ -107,7 +107,9 @@ const AuthProvider = ({ children }: Props) => {
     logoutAuth().then((data) => {
       setUser(null)
       clearLocalUserData();
-      router.push('/login')
+      if(!LIST_NOTRETURN_LOGIN?.includes(router.asPath)){
+        router.push('/login')
+      }
     });
   }
 

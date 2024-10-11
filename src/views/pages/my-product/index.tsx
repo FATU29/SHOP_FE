@@ -65,6 +65,10 @@ const MyProductsPage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
+    handleGetListProductsViewed();
+  },[])
+
+  useEffect(() => {
     const run = async () => {
         if (productTypeSelected === 'Product_viewed') {
             await handleGetListProductsViewed()
